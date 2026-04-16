@@ -1,0 +1,510 @@
+.heart-ar-content {
+  --background: #04101c;
+}
+
+.heart-ar-shell {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  color: #f4f8ff;
+  background: #040c16;
+}
+
+.heart-ar-frame,
+.heart-ar-video,
+.heart-ar-stage,
+.heart-ar-canvas,
+.heart-ar-label-host,
+.heart-ar-label-layer,
+.heart-ar-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.heart-ar-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000000;
+  filter: saturate(1.02) contrast(1.02);
+}
+
+.heart-ar-frame {
+  display: block;
+  border: 0;
+  background: #000000;
+  width: 100%;
+  height: 100%;
+}
+
+.heart-ar-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(4, 10, 18, 0.36) 0%, rgba(4, 10, 18, 0.12) 28%, rgba(4, 10, 18, 0.34) 100%),
+    radial-gradient(circle at 20% 18%, rgba(56, 214, 255, 0.12), transparent 22%),
+    radial-gradient(circle at 82% 24%, rgba(255, 112, 112, 0.12), transparent 20%);
+}
+
+.heart-ar-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(18px);
+  opacity: 0.92;
+}
+
+.heart-ar-orb--one {
+  top: 10%;
+  left: -10%;
+  width: 200px;
+  height: 200px;
+  background: rgba(41, 213, 255, 0.18);
+}
+
+.heart-ar-orb--two {
+  top: 18%;
+  right: -12%;
+  width: 220px;
+  height: 220px;
+  background: rgba(255, 107, 107, 0.14);
+}
+
+.heart-ar-orb--three {
+  bottom: -8%;
+  left: 28%;
+  width: 260px;
+  height: 160px;
+  background: rgba(89, 160, 255, 0.1);
+}
+
+.heart-ar-stage {
+  overflow: hidden;
+  touch-action: none;
+}
+
+.heart-ar-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 52%),
+    linear-gradient(180deg, rgba(5, 11, 19, 0.12) 0%, rgba(5, 11, 19, 0.22) 100%);
+  pointer-events: none;
+}
+
+.heart-ar-stage--active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 17%;
+  width: min(66vw, 320px);
+  height: 82px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(60, 196, 255, 0.22) 0%, transparent 72%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.heart-ar-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.heart-ar-label-layer {
+  pointer-events: none;
+}
+
+.heart-ar-overlay {
+  z-index: 3;
+  pointer-events: none;
+}
+
+.heart-ar-topbar {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  gap: 12px;
+  align-items: center;
+  padding:
+    calc(var(--ion-safe-area-top) + 14px)
+    14px
+    0;
+}
+
+.heart-ar-topbar > * {
+  pointer-events: auto;
+}
+
+.heart-ar-topbar__spacer {
+  display: block;
+  width: 44px;
+  height: 44px;
+}
+
+.heart-ar-title-pill {
+  justify-self: center;
+  width: min(100%, 240px);
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 19, 30, 0.62);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  text-align: center;
+  font-family: var(--app-font-display);
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f5f8ff;
+}
+
+.heart-ar-status-pill,
+.heart-ar-chip,
+.heart-ar-center-note,
+.heart-ar-hint-strip,
+.heart-ar-tool {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.heart-ar-status-pill {
+  position: absolute;
+  top: calc(var(--ion-safe-area-top) + 78px);
+  left: 50%;
+  z-index: 4;
+  max-width: min(88vw, 420px);
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(8, 14, 24, 0.68);
+  border: 1px solid rgba(124, 204, 255, 0.18);
+  color: rgba(241, 248, 255, 0.92);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.heart-ar-status-pill--success {
+  border-color: rgba(88, 252, 200, 0.28);
+  color: #d7fff4;
+}
+
+.heart-ar-status-pill--error {
+  border-color: rgba(255, 124, 124, 0.28);
+  color: #ffd5d5;
+}
+
+.heart-ar-mode-chip-row {
+  position: absolute;
+  top: calc(var(--ion-safe-area-top) + 128px);
+  left: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  width: min(92vw, 420px);
+  transform: translateX(-50%);
+}
+
+.heart-ar-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(10, 16, 26, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(229, 239, 255, 0.82);
+}
+
+.heart-ar-chip--accent {
+  background: rgba(41, 213, 255, 0.12);
+  border-color: rgba(114, 225, 255, 0.24);
+  color: #c4f8ff;
+}
+
+.heart-ar-center-note {
+  position: absolute;
+  left: 50%;
+  bottom: calc(18% + var(--ion-safe-area-bottom));
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(8, 14, 24, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ecf5ff;
+  font-size: 0.88rem;
+  transform: translateX(-50%);
+}
+
+.heart-ar-center-note ion-icon {
+  font-size: 1.35rem;
+  color: #78eaff;
+}
+
+.heart-ar-toolbar {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 88px;
+  transform: translateY(-42%);
+  pointer-events: auto;
+}
+
+.heart-ar-toolbar__title {
+  margin-bottom: 2px;
+  color: rgba(215, 228, 245, 0.72);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.heart-ar-tool {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 14, 24, 0.66);
+  color: rgba(229, 238, 248, 0.72);
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.heart-ar-tool ion-icon {
+  font-size: 1.34rem;
+}
+
+.heart-ar-tool span {
+  font-size: 0.72rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.heart-ar-tool--active {
+  color: #dffcff;
+  background: rgba(25, 108, 171, 0.82);
+  border-color: rgba(117, 222, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.heart-ar-hint-strip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--ion-safe-area-bottom) + 14px);
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  width: min(88vw, 360px);
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(8, 14, 24, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transform: translateX(-50%);
+}
+
+.heart-ar-hint-strip img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.heart-ar-hint-strip strong,
+.heart-ar-hint-strip span {
+  display: block;
+}
+
+.heart-ar-hint-strip strong {
+  margin-bottom: 4px;
+  color: #f3f8ff;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.heart-ar-hint-strip span {
+  color: rgba(217, 229, 244, 0.74);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.heart-ar-scan-target {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(58vw, 230px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    radial-gradient(circle, rgba(41, 213, 255, 0.08) 0%, transparent 70%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.heart-ar-scan-target__line {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-color: rgba(128, 235, 255, 0.88);
+  border-style: solid;
+  border-width: 0;
+}
+
+.heart-ar-scan-target__line--tl {
+  top: 14px;
+  left: 14px;
+  border-top-width: 4px;
+  border-left-width: 4px;
+  border-top-left-radius: 18px;
+}
+
+.heart-ar-scan-target__line--tr {
+  top: 14px;
+  right: 14px;
+  border-top-width: 4px;
+  border-right-width: 4px;
+  border-top-right-radius: 18px;
+}
+
+.heart-ar-scan-target__line--bl {
+  bottom: 14px;
+  left: 14px;
+  border-bottom-width: 4px;
+  border-left-width: 4px;
+  border-bottom-left-radius: 18px;
+}
+
+.heart-ar-scan-target__line--br {
+  right: 14px;
+  bottom: 14px;
+  border-right-width: 4px;
+  border-bottom-width: 4px;
+  border-bottom-right-radius: 18px;
+}
+
+.heart-ar-label {
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(7, 14, 24, 0.76);
+  border: 1px solid rgba(98, 227, 255, 0.24);
+  box-shadow: 0 0 14px rgba(36, 207, 255, 0.18);
+  color: #f1f9ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: opacity 180ms ease;
+}
+
+html[dir="rtl"] .heart-ar-toolbar {
+  left: auto;
+  right: 16px;
+}
+
+@media (max-width: 720px) {
+  .heart-ar-status-pill {
+    max-width: min(92vw, 360px);
+    font-size: 0.78rem;
+  }
+
+  .heart-ar-mode-chip-row {
+    width: min(94vw, 360px);
+  }
+
+  .heart-ar-toolbar {
+    top: auto;
+    left: 50%;
+    bottom: calc(var(--ion-safe-area-bottom) + 100px);
+    flex-direction: row;
+    align-items: stretch;
+    width: auto;
+    transform: translateX(-50%);
+  }
+
+  html[dir="rtl"] .heart-ar-toolbar {
+    right: auto;
+    left: 50%;
+  }
+
+  .heart-ar-toolbar__title {
+    display: none;
+  }
+
+  .heart-ar-tool {
+    min-width: 72px;
+    padding: 10px 8px;
+  }
+
+  .heart-ar-center-note {
+    bottom: calc(20% + var(--ion-safe-area-bottom));
+    width: min(88vw, 300px);
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .heart-ar-topbar {
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    gap: 10px;
+    padding:
+      calc(var(--ion-safe-area-top) + 12px)
+      12px
+      0;
+  }
+
+  .heart-ar-topbar__spacer {
+    width: 40px;
+    height: 40px;
+  }
+
+  .heart-ar-title-pill {
+    width: min(100%, 210px);
+    padding: 11px 14px;
+    font-size: 1rem;
+  }
+
+  .heart-ar-status-pill {
+    top: calc(var(--ion-safe-area-top) + 74px);
+    padding: 9px 14px;
+  }
+
+  .heart-ar-mode-chip-row {
+    top: calc(var(--ion-safe-area-top) + 118px);
+  }
+
+  .heart-ar-hint-strip {
+    width: min(92vw, 340px);
+  }
+
+  .heart-ar-tool {
+    min-width: 64px;
+    gap: 6px;
+    border-radius: 18px;
+  }
+
+  .heart-ar-tool span {
+    font-size: 0.66rem;
+  }
+}

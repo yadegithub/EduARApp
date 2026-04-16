@@ -12,9 +12,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.0",
     "@capacitor/app": "8.1.0",
-    "@capacitor/core": "8.3.0",
+    "@capacitor/barcode-scanner": "^3.0.2",
+    "@capacitor/core": "^8.3.0",
     "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "^8.3.0",
     "@capacitor/keyboard": "8.0.2",
     "@capacitor/status-bar": "8.0.2",
     "@ionic/react": "^8.5.0",
@@ -25,16 +28,18 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "three": "^0.183.2"
   },
   "devDependencies": {
-    "@capacitor/cli": "8.3.0",
+    "@capacitor/cli": "^8.3.0",
     "@testing-library/dom": ">=7.21.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
+    "@types/three": "^0.183.1",
     "@vitejs/plugin-legacy": "^5.0.0",
     "@vitejs/plugin-react": "^4.0.1",
     "cypress": "^13.5.0",

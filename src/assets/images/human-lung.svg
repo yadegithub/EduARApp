@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">Human lung illustration</title>
+  <desc id="desc">Stylized human lungs with trachea and bronchi on a blue gradient background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#091b3a" />
+      <stop offset="52%" stop-color="#124f7c" />
+      <stop offset="100%" stop-color="#1e8ab3" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="36%" r="52%">
+      <stop offset="0%" stop-color="#8ef1ff" stop-opacity="0.88" />
+      <stop offset="100%" stop-color="#8ef1ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="trachea" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#eaf7ff" />
+      <stop offset="100%" stop-color="#9fdfff" />
+    </linearGradient>
+    <linearGradient id="lungLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffadb0" />
+      <stop offset="55%" stop-color="#ea5d6a" />
+      <stop offset="100%" stop-color="#b42545" />
+    </linearGradient>
+    <linearGradient id="lungRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffc2b4" />
+      <stop offset="55%" stop-color="#f46873" />
+      <stop offset="100%" stop-color="#bd294b" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="72" fill="url(#bg)" />
+  <circle cx="320" cy="228" r="182" fill="url(#glow)" />
+  <g fill="none" stroke="rgba(181, 240, 255, 0.22)" stroke-width="10">
+    <path d="M118 490c90-66 164-104 222-114" />
+    <path d="M522 490c-90-66-164-104-222-114" />
+    <path d="M166 198c68 32 122 58 154 120" />
+    <path d="M474 198c-68 32-122 58-154 120" />
+  </g>
+  <g>
+    <path
+      d="M290 98c-4 40-20 72-49 98-40 36-68 74-84 114-17 42-22 89-16 142 8 66 35 116 81 148 31 22 62 30 92 24 27-5 48-20 64-46V134c-12-14-25-27-39-36-18-12-34-12-49 0z"
+      fill="url(#lungLeft)"
+    />
+    <path
+      d="M350 98c4 40 20 72 49 98 40 36 68 74 84 114 17 42 22 89 16 142-8 66-35 116-81 148-31 22-62 30-92 24-27-5-48-20-64-46V134c12-14 25-27 39-36 18-12 34-12 49 0z"
+      fill="url(#lungRight)"
+    />
+    <path
+      d="M302 86h36c8 0 14 6 14 14v78c0 8-6 14-14 14h-36c-8 0-14-6-14-14v-78c0-8 6-14 14-14z"
+      fill="url(#trachea)"
+    />
+    <path
+      d="M320 168v64M320 232l-54 70M320 232l54 70M320 232l-86 98M320 232l86 98"
+      stroke="#dff7ff"
+      stroke-linecap="round"
+      stroke-width="14"
+    />
+    <path
+      d="M320 166v66M320 230l-44 52M320 230l44 52M320 230l-70 80M320 230l70 80"
+      stroke="#6ec8ff"
+      stroke-linecap="round"
+      stroke-width="5"
+    />
+    <path
+      d="M233 214c46 28 79 74 93 132M213 282c47 31 77 70 89 117M406 214c-46 28-79 74-93 132M426 282c-47 31-77 70-89 117"
+      stroke="rgba(255,255,255,0.38)"
+      stroke-linecap="round"
+      stroke-width="8"
+    />
+  </g>
+</svg>
