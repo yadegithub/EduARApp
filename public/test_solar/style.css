@@ -1,0 +1,107 @@
+@import "../test_heart/style.css";
+
+:root {
+    --accent: #ffca68;
+    --accent-strong: #ff8a2a;
+}
+
+#status {
+    position: absolute;
+    top: 74px;
+    left: 50%;
+    max-width: min(84vw, 320px);
+    padding: 10px 16px;
+    border-radius: 999px;
+    transform: translateX(-50%);
+    color: rgba(255, 246, 230, 0.96);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-align: center;
+    pointer-events: none;
+    background: rgba(10, 16, 26, 0.8);
+    border-color: rgba(255, 205, 118, 0.22);
+    display: none;
+}
+
+#side-menu {
+    background: rgba(10, 16, 26, 0.72);
+}
+
+#info-card {
+    width: min(72vw, 248px);
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(8, 12, 19, 0.8);
+    border-color: rgba(255, 202, 104, 0.18);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(16px);
+}
+
+#info-card .card-tag {
+    color: #ffd18c;
+    margin-bottom: 4px;
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+}
+
+#info-card.info-card--floating {
+    width: min(66vw, 232px);
+}
+
+#info-card .text-area h3 {
+    font-size: 0.84rem;
+    letter-spacing: 0.12em;
+}
+
+#info-card .text-area p {
+    margin: 6px 0 6px;
+    font-size: 0.72rem;
+    line-height: 1.42;
+    color: rgba(241, 245, 255, 0.84);
+}
+
+#info-card .card-hint {
+    font-size: 0.62rem;
+    line-height: 1.32;
+    color: rgba(196, 206, 224, 0.7);
+}
+
+.hotspot-label {
+    width: 28px;
+    height: 28px;
+    border-width: 1.5px;
+    border-color: rgba(255, 214, 122, 0.42);
+    background: rgba(9, 13, 19, 0.88);
+    color: #fff7ea;
+    font-size: 0.74rem;
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.22),
+        0 0 0 1px rgba(255, 213, 137, 0.08);
+}
+
+.hotspot-label--active {
+    border-color: rgba(255, 214, 122, 0.96);
+    background: linear-gradient(135deg, #764718 0%, #2a1909 100%);
+    box-shadow:
+        0 0 0 3px rgba(255, 190, 92, 0.18),
+        0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 600px) {
+    #status {
+        top: 68px;
+        max-width: min(90vw, 300px);
+        padding: 9px 14px;
+        font-size: 0.74rem;
+    }
+
+    #info-card {
+        width: min(76vw, 226px);
+        padding: 11px 12px;
+    }
+
+    #info-card.info-card--floating {
+        width: min(72vw, 214px);
+    }
+}

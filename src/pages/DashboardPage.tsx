@@ -28,6 +28,7 @@ const subjectImageMap: Record<SubjectId, string> = {
 };
 
 const DashboardPage: React.FC = () => {
+  const DRAG_THRESHOLD = 10;
   const history = useHistory();
   const { settings } = useAppSettings();
   const featuredStripRef = useRef<HTMLDivElement>(null);
@@ -35,6 +36,8 @@ const DashboardPage: React.FC = () => {
     pointerId: -1,
     startX: 0,
     scrollLeft: 0,
+    isPointerDown: false,
+    hasExceededThreshold: false,
   });
   const isArabic = settings.language === "ar";
   const [isDragging, setIsDragging] = useState(false);
@@ -77,9 +80,9 @@ const DashboardPage: React.FC = () => {
       pointerId: event.pointerId,
       startX: event.clientX,
       scrollLeft: strip.scrollLeft,
+      isPointerDown: true,
+      hasExceededThreshold: false,
     };
-    strip.setPointerCapture(event.pointerId);
-    setIsDragging(true);
   };
 
   const handleStripPointerMove = (
@@ -89,24 +92,48 @@ const DashboardPage: React.FC = () => {
 
     if (
       !strip ||
-      !isDragging ||
+      !dragStateRef.current.isPointerDown ||
       dragStateRef.current.pointerId !== event.pointerId
     ) {
       return;
     }
 
     const deltaX = event.clientX - dragStateRef.current.startX;
+    if (
+      !dragStateRef.current.hasExceededThreshold &&
+      Math.abs(deltaX) < DRAG_THRESHOLD
+    ) {
+      return;
+    }
+
+    if (!dragStateRef.current.hasExceededThreshold) {
+      dragStateRef.current.hasExceededThreshold = true;
+      strip.setPointerCapture(event.pointerId);
+      setIsDragging(true);
+    }
+
     strip.scrollLeft = dragStateRef.current.scrollLeft - deltaX;
   };
 
   const stopStripDragging = (event?: ReactPointerEvent<HTMLDivElement>) => {
     const strip = featuredStripRef.current;
 
-    if (strip && event && dragStateRef.current.pointerId === event.pointerId) {
+    if (
+      strip &&
+      event &&
+      dragStateRef.current.pointerId === event.pointerId &&
+      strip.hasPointerCapture(event.pointerId)
+    ) {
       strip.releasePointerCapture(event.pointerId);
     }
 
-    dragStateRef.current.pointerId = -1;
+    dragStateRef.current = {
+      pointerId: -1,
+      startX: 0,
+      scrollLeft: 0,
+      isPointerDown: false,
+      hasExceededThreshold: false,
+    };
     setIsDragging(false);
   };
 
@@ -121,6 +148,10 @@ const DashboardPage: React.FC = () => {
       event.preventDefault();
       strip.scrollLeft += event.deltaY;
     }
+  };
+
+  const openExperience = (experienceId: string) => {
+    history.push(`/viewer/${experienceId}`);
   };
 
   return (
@@ -226,8 +257,9 @@ const DashboardPage: React.FC = () => {
                 getExperienceCopy(experience.id, settings.language) ?? experience;
 
               return (
-                <article
+                <button
                   key={experience.id}
+                  type="button"
                   className="featured-card featured-card--photo"
                   style={{
                     backgroundImage: `linear-gradient(180deg, rgba(8, 15, 27, 0.08) 0%, rgba(8, 15, 27, 0.72) 100%), url(${experience.image})`,
@@ -235,21 +267,17 @@ const DashboardPage: React.FC = () => {
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
                   }}
+                  onClick={() => openExperience(experience.id)}
                 >
-                  <button
-                    type="button"
-                    className="featured-card__play"
-                    aria-label={`${copy.openDemo} ${localizedExperience.title}`}
-                    onClick={() => history.push(`/viewer/${experience.id}`)}
-                  >
+                  <span className="featured-card__play" aria-hidden="true">
                     <IonIcon icon={playCircle} />
-                  </button>
+                  </span>
                   <div className="featured-card__copy">
                     <span>{localizedExperience.duration}</span>
                     <strong>{localizedExperience.title}</strong>
                     <p>{localizedExperience.teaser}</p>
                   </div>
-                </article>
+                </button>
               );
             })}
           </div>

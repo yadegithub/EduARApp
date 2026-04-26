@@ -16,6 +16,7 @@ import { getExperienceCopy, getSubjectCopy } from "../i18n/appCopy";
 import HeartArPage from "./HeartArPage";
 import { recordExperienceLaunch } from "../profile/userProgressStore";
 import { useAppSettings } from "../settings/AppSettingsContext";
+import SolarSystemArPage from "./SolarSystemArPage";
 
 type ToolMode = "rotate" | "scale";
 
@@ -58,6 +59,17 @@ const ViewerPage: React.FC = () => {
   if (experience.id === "human-heart") {
     return (
       <HeartArPage
+        experienceTitle={localizedExperience.title}
+        language={settings.language}
+        onBack={handleBack}
+        theme={settings.theme}
+      />
+    );
+  }
+
+  if (experience.id === "solar-system-model") {
+    return (
+      <SolarSystemArPage
         experienceTitle={localizedExperience.title}
         language={settings.language}
         onBack={handleBack}

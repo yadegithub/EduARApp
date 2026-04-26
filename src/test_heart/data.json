@@ -5,7 +5,8 @@
         "name": "Human Heart",
         "path": "assets/human_heart.glb",
         "scale": { "x": 1.15, "y": 1.15, "z": 1.15 },
-        "position": { "x": 0.5, "y": 0.55, "z": 0.0 }
+        "position": { "x": 0.5, "y": 0.55, "z": 0.0 },
+        "rotation": { "x": 0.0, "y": 3.141592653589793, "z": 0.0 }
       }
     },
     "audio": "assets/heartbeat.mp3",

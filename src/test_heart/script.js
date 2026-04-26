@@ -2,6 +2,13 @@ const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
 const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
 const HEART_MODEL_PATH = "assets/human_heart.glb";
+const DEFAULT_HEART_ROTATION = {
+    x: 0,
+    y: Math.PI,
+    z: 0
+};
+const MARKER_LOST_GRACE_FRAMES = 6;
+const TRACKING_LERP_ALPHA = 0.4;
 
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
@@ -29,66 +36,82 @@ const UI = {
     video: document.getElementById("videoInput")
 };
 
-const copy = {
-    en: {
-        appEyebrow: "AR Learn live scan",
-        appTitle: "HUMAN HEART",
-        rotate: "Rotate",
-        scale: "Scale",
-        sound: "Audio",
-        labels: "Labels On/Off",
-        statusStarting: "Starting camera...",
-        statusLoading: "Loading heart model...",
-        statusReady: "Camera ready • scan your printed QR code",
-        statusTracking: "QR detected • heart placed",
-        statusSearching: "Searching for QR code...",
-        statusCameraError: "Camera access was denied.",
-        statusModelError: "The heart model could not be loaded.",
-        cardTag: "Live anatomy",
-        partName: "AORTA",
-        partInfo:
-            "The aorta carries oxygen-rich blood from the left ventricle to the rest of the body.",
-        cardHint:
-            "Use rotate, scale, sound and labels while the model is active.",
-        labelsData: [
-            { name: "Aorta", position: [0.1, 0.72, 0.15] },
-            { name: "Pulmonary Artery", position: [0.25, 0.45, 0.2] },
-            { name: "Left Atrium", position: [0.35, 0.05, 0.3] },
-            { name: "Left Ventricle", position: [0.25, -0.4, 0.4] },
-            { name: "Right Atrium", position: [-0.4, 0.05, 0.25] },
-            { name: "Right Ventricle", position: [-0.35, -0.45, 0.35] }
-        ]
+const anatomyParts = [
+    {
+        id: "aorta",
+        label: "Aorta",
+        title: "AORTA",
+        info: "The aorta carries oxygen-rich blood from the left ventricle to the rest of the body.",
+        hint: "This is the main artery leaving the heart.",
+        position: [0.1, 0.72, 0.15]
     },
-    ar: {
-        appEyebrow: "Ù…Ø³Ø­ Ø­ÙŠ Ù…Ù† AR Learn",
-        appTitle: "Ù‚Ù„Ø¨ Ø§Ù„Ø¥Ù†Ø³Ø§Ù†",
-        rotate: "ØªØ¯ÙˆÙŠØ±",
-        scale: "ØªØ­Ø¬ÙŠÙ…",
-        sound: "Ø§Ù„ØµÙˆØª",
-        labels: "Ø¥Ø¸Ù‡Ø§Ø± ÙˆØ¥Ø®ÙØ§Ø¡ Ø§Ù„ØªØ³Ù…ÙŠØ§Øª",
-        statusStarting: "Ø¬Ø§Ø±Ù ØªØ´ØºÙŠÙ„ Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§...",
-        statusLoading: "Ø¬Ø§Ø±Ù ØªØ­Ù…ÙŠÙ„ Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù‚Ù„Ø¨...",
-        statusReady: "Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§ Ø¬Ø§Ù‡Ø²Ø© â€¢ Ø§Ù…Ø³Ø­ Ø±Ù…Ø² QR Ø§Ù„Ù…Ø·Ø¨ÙˆØ¹",
-        statusTracking: "ØªÙ… Ø§ÙƒØªØ´Ø§Ù Ø§Ù„Ø±Ù…Ø² â€¢ ØªÙ… Ø¹Ø±Ø¶ Ø§Ù„Ù‚Ù„Ø¨",
-        statusSearching: "Ø¬Ø§Ø±Ù Ø§Ù„Ø¨Ø­Ø« Ø¹Ù† Ø±Ù…Ø² QR...",
-        statusCameraError: "ØªÙ… Ø±ÙØ¶ Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§.",
-        statusModelError: "ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù‚Ù„Ø¨.",
-        cardTag: "ØªØ´Ø±ÙŠØ­ Ø­ÙŠ",
-        partName: "Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø£Ø¨Ù‡Ø±",
-        partInfo:
-            "ÙŠÙ†Ù‚Ù„ Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø£Ø¨Ù‡Ø± Ø§Ù„Ø¯Ù… Ø§Ù„ØºÙ†ÙŠ Ø¨Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ† Ù…Ù† Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø± Ø¥Ù„Ù‰ Ø¨Ø§Ù‚ÙŠ Ø£Ù†Ø­Ø§Ø¡ Ø§Ù„Ø¬Ø³Ù….",
-        cardHint:
-            "Ø§Ø³ØªØ®Ø¯Ù… Ø§Ù„ØªØ¯ÙˆÙŠØ± ÙˆØ§Ù„ØªØ­Ø¬ÙŠÙ… ÙˆØ§Ù„ØµÙˆØª ÙˆØ§Ù„ØªØ³Ù…ÙŠØ§Øª Ø£Ø«Ù†Ø§Ø¡ Ø¹Ø±Ø¶ Ø§Ù„Ù†Ù…ÙˆØ°Ø¬.",
-        labelsData: [
-            { name: "Ø§Ù„Ø£Ø¨Ù‡Ø±", position: [0.1, 0.72, 0.15] },
-            { name: "Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø±Ø¦ÙˆÙŠ", position: [0.25, 0.45, 0.2] },
-            { name: "Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø±", position: [0.35, 0.05, 0.3] },
-            { name: "Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø±", position: [0.25, -0.4, 0.4] },
-            { name: "Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù†", position: [-0.4, 0.05, 0.25] },
-            { name: "Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù†", position: [-0.35, -0.45, 0.35] }
-        ]
+    {
+        id: "pulmonary-artery",
+        label: "Pulmonary Artery",
+        title: "PULMONARY ARTERY",
+        info: "The pulmonary artery moves oxygen-poor blood from the heart to the lungs.",
+        hint: "It begins pulmonary circulation.",
+        position: [0.25, 0.45, 0.2]
+    },
+    {
+        id: "left-atrium",
+        label: "Left Atrium",
+        title: "LEFT ATRIUM",
+        info: "The left atrium receives oxygen-rich blood returning from the lungs.",
+        hint: "It passes fresh blood into the left ventricle.",
+        position: [0.35, 0.05, 0.3]
+    },
+    {
+        id: "left-ventricle",
+        label: "Left Ventricle",
+        title: "LEFT VENTRICLE",
+        info: "The left ventricle pumps oxygen-rich blood out through the aorta.",
+        hint: "This chamber has the thickest wall.",
+        position: [0.25, -0.4, 0.4]
+    },
+    {
+        id: "right-atrium",
+        label: "Right Atrium",
+        title: "RIGHT ATRIUM",
+        info: "The right atrium receives oxygen-poor blood coming back from the body.",
+        hint: "It sends blood down into the right ventricle.",
+        position: [-0.4, 0.05, 0.25]
+    },
+    {
+        id: "right-ventricle",
+        label: "Right Ventricle",
+        title: "RIGHT VENTRICLE",
+        info: "The right ventricle pumps oxygen-poor blood toward the lungs.",
+        hint: "It starts the trip to the lungs for oxygen.",
+        position: [-0.35, -0.45, 0.35]
     }
-}[currentLanguage];
+].map((part, index) => ({
+    ...part,
+    number: index + 1
+}));
+
+const copy = {
+    appEyebrow: "AR Learn live scan",
+    appTitle: "HUMAN HEART",
+    rotate: "Rotate",
+    scale: "Scale",
+    sound: "Audio",
+    labels: "Numbers On/Off",
+    statusStarting: "Starting camera...",
+    statusLoading: "Loading heart model...",
+    statusReady: "Camera ready",
+    statusTracking: "Heart placed",
+    statusSearching: "Searching for QR code...",
+    statusCameraError: "Camera access was denied.",
+    statusModelError: "The heart model could not be loaded.",
+    focusTag: "Selected part",
+    overview: {
+        tag: "Open-heart view",
+        title: "OPEN HEART",
+        info: "Tap a numbered marker to read the definition of each structure inside the heart.",
+        hint: "Rotate the model until the cutaway side faces you, or use Scale to zoom closer."
+    }
+};
 
 let src;
 let cap;
@@ -118,6 +141,14 @@ let animationFrameId = 0;
 let openCvCheckTimerId = 0;
 let isArInitialized = false;
 let isSessionStarting = false;
+let focusedPartIndex = -1;
+let lostMarkerFrames = 0;
+let hasTrackingPose = false;
+
+const trackedMatrix = new THREE.Matrix4();
+const trackedPosition = new THREE.Vector3();
+const trackedQuaternion = new THREE.Quaternion();
+const trackedScale = new THREE.Vector3();
 
 const defaultConfig = {
     assets: {
@@ -125,7 +156,8 @@ const defaultConfig = {
             heart: {
                 path: HEART_MODEL_PATH,
                 position: { x: 0.5, y: 0.55, z: 0.0 },
-                scale: { x: 1.15, y: 1.15, z: 1.15 }
+                scale: { x: 1.15, y: 1.15, z: 1.15 },
+                rotation: DEFAULT_HEART_ROTATION
             }
         },
         audio: "assets/heartbeat.mp3"
@@ -135,6 +167,94 @@ const defaultConfig = {
     }
 };
 
+function setStatus(message) {
+    if (!UI.status || UI.status.textContent === message) {
+        return;
+    }
+
+    UI.status.textContent = message;
+}
+
+function getSelectedPart() {
+    return focusedPartIndex >= 0 ? anatomyParts[focusedPartIndex] : null;
+}
+
+function updateInfoCard() {
+    if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint) {
+        return;
+    }
+
+    const selectedPart = getSelectedPart();
+
+    if (!selectedPart) {
+        UI.card.classList.remove("info-card--visible");
+        UI.card.classList.remove("info-card--selected");
+        return;
+    }
+
+    UI.cardTag.textContent = copy.focusTag;
+    UI.partName.textContent = selectedPart.title;
+    UI.partInfo.textContent = selectedPart.info;
+    UI.cardHint.textContent = selectedPart.hint;
+    UI.card.classList.add("info-card--visible");
+    UI.card.classList.add("info-card--selected");
+}
+
+function syncLabels() {
+    anatomyLabels.forEach((entry) => {
+        const isActive = entry.index === focusedPartIndex;
+        entry.label.element.style.opacity = labelsVisible ? "1" : "0";
+        entry.label.element.classList.toggle("hotspot-label--active", isActive);
+        entry.label.element.setAttribute("aria-pressed", String(isActive));
+    });
+}
+
+function positionInfoCard() {
+    if (!UI.card) {
+        return;
+    }
+
+    const selectedEntry =
+        focusedPartIndex >= 0 ? anatomyLabels[focusedPartIndex] : null;
+
+    if (!selectedEntry || !arGroup?.visible) {
+        UI.card.classList.remove("info-card--floating");
+        UI.card.style.left = "50%";
+        UI.card.style.top = "";
+        UI.card.style.right = "";
+        UI.card.style.bottom = "18px";
+        UI.card.style.transform = "translateX(-50%)";
+        return;
+    }
+
+    const markerRect = selectedEntry.label.element.getBoundingClientRect();
+    const cardWidth = UI.card.offsetWidth || 300;
+    const cardHeight = UI.card.offsetHeight || 170;
+
+    let left = markerRect.right + 18;
+    if (left + cardWidth > window.innerWidth - 16) {
+        left = markerRect.left - cardWidth - 18;
+    }
+
+    let top = markerRect.top + markerRect.height / 2 - cardHeight / 2;
+    left = Math.max(16, Math.min(window.innerWidth - cardWidth - 16, left));
+    top = Math.max(16, Math.min(window.innerHeight - cardHeight - 16, top));
+
+    UI.card.classList.add("info-card--floating");
+    UI.card.style.left = `${left}px`;
+    UI.card.style.top = `${top}px`;
+    UI.card.style.right = "auto";
+    UI.card.style.bottom = "auto";
+    UI.card.style.transform = "none";
+}
+
+function setFocusedPart(index) {
+    focusedPartIndex = Math.max(-1, Math.min(anatomyParts.length - 1, index));
+    updateInfoCard();
+    syncLabels();
+    positionInfoCard();
+}
+
 function applyCopy() {
     UI.appEyebrow.textContent = copy.appEyebrow;
     UI.appTitle.textContent = copy.appTitle;
@@ -142,19 +262,9 @@ function applyCopy() {
     UI.scaleLabel.textContent = copy.scale;
     UI.soundLabel.textContent = copy.sound;
     UI.labelsLabel.textContent = copy.labels;
-    UI.cardTag.textContent = copy.cardTag;
-    UI.partName.textContent = copy.partName;
-    UI.partInfo.textContent = copy.partInfo;
-    UI.cardHint.textContent = copy.cardHint;
+    updateInfoCard();
+    positionInfoCard();
     setStatus(copy.statusStarting);
-}
-
-function setStatus(message) {
-    if (UI.status.textContent === message) {
-        return;
-    }
-
-    UI.status.textContent = message;
 }
 
 async function loadConfig() {
@@ -258,6 +368,7 @@ function initThree(config) {
     labelRenderer.domElement.style.top = "0";
     labelRenderer.domElement.style.left = "0";
     labelRenderer.domElement.style.pointerEvents = "none";
+    labelRenderer.domElement.style.zIndex = "25";
     document.body.appendChild(labelRenderer.domElement);
 
     scene = new THREE.Scene();
@@ -270,7 +381,7 @@ function initThree(config) {
 
     arGroup = new THREE.Group();
     arGroup.visible = false;
-    arGroup.matrixAutoUpdate = false;
+    arGroup.matrixAutoUpdate = true;
     scene.add(arGroup);
 
     scene.add(new THREE.AmbientLight(0xffffff, 1.3));
@@ -288,6 +399,8 @@ function initThree(config) {
     const modelPath = modelConfig.path ?? HEART_MODEL_PATH;
     const modelPosition = modelConfig.position ?? defaultConfig.assets.models.heart.position;
     const modelScale = modelConfig.scale ?? defaultConfig.assets.models.heart.scale;
+    const modelRotation =
+        modelConfig.rotation ?? defaultConfig.assets.models.heart.rotation;
 
     arScale = config.settings?.arScale ?? defaultConfig.settings.arScale;
     heartSound = new Audio(config.assets?.audio ?? defaultConfig.assets.audio);
@@ -309,14 +422,21 @@ function initThree(config) {
                 modelScale.y ?? 1.15,
                 modelScale.z ?? 1.15
             );
-            heartModel.rotation.y = Math.PI;
+            heartModel.rotation.set(
+                modelRotation.x ?? DEFAULT_HEART_ROTATION.x,
+                modelRotation.y ?? DEFAULT_HEART_ROTATION.y,
+                modelRotation.z ?? DEFAULT_HEART_ROTATION.z
+            );
             arGroup.add(heartModel);
 
-            copy.labelsData.forEach((labelData) => {
-                addAnatomyLabel(labelData.name, ...labelData.position);
+            anatomyParts.forEach((part, index) => {
+                addAnatomyLabel(part, index);
             });
 
             setupInteraction();
+            updateInfoCard();
+            syncLabels();
+            positionInfoCard();
             setStatus(copy.statusReady);
         },
         undefined,
@@ -326,24 +446,30 @@ function initThree(config) {
     );
 }
 
-function addAnatomyLabel(name, x, y, z) {
+function addAnatomyLabel(part, index) {
     if (!heartModel) {
         return;
     }
 
     const labelAnchor = new THREE.Group();
-    labelAnchor.position.set(x, y, z);
+    labelAnchor.position.set(part.position[0], part.position[1], part.position[2]);
     heartModel.add(labelAnchor);
 
-    const div = document.createElement("div");
-    div.className = "label-anatomie";
-    div.textContent = name;
+    const button = document.createElement("button");
+    button.className = "hotspot-label";
+    button.type = "button";
+    button.textContent = String(part.number);
+    button.setAttribute("aria-label", part.label);
+    button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setFocusedPart(focusedPartIndex === index ? -1 : index);
+    });
 
-    const label = new THREE.CSS2DObject(div);
+    const label = new THREE.CSS2DObject(button);
     label.position.set(0, 0, 0);
     labelAnchor.add(label);
-    label.element.style.opacity = labelsVisible ? "1" : "0";
-    anatomyLabels.push(label);
+    anatomyLabels.push({ id: part.id, index, label });
 }
 
 function setupControls() {
@@ -357,12 +483,6 @@ function setupControls() {
     const syncSoundButton = () => {
         UI.soundBtn.classList.toggle("active", isSoundPlaying);
         UI.soundBtn.setAttribute("aria-pressed", String(isSoundPlaying));
-    };
-
-    const syncLabels = () => {
-        anatomyLabels.forEach((label) => {
-            label.element.style.opacity = labelsVisible ? "1" : "0";
-        });
     };
 
     const setMode = (mode) => {
@@ -396,12 +516,14 @@ function setupControls() {
     UI.rotateBtn.onclick = () => setMode("rotate");
     UI.scaleBtn.onclick = () => setMode("scale");
     UI.soundBtn.onclick = toggleSound;
-    syncModeButtons();
-    syncSoundButton();
     UI.labelToggle.onchange = (event) => {
         labelsVisible = event.target.checked;
         syncLabels();
+        positionInfoCard();
     };
+
+    syncModeButtons();
+    syncSoundButton();
     syncLabels();
 }
 
@@ -454,9 +576,14 @@ function setupInteraction() {
     window.addEventListener("touchend", () => {
         isDragging = false;
     });
+    UI.canvasThree.addEventListener("click", () => {
+        if (!isDragging) {
+            setFocusedPart(-1);
+        }
+    });
 }
 
-function initCV(config) {
+function initCV() {
     src = new cv.Mat(UI.video.height, UI.video.width, cv.CV_8UC4);
     cap = new cv.VideoCapture(UI.video);
     qrDetector = new cv.QRCodeDetector();
@@ -529,9 +656,7 @@ function processFrame() {
             cv.Rodrigues(rvec, rotMatr);
             const rotation = rotMatr.data64F;
             const translation = tvec.data64F;
-            const matrix = new THREE.Matrix4();
-
-            matrix.set(
+            trackedMatrix.set(
                 rotation[0] * arScale,
                 rotation[1] * arScale,
                 rotation[2] * arScale,
@@ -550,21 +675,49 @@ function processFrame() {
                 1
             );
 
-            arGroup.matrix.copy(matrix);
+            trackedMatrix.decompose(
+                trackedPosition,
+                trackedQuaternion,
+                trackedScale
+            );
+
+            if (!hasTrackingPose) {
+                arGroup.position.copy(trackedPosition);
+                arGroup.quaternion.copy(trackedQuaternion);
+                arGroup.scale.copy(trackedScale);
+                hasTrackingPose = true;
+            } else {
+                arGroup.position.lerp(trackedPosition, TRACKING_LERP_ALPHA);
+                arGroup.quaternion.slerp(
+                    trackedQuaternion,
+                    TRACKING_LERP_ALPHA
+                );
+                arGroup.scale.lerp(trackedScale, TRACKING_LERP_ALPHA);
+            }
+
             arGroup.visible = true;
             markerFound = true;
+            lostMarkerFrames = 0;
         }
 
         imagePoints.delete();
     }
 
     if (!markerFound) {
-        arGroup.visible = false;
+        if (hasTrackingPose && lostMarkerFrames < MARKER_LOST_GRACE_FRAMES) {
+            lostMarkerFrames += 1;
+            arGroup.visible = true;
+            markerFound = true;
+        } else {
+            arGroup.visible = false;
+            hasTrackingPose = false;
+        }
     }
 
     setStatus(markerFound ? copy.statusTracking : copy.statusSearching);
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
+    positionInfoCard();
 
     points.delete();
     animationFrameId = window.requestAnimationFrame(processFrame);
@@ -589,6 +742,8 @@ function fitToScreen() {
     if (labelRenderer) {
         labelRenderer.setSize(window.innerWidth, window.innerHeight);
     }
+
+    positionInfoCard();
 }
 
 function cleanup() {
@@ -620,6 +775,9 @@ function cleanup() {
     isSoundPlaying = false;
     isDragging = false;
     isArInitialized = false;
+    focusedPartIndex = -1;
+    lostMarkerFrames = 0;
+    hasTrackingPose = false;
 
     if (renderer) {
         renderer.dispose();
