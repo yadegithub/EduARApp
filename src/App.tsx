@@ -4,6 +4,7 @@ import { IonReactRouter } from "@ionic/react-router";
 import { AuthProvider } from "./auth/AuthContext";
 import AppTabs from "./components/AppTabs";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import SplashPage from "./pages/SplashPage";
@@ -32,6 +33,9 @@ const App: React.FC = () => (
           <IonRouterOutlet>
             <Route exact path="/">
               <SplashPage />
+            </Route>
+            <Route exact path="/site">
+              <LandingPage />
             </Route>
             <Route exact path="/login">
               <LoginPage />
