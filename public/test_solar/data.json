@@ -4,17 +4,12 @@
       "solar": {
         "name": "Solar System",
         "path": "assets/solar_system.glb",
-        "renderMode": "direct",
         "targetSize": 1.75,
         "enhanceDirectModel": false,
         "animationClipName": "solar system",
         "animationTimeScale": 1.0,
-        "showBackdrop": false,
-        "showStarField": false,
-        "backdropSize": 2.2,
-        "backdropOffsetZ": -0.55,
-        "position": { "x": 0.5, "y": 0.5, "z": 0.0 },
-        "rotation": { "x": 0.0, "y": 0.0, "z": 0.0 }
+        "position": { "x": 0.44, "y": 0.36, "z": 0.03 },
+        "rotation": { "x": 1.5708, "y": 0.0, "z": 0.0 }
       }
     }
   },
