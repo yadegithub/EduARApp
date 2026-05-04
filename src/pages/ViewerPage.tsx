@@ -14,6 +14,7 @@ import SceneArtwork from "../components/SceneArtwork";
 import { getExperienceById, getSubjectById } from "../data/arData";
 import { getExperienceCopy, getSubjectCopy } from "../i18n/appCopy";
 import HeartArPage from "./HeartArPage";
+import LungArPage from "./LungArPage";
 import PendulumArPage from "./PendulumArPage";
 import { recordExperienceLaunch } from "../profile/userProgressStore";
 import { useAppSettings } from "../settings/AppSettingsContext";
@@ -60,6 +61,17 @@ const ViewerPage: React.FC = () => {
   if (experience.id === "human-heart") {
     return (
       <HeartArPage
+        experienceTitle={localizedExperience.title}
+        language={settings.language}
+        onBack={handleBack}
+        theme={settings.theme}
+      />
+    );
+  }
+
+  if (experience.id === "human-lung") {
+    return (
+      <LungArPage
         experienceTitle={localizedExperience.title}
         language={settings.language}
         onBack={handleBack}
