@@ -1,6 +1,10 @@
 import civilizationsImage from "../assets/images/Ancient Civilizations.jpg";
+import digestiveSystemImage from "../assets/images/digestive system.jpg";
+import femaleReproductiveSystemImage from "../assets/images/female reproductive system.jpg";
 import heartImage from "../assets/images/Coeur humain.jpg";
+import kidneyImage from "../assets/images/Human kidney.jpg";
 import lungImage from "../assets/images/human lung.jpg";
+import skinImage from "../assets/images/human skin.jpg";
 import magneticImage from "../assets/images/Magnetic Fields.png";
 import pendulumImage from "../assets/images/Simple Pendulum.png";
 import solarImage from "../assets/images/Solar System Model.jpg";
@@ -117,6 +121,74 @@ export const experiences: Experience[] = [
     subjectId: "biology",
     artwork: "lung",
     image: lungImage,
+    featured: false,
+  },
+  {
+    id: "digestive-system",
+    title: "Digestive System",
+    shortDescription:
+      "Scan a QR code to place the full digestive system and explore its main structures with guided notes.",
+    teaser:
+      "Follow the full digestive pathway in AR and tap numbered labels to understand each major structure.",
+    focusTitle: "Digestive System",
+    focusCopy:
+      "This model presents the digestive system as a complete pathway, from food entry to nutrient absorption and waste processing.",
+    duration: "9 min lesson",
+    xp: 190,
+    subjectId: "biology",
+    artwork: "lung",
+    image: digestiveSystemImage,
+    featured: false,
+  },
+  {
+    id: "human-skin",
+    title: "Human Skin",
+    shortDescription:
+      "Explore the layers of the skin and the structures that protect, sense and regulate the body.",
+    teaser:
+      "Zoom into a skin cross-section in AR and tap each numbered label to inspect its anatomy.",
+    focusTitle: "Dermis",
+    focusCopy:
+      "The dermis supports the outer surface of the skin and contains follicles, glands, vessels and sensory structures.",
+    duration: "8 min lesson",
+    xp: 170,
+    subjectId: "biology",
+    artwork: "lung",
+    image: skinImage,
+    featured: false,
+  },
+  {
+    id: "female-reproductive-system",
+    title: "Female Reproductive System",
+    shortDescription:
+      "Place a cross-section of the female reproductive system and explore the main organs with guided notes.",
+    teaser:
+      "Study the uterus, ovaries and connecting pathways in a clear AR cross-section.",
+    focusTitle: "Uterus",
+    focusCopy:
+      "The uterus is the central muscular organ of the reproductive system and supports pregnancy when a fertilized egg implants.",
+    duration: "9 min lesson",
+    xp: 195,
+    subjectId: "biology",
+    artwork: "heart",
+    image: femaleReproductiveSystemImage,
+    featured: false,
+  },
+  {
+    id: "human-kidney",
+    title: "Human Kidney",
+    shortDescription:
+      "Inspect the kidney layers and vessels that filter blood and guide urine out of the organ.",
+    teaser:
+      "Tap through the cortex, medulla and ureter in a detailed AR kidney model.",
+    focusTitle: "Renal Cortex",
+    focusCopy:
+      "The renal cortex is the outer region where filtration begins before fluid continues deeper into the kidney.",
+    duration: "8 min lesson",
+    xp: 180,
+    subjectId: "biology",
+    artwork: "heart",
+    image: kidneyImage,
     featured: false,
   },
   {

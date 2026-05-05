@@ -13,7 +13,11 @@ import { useAuth } from "../auth/useAuth";
 import SceneArtwork from "../components/SceneArtwork";
 import { getExperienceById, getSubjectById } from "../data/arData";
 import { getExperienceCopy, getSubjectCopy } from "../i18n/appCopy";
+import DigestiveSystemArPage from "./DigestiveSystemArPage";
+import FemaleReproductiveSystemArPage from "./FemaleReproductiveSystemArPage";
 import HeartArPage from "./HeartArPage";
+import HumanSkinArPage from "./HumanSkinArPage";
+import KidneyArPage from "./KidneyArPage";
 import PendulumArPage from "./PendulumArPage";
 import { recordExperienceLaunch } from "../profile/userProgressStore";
 import { useAppSettings } from "../settings/AppSettingsContext";
@@ -71,6 +75,50 @@ const ViewerPage: React.FC = () => {
   if (experience.id === "solar-system-model") {
     return (
       <SolarSystemArPage
+        experienceTitle={localizedExperience.title}
+        language={settings.language}
+        onBack={handleBack}
+        theme={settings.theme}
+      />
+    );
+  }
+
+  if (experience.id === "digestive-system") {
+    return (
+      <DigestiveSystemArPage
+        experienceTitle={localizedExperience.title}
+        language={settings.language}
+        onBack={handleBack}
+        theme={settings.theme}
+      />
+    );
+  }
+
+  if (experience.id === "human-skin") {
+    return (
+      <HumanSkinArPage
+        experienceTitle={localizedExperience.title}
+        language={settings.language}
+        onBack={handleBack}
+        theme={settings.theme}
+      />
+    );
+  }
+
+  if (experience.id === "female-reproductive-system") {
+    return (
+      <FemaleReproductiveSystemArPage
+        experienceTitle={localizedExperience.title}
+        language={settings.language}
+        onBack={handleBack}
+        theme={settings.theme}
+      />
+    );
+  }
+
+  if (experience.id === "human-kidney") {
+    return (
+      <KidneyArPage
         experienceTitle={localizedExperience.title}
         language={settings.language}
         onBack={handleBack}
