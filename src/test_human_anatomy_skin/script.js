@@ -179,6 +179,7 @@ let isSessionStarting = false;
 let focusedPartIndex = -1;
 let lostMarkerFrames = 0;
 let hasTrackingPose = false;
+let hasLiveMarkerDetection = false;
 let detectionStreak = 0;
 let lastDetectionCenter = null;
 let lastQrScanTime = 0;
@@ -458,9 +459,18 @@ function updateInfoCard() {
 }
 
 function syncLabels() {
+    const shouldShowLabels =
+        labelsVisible && Boolean(arGroup?.visible) && hasLiveMarkerDetection;
+
     anatomyLabels.forEach((entry) => {
         const isActive = entry.index === focusedPartIndex;
-        entry.label.element.style.opacity = labelsVisible ? "1" : "0";
+        entry.label.element.style.opacity = shouldShowLabels ? "1" : "0";
+        entry.label.element.style.visibility = shouldShowLabels
+            ? "visible"
+            : "hidden";
+        entry.label.element.style.pointerEvents = shouldShowLabels
+            ? "auto"
+            : "none";
         entry.label.element.classList.toggle("hotspot-label--active", isActive);
         entry.label.element.setAttribute("aria-pressed", String(isActive));
     });
@@ -1068,6 +1078,7 @@ function resetDetectionConfidence() {
 function runQrDetection() {
     let markerFound = false;
     let shouldHoldSteady = false;
+    let liveMarkerDetected = false;
 
     if (qrDetector.detect(src, qrPoints)) {
         const metrics = getQrMetrics(qrPoints);
@@ -1158,6 +1169,7 @@ function runQrDetection() {
 
                 arGroup.visible = true;
                 markerFound = true;
+                liveMarkerDetected = true;
                 lostMarkerFrames = 0;
             }
         }
@@ -1176,6 +1188,8 @@ function runQrDetection() {
             lostMarkerFrames = 0;
         }
     }
+
+    hasLiveMarkerDetection = liveMarkerDetected;
 
     return { markerFound, shouldHoldSteady };
 }
@@ -1205,6 +1219,12 @@ function processFrame(timestamp) {
         setStatus(copy.statusHoldSteady);
     } else {
         setStatus(copy.statusSearching);
+    }
+
+    if (!hasLiveMarkerDetection && focusedPartIndex !== -1) {
+        setFocusedPart(-1);
+    } else {
+        syncLabels();
     }
 
     renderer.render(scene, camera);
@@ -1273,6 +1293,7 @@ function cleanup() {
     focusedPartIndex = -1;
     lostMarkerFrames = 0;
     hasTrackingPose = false;
+    hasLiveMarkerDetection = false;
     resetDetectionConfidence();
     lastQrScanTime = 0;
 
