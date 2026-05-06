@@ -135,6 +135,28 @@ const experienceCopy: Record<
       duration: "درس 11 دقيقة",
     },
   },
+  "electric-circuit": {
+    en: {
+      title: "Electric Circuit",
+      shortDescription:
+        "Explore a battery, wires, switch and bulb in a simple closed circuit.",
+      teaser: "Place a classroom circuit on your desk and follow the current path.",
+      focusTitle: "Closed Circuit",
+      focusCopy:
+        "See how current flows only when every component is connected in one complete loop.",
+      duration: "6 min lesson",
+    },
+    ar: {
+      title: "Electric Circuit",
+      shortDescription:
+        "Explore a battery, wires, switch and bulb in a simple closed circuit.",
+      teaser: "Place a classroom circuit on your desk and follow the current path.",
+      focusTitle: "Closed Circuit",
+      focusCopy:
+        "See how current flows only when every component is connected in one complete loop.",
+      duration: "6 min lesson",
+    },
+  },
   "magnetic-fields": {
     en: {
       title: "Magnetic Fields",

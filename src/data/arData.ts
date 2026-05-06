@@ -3,6 +3,7 @@ import heartImage from "../assets/images/Coeur humain.jpg";
 import lungImage from "../assets/images/human lung.jpg";
 import magneticImage from "../assets/images/Magnetic Fields.png";
 import pendulumImage from "../assets/images/Simple Pendulum.png";
+import physicsImage from "../assets/images/physics.jpg";
 import solarImage from "../assets/images/Solar System Model.jpg";
 import tectonicsImage from "../assets/images/Tectonic Plates.jpg";
 
@@ -12,6 +13,7 @@ export type ExperienceArtworkId =
   | "heart"
   | "lung"
   | "solar"
+  | "circuit"
   | "magnetic"
   | "pendulum"
   | "civilizations"
@@ -134,6 +136,22 @@ export const experiences: Experience[] = [
     artwork: "solar",
     image: solarImage,
     featured: true,
+  },
+  {
+    id: "electric-circuit",
+    title: "Electric Circuit",
+    shortDescription:
+      "Explore a battery, wires, switch and bulb in a simple closed circuit.",
+    teaser: "Place a classroom circuit on your desk and follow the current path.",
+    focusTitle: "Closed Circuit",
+    focusCopy:
+      "See how current flows only when every component is connected in one complete loop.",
+    duration: "6 min lesson",
+    xp: 150,
+    subjectId: "physics",
+    artwork: "circuit",
+    image: physicsImage,
+    featured: false,
   },
   {
     id: "magnetic-fields",

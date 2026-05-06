@@ -22,53 +22,53 @@ const UI = {
 
 const STATUS_READY = "Pret : Scannez le QR Code";
 const STATUS_STABLE = "Modele stabilise";
-const STATUS_BREATHING = "Respiration en cours...";
+const STATUS_BREATHING = "Circuit allume...";
 
 const INFO_COPY = {
     fr: {
-        name: "Poumons humains",
-        info: "Observez la trachee, les bronches et le volume pulmonaire dans un modele 3D place sur votre QR code.",
-        hint: "Utilisez Rotate, Scale et Respire pour explorer le modele."
+        name: "Electric Circuit",
+        info: "Observez une pile, des fils, une ampoule et un interrupteur dans un circuit electrique simple.",
+        hint: "Utilisez Rotate, Scale et Allumer pour explorer le modele."
     },
     en: {
-        name: "Human lungs",
-        info: "Observe the trachea, bronchi and lung volume in a 3D model placed on your QR code.",
-        hint: "Use Rotate, Scale and Breathe to explore the model."
+        name: "Electric Circuit",
+        info: "Observe a battery, wires, a bulb and a switch in a simple electric circuit.",
+        hint: "Use Rotate, Scale and Power to explore the model."
     },
     ar: {
-        name: "Ø§Ù„Ø±Ø¦ØªØ§Ù†",
-        info: "Ø´Ø§Ù‡Ø¯ Ø§Ù„Ù‚ØµØ¨Ø© Ø§Ù„Ù‡ÙˆØ§Ø¦ÙŠØ© ÙˆØ§Ù„Ø´Ø¹Ø¨ Ø§Ù„Ù‡ÙˆØ§Ø¦ÙŠØ© ÙˆØ­Ø¬Ù… Ø§Ù„Ø±Ø¦ØªÙŠÙ† Ø¯Ø§Ø®Ù„ Ù†Ù…ÙˆØ°Ø¬ Ø«Ù„Ø§Ø«ÙŠ Ø§Ù„Ø£Ø¨Ø¹Ø§Ø¯ Ù…Ø«Ø¨Øª ÙÙˆÙ‚ Ø±Ù…Ø² QR.",
-        hint: "Ø§Ø³ØªØ®Ø¯Ù… Rotate Ùˆ Scale Ùˆ Respire Ù„Ø§Ø³ØªÙƒØ´Ø§Ù Ø§Ù„Ù†Ù…ÙˆØ°Ø¬."
+        name: "Electric Circuit",
+        info: "Observe a battery, wires, a bulb and a switch in a simple electric circuit.",
+        hint: "Use Rotate, Scale and Power to explore the model."
     }
 };
 
 const ORGAN_PARTS = [
     {
-        id: "right-lung",
-        label: "Poumon droit",
-        info: "Le poumon droit reçoit l'air riche en oxygène et aide le corps à rejeter le dioxyde de carbone.",
-        hint: "Il est un peu plus grand que le poumon gauche et comporte trois lobes.",
+        id: "battery",
+        label: "Pile",
+        info: "La pile fournit l'energie electrique au circuit.",
+        hint: "Elle cree une difference de potentiel entre ses deux bornes.",
         screenOffset: { x: -1, y: 0.12 }
     },
     {
-        id: "left-lung",
-        label: "Poumon gauche",
-        info: "Le poumon gauche participe aux échanges respiratoires comme le poumon droit.",
-        hint: "Il est plus petit car il laisse de la place au coeur.",
+        id: "bulb",
+        label: "Ampoule",
+        info: "L'ampoule transforme l'energie electrique en lumiere.",
+        hint: "Elle brille quand le circuit est ferme.",
         screenOffset: { x: 1, y: 0.12 }
     },
     {
-        id: "trachea",
-        label: "Trachée",
-        info: "La trachée est un tube qui transporte l'air depuis le nez et la bouche vers la poitrine.",
-        hint: "En bas, elle se divise en deux bronches qui entrent dans les poumons.",
+        id: "wires",
+        label: "Fils",
+        info: "Les fils conducteurs permettent au courant de circuler entre les composants.",
+        hint: "Ils relient la pile, l'interrupteur et l'ampoule.",
         screenOffset: { x: 0, y: -0.9 }
     },
     {
-        id: "bronchi",
-        label: "Bronches",
-        info: "Les bronches sont des conduits qui se ramifient dans les poumons pour distribuer l'air.",
-        hint: "Elles deviennent de plus en plus petites à l'intérieur des poumons.",
+        id: "switch",
+        label: "Interrupteur",
+        info: "L'interrupteur ouvre ou ferme le circuit.",
+        hint: "Circuit ferme : le courant passe. Circuit ouvert : il s'arrete.",
         screenOffset: { x: 0, y: -0.22 }
     }
 ];
@@ -94,7 +94,7 @@ let labelsVisible = true;
 
 let AR_SCALE = 0.12;
 const BUILD_VERSION = "20260505-3";
-const DEFAULT_MODEL_PATH = "./assets/realistic_human_lungs.glb";
+const DEFAULT_MODEL_PATH = "./assets/electric_circuit.glb";
 const MARKER_LOST_GRACE_FRAMES = 3;
 const INITIAL_CONFIRM_FRAMES = 6;
 const TRACKED_CONFIRM_FRAMES = 2;
@@ -154,7 +154,7 @@ function applyInfoCard() {
     const copy = getCopy();
 
     if (UI.cardTag) {
-        UI.cardTag.innerText = "MODELE BIOLOGIQUE";
+        UI.cardTag.innerText = "MODELE PHYSIQUE";
     }
 
     if (UI.partName) {
@@ -185,7 +185,7 @@ function setOrganInfo(index) {
     const part = ORGAN_PARTS[activeOrganIndex];
 
     if (UI.cardTag) {
-        UI.cardTag.innerText = "ORGANE SELECTIONNE";
+        UI.cardTag.innerText = "COMPOSANT SELECTIONNE";
     }
 
     if (UI.partName) {
@@ -393,7 +393,7 @@ function applyModelScale() {
 
 async function initProject() {
     applyInfoCard();
-    setStatus("Chargement des poumons...");
+    setStatus("Chargement du circuit...");
 
     try {
         const response = await fetch(withCacheBuster("./data.json"));
@@ -403,7 +403,7 @@ async function initProject() {
 
         const config = await response.json();
         AR_SCALE = config?.settings?.arScale || AR_SCALE;
-        const path = normalizeModelPath(config?.assets?.models?.lung?.path);
+        const path = normalizeModelPath(config?.assets?.models?.circuit?.path);
         startAR(path);
     } catch (error) {
         console.error("Config error:", error);
@@ -493,8 +493,111 @@ function setupThreeJS(modelPath) {
         setStatus(STATUS_READY);
     }, undefined, (err) => {
         console.error("Model error:", err);
-        setStatus("Erreur chargement modele");
+        mainModel = createFallbackCircuitModel();
+        prepareModel(mainModel);
+        arGroup.add(mainModel);
+        createOrganLabels();
+        setupInteraction();
+        setStatus("Modele local absent, circuit simple charge");
     });
+}
+
+function createCircuitMaterial(color, options = {}) {
+    return new THREE.MeshStandardMaterial({
+        color,
+        roughness: 0.42,
+        metalness: 0.12,
+        ...options
+    });
+}
+
+function createCircuitTube(points, radius, material) {
+    const curve = new THREE.CatmullRomCurve3(points.map((point) => new THREE.Vector3(point.x, point.y, point.z)));
+    return new THREE.Mesh(new THREE.TubeGeometry(curve, 48, radius, 18, false), material);
+}
+
+function createFallbackCircuitModel() {
+    const group = new THREE.Group();
+    const wireMaterial = createCircuitMaterial(0xffb13b, { emissive: 0x331600, emissiveIntensity: 0.35 });
+    const metalMaterial = createCircuitMaterial(0xd9e3ea, { metalness: 0.35 });
+    const batteryBody = createCircuitMaterial(0x263444);
+    const batteryTop = createCircuitMaterial(0xf0504d);
+    const batteryBottom = createCircuitMaterial(0x2e86de);
+    const bulbGlass = createCircuitMaterial(0xfff2b0, {
+        transparent: true,
+        opacity: 0.62,
+        emissive: 0xffc43b,
+        emissiveIntensity: 0.55
+    });
+    const baseMaterial = createCircuitMaterial(0x1f2933);
+
+    const base = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.08, 1.15), baseMaterial);
+    base.position.y = -0.22;
+    group.add(base);
+
+    const battery = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.55, 28), batteryBody);
+    battery.position.set(-0.58, 0.08, 0.08);
+    battery.rotation.z = Math.PI / 2;
+    group.add(battery);
+
+    const positive = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.165, 0.045, 28), batteryTop);
+    positive.position.set(-0.28, 0.08, 0.08);
+    positive.rotation.z = Math.PI / 2;
+    group.add(positive);
+
+    const negative = positive.clone();
+    negative.material = batteryBottom;
+    negative.position.x = -0.88;
+    group.add(negative);
+
+    const bulbBase = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.17, 0.16, 28), metalMaterial);
+    bulbBase.position.set(0.58, -0.02, 0.08);
+    group.add(bulbBase);
+
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 28), bulbGlass);
+    bulb.position.set(0.58, 0.2, 0.08);
+    group.add(bulb);
+
+    const filament = createCircuitTube([
+        { x: 0.48, y: 0.18, z: 0.08 },
+        { x: 0.53, y: 0.24, z: 0.08 },
+        { x: 0.58, y: 0.18, z: 0.08 },
+        { x: 0.63, y: 0.24, z: 0.08 },
+        { x: 0.68, y: 0.18, z: 0.08 }
+    ], 0.012, wireMaterial);
+    group.add(filament);
+
+    group.add(createCircuitTube([
+        { x: -0.28, y: 0.08, z: 0.08 },
+        { x: 0.02, y: 0.16, z: 0.32 },
+        { x: 0.38, y: 0.02, z: 0.2 },
+        { x: 0.5, y: -0.02, z: 0.08 }
+    ], 0.025, wireMaterial));
+
+    group.add(createCircuitTube([
+        { x: 0.68, y: -0.02, z: 0.08 },
+        { x: 0.88, y: -0.04, z: -0.2 },
+        { x: 0.42, y: -0.06, z: -0.42 },
+        { x: -0.28, y: -0.04, z: -0.36 },
+        { x: -0.88, y: 0.08, z: 0.08 }
+    ], 0.025, wireMaterial));
+
+    const switchBase = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.05, 0.18), metalMaterial);
+    switchBase.position.set(0.05, -0.13, -0.38);
+    group.add(switchBase);
+
+    const lever = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.035, 0.05), createCircuitMaterial(0xffd166));
+    lever.position.set(0.05, -0.07, -0.38);
+    lever.rotation.z = -0.22;
+    group.add(lever);
+
+    for (let index = 0; index < 7; index += 1) {
+        const spark = new THREE.Mesh(new THREE.SphereGeometry(0.025, 12, 12), wireMaterial);
+        spark.position.set(-0.18 + index * 0.13, 0.24 + Math.sin(index) * 0.04, 0.3 - index * 0.08);
+        group.add(spark);
+    }
+
+    return group;
 }
 
 function prepareModel(model) {

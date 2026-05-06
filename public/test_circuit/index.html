@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Poumons humains AR</title>
+    <title>Circuit electrique AR</title>
     <link rel="stylesheet" href="style.css?v=20260505-3">
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
@@ -17,12 +17,12 @@
     <div id="ui-layer">
         <div id="app-header">
             <span id="app-eyebrow">AR Learn live scan</span>
-            <div id="app-title">POUMONS HUMAINS</div>
+            <div id="app-title">CIRCUIT ELECTRIQUE</div>
         </div>
 
         <div id="status" class="solar-status glass">Initialisation...</div>
 
-        <div id="organ-labels" aria-label="Labels des organes du poumon"></div>
+        <div id="organ-labels" aria-label="Labels des composants du circuit"></div>
 
         <div id="side-menu" class="glass">
             <button class="menu-btn active" id="btn-rotate" type="button">
@@ -36,7 +36,7 @@
             <hr class="sep">
             <button class="menu-btn action-btn" id="btn-launch" type="button">
                 <span class="menu-icon">&#9654;</span>
-                <span class="label">Respire</span>
+                <span class="label">Allumer</span>
             </button>
             <button class="menu-btn active" id="btn-labels" type="button" aria-pressed="true">
                 <span class="menu-icon">L</span>
@@ -47,13 +47,13 @@
         <div id="info-card" class="glass info-card--visible">
             <div class="card-content">
                 <div class="text-area">
-                    <span class="card-tag" id="card-tag">MODELE BIOLOGIQUE</span>
-                    <h3 id="part-name">Poumons humains</h3>
+                    <span class="card-tag" id="card-tag">MODELE PHYSIQUE</span>
+                    <h3 id="part-name">Electric Circuit</h3>
                     <p id="part-info">
-                        Observez la trachee, les bronches et le volume pulmonaire dans un modele 3D place sur votre QR code.
+                        Observez une pile, des fils, une ampoule et un interrupteur dans un circuit electrique simple.
                     </p>
                     <span id="part-hint" class="card-hint">
-                        Utilisez Rotate, Scale et Respire pour explorer le modele.
+                        Utilisez Rotate, Scale et Allumer pour explorer le modele.
                     </span>
                 </div>
             </div>

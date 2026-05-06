@@ -13,6 +13,7 @@ import { useAuth } from "../auth/useAuth";
 import SceneArtwork from "../components/SceneArtwork";
 import { getExperienceById, getSubjectById } from "../data/arData";
 import { getExperienceCopy, getSubjectCopy } from "../i18n/appCopy";
+import CircuitArPage from "./CircuitArPage";
 import HeartArPage from "./HeartArPage";
 import LungArPage from "./LungArPage";
 import PendulumArPage from "./PendulumArPage";
@@ -94,6 +95,17 @@ const ViewerPage: React.FC = () => {
   if (experience.id === "simple-pendulum") {
     return (
       <PendulumArPage
+        experienceTitle={localizedExperience.title}
+        language={settings.language}
+        onBack={handleBack}
+        theme={settings.theme}
+      />
+    );
+  }
+
+  if (experience.id === "electric-circuit") {
+    return (
+      <CircuitArPage
         experienceTitle={localizedExperience.title}
         language={settings.language}
         onBack={handleBack}
