@@ -4,7 +4,7 @@
       "heart": {
         "name": "Human Heart",
         "path": "assets/human_heart.glb",
-        "scale": { "x": 1.15, "y": 1.15, "z": 1.15 },
+        "scale": { "x": 0.8, "y": 0.8, "z": 0.8 },
         "position": { "x": 0.5, "y": 0.55, "z": 0.0 },
         "rotation": { "x": 0.0, "y": 3.141592653589793, "z": 0.0 }
       }
@@ -29,7 +29,7 @@
     }
   },
   "settings": {
-    "arScale": 3.0,
+    "arScale": 2.4,
     "debugMode": false
   }
 }

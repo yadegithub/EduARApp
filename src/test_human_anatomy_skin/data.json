@@ -4,8 +4,8 @@
       "primary": {
         "name": "Human Skin",
         "path": "assets/human_anatomy_skin.glb",
-        "scale": { "x": 0.58, "y": 0.58, "z": 0.58 },
-        "position": { "x": 0.5, "y": 0.55, "z": 0.0 },
+        "scale": { "x": 0.46, "y": 0.46, "z": 0.46 },
+        "position": { "x": 0.0, "y": 0.0, "z": 0.0 },
         "rotation": { "x": 0.0, "y": 3.141592653589793, "z": 0.0 },
         "autoCenter": true
       }
@@ -84,6 +84,19 @@
   },
   "settings": {
     "arScale": 2.6,
+    "tracking": {
+      "markerLostGraceFrames": 3,
+      "trackingLerpAlpha": 0.28,
+      "trackingScaleLerpAlpha": 0.22,
+      "confirmFrames": 2,
+      "qrScanIntervalMs": 20,
+      "qrSearchIntervalMs": 36,
+      "positionDeadzone": 0.01,
+      "scaleDeadzone": 0.012,
+      "rotationDeadzoneRad": 0.02,
+      "fastFollowDistance": 0.08,
+      "fastFollowAlpha": 0.68
+    },
     "debugMode": false
   }
 }

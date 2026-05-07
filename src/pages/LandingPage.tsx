@@ -3,6 +3,8 @@ import { type MouseEvent, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import DashboardPhonePreview from "../components/DashboardPhonePreview";
 
+const HEADER_OFFSET = 104;
+
 const features = [
   {
     title: "Lecons en RA",
@@ -105,7 +107,13 @@ const LandingPage: React.FC = () => {
     }
 
     window.history.replaceState({}, "", `${location.pathname}#${sectionId}`);
-    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    const sectionTop =
+      section.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+
+    window.scrollTo({
+      top: Math.max(0, sectionTop),
+      behavior: "smooth",
+    });
   };
 
   const handleSectionLinkClick = (
@@ -129,7 +137,13 @@ const LandingPage: React.FC = () => {
     }
 
     const frameId = window.requestAnimationFrame(() => {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      const sectionTop =
+        section.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+
+      window.scrollTo({
+        top: Math.max(0, sectionTop),
+        behavior: "smooth",
+      });
     });
 
     return () => window.cancelAnimationFrame(frameId);
@@ -142,9 +156,9 @@ const LandingPage: React.FC = () => {
           <div className="pointer-events-none absolute left-0 top-24 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl animate-float-soft" />
           <div className="pointer-events-none absolute right-0 top-72 h-64 w-64 rounded-full bg-emerald-200/40 blur-3xl animate-float-soft" />
 
-          <div className="mx-auto max-w-6xl px-6 lg:px-8">
-            <header className="sticky top-0 z-20 -mx-6 border-b border-slate-200/80 bg-slate-50/80 px-6 backdrop-blur lg:-mx-8 lg:px-8 animate-fade-in">
-              <nav className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 py-4">
+          <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/80 bg-slate-50/88 backdrop-blur animate-fade-in">
+            <div className="mx-auto max-w-6xl px-6 lg:px-8">
+              <nav className="flex min-h-16 items-center justify-between gap-4 py-4">
                 <a
                   href={sectionHref("top")}
                   onClick={(event) => handleSectionLinkClick(event, "top")}
@@ -198,10 +212,12 @@ const LandingPage: React.FC = () => {
                   Se connecter
                 </Link>
               </nav>
-            </header>
+            </div>
+          </header>
 
+          <div className="mx-auto max-w-6xl px-6 pt-24 lg:px-8 lg:pt-28">
             <main id="top" className="pb-16">
-              <section className="grid gap-14 pb-12 pt-12 md:pb-16 md:pt-16 lg:min-h-[calc(100vh-5rem)] lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+              <section className="grid gap-14 pb-12 pt-6 md:pb-16 md:pt-10 lg:min-h-[calc(100vh-7rem)] lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
                 <div className="max-w-2xl animate-fade-up">
                   <span className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-medium text-slate-600 shadow-sm">
                     Plateforme educative en realite augmentee

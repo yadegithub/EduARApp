@@ -293,6 +293,10 @@ html[dir="rtl"] #side-menu {
     #info-card {
         width: min(88vw, 300px);
     }
+
+    #info-card.info-card--floating {
+        width: min(72vw, 260px);
+    }
 }
 
 @media (max-width: 600px) {
@@ -321,6 +325,10 @@ html[dir="rtl"] #side-menu {
         bottom: 12px;
         width: min(84vw, 220px);
         padding: 11px 12px;
+    }
+
+    #info-card.info-card--floating {
+        width: min(72vw, 220px);
     }
 
     .card-tag {
