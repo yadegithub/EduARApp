@@ -152,7 +152,7 @@ let labelsVisible = true;
 let isSoundPlaying = false;
 let isDragging = false;
 let prevPos = { x: 0, y: 0 };
-let arScale = 3.0;
+let arScale = 2.4;
 let animationFrameId = 0;
 let openCvCheckTimerId = 0;
 let isArInitialized = false;
@@ -176,14 +176,14 @@ const defaultConfig = {
             heart: {
                 path: HEART_MODEL_PATH,
                 position: { x: 0.5, y: 0.55, z: 0.0 },
-                scale: { x: 1.15, y: 1.15, z: 1.15 },
+                scale: { x: 0.8, y: 0.8, z: 0.8 },
                 rotation: DEFAULT_HEART_ROTATION
             }
         },
         audio: "assets/heartbeat.mp3"
     },
     settings: {
-        arScale: 3.0
+        arScale: 2.4
     }
 };
 
@@ -468,9 +468,9 @@ function initThree(config) {
                 modelPosition.z ?? 0
             );
             heartModel.scale.set(
-                modelScale.x ?? 1.15,
-                modelScale.y ?? 1.15,
-                modelScale.z ?? 1.15
+                modelScale.x ?? 0.8,
+                modelScale.y ?? 0.8,
+                modelScale.z ?? 0.8
             );
             heartModel.rotation.set(
                 modelRotation.x ?? DEFAULT_HEART_ROTATION.x,
