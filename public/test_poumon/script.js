@@ -1,7 +1,6 @@
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const languageParam = query.get("lang");
-const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
+const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
 
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
@@ -15,14 +14,10 @@ const UI = {
     card: document.getElementById("info-card"),
     cardTag: document.getElementById("card-tag"),
     labelsLayer: document.getElementById("organ-labels"),
-    labelToggle: document.getElementById("label-toggle"),
-    modelTitle: document.getElementById("model-title-pill"),
-    overviewCard: document.getElementById("overview-card"),
-    overviewTitle: document.getElementById("overview-title"),
-    overviewText: document.getElementById("overview-text"),
+    labelsButton: document.getElementById("btn-labels"),
     partName: document.getElementById("part-name"),
     partInfo: document.getElementById("part-info"),
-    partHint: document.getElementById("card-hint")
+    partHint: document.getElementById("part-hint")
 };
 
 const STATUS_READY = "Pret : Scannez le QR Code";
@@ -46,27 +41,6 @@ const INFO_COPY = {
         hint: "Ø§Ø³ØªØ®Ø¯Ù… Rotate Ùˆ Scale Ùˆ Respire Ù„Ø§Ø³ØªÙƒØ´Ø§Ù Ø§Ù„Ù†Ù…ÙˆØ°Ø¬."
     }
 };
-
-Object.assign(INFO_COPY.fr, {
-    title: "SYSTEME RESPIRATOIRE",
-    overviewTitle: "Poumons humains",
-    overviewText: "Un modele interactif qui montre les principaux organes respiratoires avec des notes guidees pour chaque structure.",
-    focusTag: "STRUCTURE RESPIRATOIRE"
-});
-
-Object.assign(INFO_COPY.en, {
-    title: "RESPIRATORY SYSTEM",
-    overviewTitle: "Human Lungs",
-    overviewText: "An interactive model that shows the main respiratory organs with guided notes for each structure.",
-    focusTag: "RESPIRATORY STRUCTURE"
-});
-
-Object.assign(INFO_COPY.ar, {
-    title: "RESPIRATORY SYSTEM",
-    overviewTitle: "Human Lungs",
-    overviewText: "An interactive model that shows the main respiratory organs with guided notes for each structure.",
-    focusTag: "RESPIRATORY STRUCTURE"
-});
 
 const ORGAN_PARTS = [
     {
@@ -119,14 +93,8 @@ let activeOrganIndex = -1;
 let labelsVisible = true;
 
 let AR_SCALE = 0.12;
-const BUILD_VERSION = "20260506-4";
+const BUILD_VERSION = "20260505-3";
 const DEFAULT_MODEL_PATH = "./assets/realistic_human_lungs.glb";
-const MAX_RENDER_PIXEL_RATIO = 1.25;
-const CAMERA_IDEAL_WIDTH = 960;
-const CAMERA_IDEAL_HEIGHT = 540;
-const CAMERA_IDEAL_FRAME_RATE = 24;
-const CAMERA_MAX_FRAME_RATE = 30;
-const SHOW_DEBUG_CAMERA_CANVAS = false;
 const MARKER_LOST_GRACE_FRAMES = 3;
 const INITIAL_CONFIRM_FRAMES = 6;
 const TRACKED_CONFIRM_FRAMES = 2;
@@ -185,20 +153,8 @@ function getCopy() {
 function applyInfoCard() {
     const copy = getCopy();
 
-    if (UI.modelTitle) {
-        UI.modelTitle.innerText = copy.title;
-    }
-
-    if (UI.overviewTitle) {
-        UI.overviewTitle.innerText = copy.overviewTitle;
-    }
-
-    if (UI.overviewText) {
-        UI.overviewText.innerText = copy.overviewText;
-    }
-
     if (UI.cardTag) {
-        UI.cardTag.innerText = copy.focusTag;
+        UI.cardTag.innerText = "MODELE BIOLOGIQUE";
     }
 
     if (UI.partName) {
@@ -214,18 +170,6 @@ function applyInfoCard() {
     }
 
     activeOrganIndex = -1;
-    if (UI.card) {
-        UI.card.classList.remove("info-card--visible", "info-card--selected");
-    }
-    updateOrganLabels();
-    positionInfoCard();
-}
-
-function hideSelectedInfoCard() {
-    activeOrganIndex = -1;
-    if (UI.card) {
-        UI.card.classList.remove("info-card--visible", "info-card--selected");
-    }
     updateOrganLabels();
     positionInfoCard();
 }
@@ -234,19 +178,18 @@ function setOrganInfo(index) {
     activeOrganIndex = activeOrganIndex === index ? -1 : index;
 
     if (activeOrganIndex < 0) {
-        hideSelectedInfoCard();
+        applyInfoCard();
         return;
     }
 
     const part = ORGAN_PARTS[activeOrganIndex];
-    const copy = getCopy();
 
     if (UI.cardTag) {
-        UI.cardTag.innerText = copy.focusTag;
+        UI.cardTag.innerText = "ORGANE SELECTIONNE";
     }
 
     if (UI.partName) {
-        UI.partName.innerText = part.label.toUpperCase();
+        UI.partName.innerText = part.label;
     }
 
     if (UI.partInfo) {
@@ -275,7 +218,7 @@ function createOrganLabels() {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "organ-label";
-        button.textContent = String(index + 1);
+        button.textContent = part.label;
         button.setAttribute("aria-label", part.label);
         button.setAttribute("aria-pressed", "false");
         button.addEventListener("click", (event) => {
@@ -302,8 +245,9 @@ function updateOrganLabels() {
         entry.button.setAttribute("aria-pressed", String(isActive));
     });
 
-    if (UI.labelToggle) {
-        UI.labelToggle.checked = labelsVisible;
+    if (UI.labelsButton) {
+        UI.labelsButton.classList.toggle("active", labelsVisible);
+        UI.labelsButton.setAttribute("aria-pressed", String(labelsVisible));
     }
 }
 
@@ -312,10 +256,6 @@ function positionOrganLabels() {
         organLabels.forEach((entry) => {
             entry.button.classList.remove("organ-label--visible");
         });
-        if (activeOrganIndex >= 0 || UI.card?.classList.contains("info-card--visible")) {
-            hideSelectedInfoCard();
-        }
-        syncFloatingUi(false);
         return;
     }
 
@@ -329,9 +269,7 @@ function positionOrganLabels() {
     const spread = clamp(Math.min(window.innerWidth, window.innerHeight) * 0.18, 82, 150);
     const sidePadding = Math.min(120, Math.max(76, window.innerWidth * 0.16));
 
-    let activeLabelIsVisible = false;
-
-    organLabels.forEach((entry, index) => {
+    organLabels.forEach((entry) => {
         const x = clamp(
             centerX + (entry.screenOffset.x * spread),
             sidePadding,
@@ -352,47 +290,7 @@ function positionOrganLabels() {
         entry.button.classList.toggle("organ-label--visible", isOnScreen);
         entry.button.style.left = `${x}px`;
         entry.button.style.top = `${y}px`;
-
-        if (index === activeOrganIndex) {
-            activeLabelIsVisible = isOnScreen;
-        }
     });
-
-    if (activeOrganIndex >= 0 && !activeLabelIsVisible) {
-        hideSelectedInfoCard();
-    }
-
-    positionTitlePill(centerX, centerY, spread, centerIsVisible);
-    syncFloatingUi(centerIsVisible);
-}
-
-function positionTitlePill(centerX, centerY, spread, isVisible) {
-    if (!UI.modelTitle) {
-        return;
-    }
-
-    if (!isVisible || !arGroup?.visible) {
-        UI.modelTitle.classList.remove("model-title-pill--visible");
-        return;
-    }
-
-    const pillWidth = UI.modelTitle.offsetWidth || 190;
-    const left = clamp(centerX - (pillWidth / 2), 18, window.innerWidth - pillWidth - 18);
-    const top = clamp(centerY - (spread * 1.55), 18, window.innerHeight - 96);
-
-    UI.modelTitle.style.left = `${left}px`;
-    UI.modelTitle.style.top = `${top}px`;
-    UI.modelTitle.classList.add("model-title-pill--visible");
-}
-
-function syncFloatingUi(isVisible) {
-    const shouldShow = Boolean(isVisible && arGroup?.visible);
-
-    if (UI.modelTitle && !shouldShow) {
-        UI.modelTitle.classList.remove("model-title-pill--visible");
-    }
-
-    void shouldShow;
 }
 
 function positionInfoCard() {
@@ -400,37 +298,12 @@ function positionInfoCard() {
         return;
     }
 
-    const selectedEntry = activeOrganIndex >= 0 ? organLabels[activeOrganIndex] : null;
-
-    if (!selectedEntry || !arGroup?.visible) {
-        UI.card.classList.remove("info-card--floating");
-        UI.card.style.left = "50%";
-        UI.card.style.top = "";
-        UI.card.style.right = "";
-        UI.card.style.bottom = window.innerWidth <= 600 ? "12px" : "18px";
-        UI.card.style.transform = "translateX(-50%)";
-        return;
-    }
-
-    const markerRect = selectedEntry.button.getBoundingClientRect();
-    const cardWidth = UI.card.offsetWidth || 300;
-    const cardHeight = UI.card.offsetHeight || 150;
-
-    let left = markerRect.right + 22;
-    if (left + cardWidth > window.innerWidth - 18) {
-        left = markerRect.left - cardWidth - 22;
-    }
-
-    let top = markerRect.top + (markerRect.height / 2) - (cardHeight / 2);
-    left = clamp(left, 18, window.innerWidth - cardWidth - 18);
-    top = clamp(top, 18, window.innerHeight - cardHeight - 18);
-
-    UI.card.classList.add("info-card--floating");
-    UI.card.style.left = `${left}px`;
-    UI.card.style.top = `${top}px`;
-    UI.card.style.right = "auto";
-    UI.card.style.bottom = "auto";
-    UI.card.style.transform = "none";
+    UI.card.classList.remove("info-card--floating");
+    UI.card.style.left = "50%";
+    UI.card.style.top = "";
+    UI.card.style.right = "";
+    UI.card.style.bottom = "18px";
+    UI.card.style.transform = "translateX(-50%)";
 }
 
 function setStatus(message) {
@@ -539,7 +412,6 @@ async function initProject() {
 }
 
 function startAR(modelPath) {
-    document.body.classList.remove("camera-ready");
     UI.video.muted = true;
     UI.video.autoplay = true;
     UI.video.playsInline = true;
@@ -548,18 +420,13 @@ function startAR(modelPath) {
     navigator.mediaDevices.getUserMedia({
         video: {
             facingMode: "environment",
-            width: { ideal: CAMERA_IDEAL_WIDTH },
-            height: { ideal: CAMERA_IDEAL_HEIGHT },
-            frameRate: {
-                ideal: CAMERA_IDEAL_FRAME_RATE,
-                max: CAMERA_MAX_FRAME_RATE
-            }
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
         }
     }).then(stream => {
         UI.video.srcObject = stream;
         UI.video.onloadedmetadata = async () => {
             await UI.video.play();
-            document.body.classList.add("camera-ready");
 
             const { width, height } = getVideoSize();
             UI.video.width = width;
@@ -590,18 +457,13 @@ function startAR(modelPath) {
 function setupThreeJS(modelPath) {
     const { width, height } = getVideoSize();
 
-    if (UI.canvasOutput) {
-        UI.canvasOutput.style.display = SHOW_DEBUG_CAMERA_CANVAS ? "block" : "none";
-    }
-
     renderer = new THREE.WebGLRenderer({
         canvas: UI.canvasThree,
         alpha: true,
-        antialias: window.matchMedia?.("(pointer: fine)")?.matches ?? false,
-        powerPreference: "low-power"
+        antialias: true
     });
     renderer.setSize(width, height, false);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_RENDER_PIXEL_RATIO));
+    renderer.setPixelRatio(window.devicePixelRatio || 1);
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
@@ -723,9 +585,9 @@ function setupControls() {
         };
     }
 
-    if (UI.labelToggle) {
-        UI.labelToggle.onchange = (event) => {
-            labelsVisible = event.target.checked;
+    if (UI.labelsButton) {
+        UI.labelsButton.onclick = () => {
+            labelsVisible = !labelsVisible;
             if (!labelsVisible && activeOrganIndex >= 0) {
                 activeOrganIndex = -1;
                 applyInfoCard();
@@ -973,9 +835,7 @@ function processFrame() {
     }
 
     cap.read(src);
-    if (SHOW_DEBUG_CAMERA_CANVAS) {
-        cv.imshow("canvasOutput", src);
-    }
+    cv.imshow("canvasOutput", src);
 
     const points = new cv.Mat();
     let markerFound = false;
@@ -1074,12 +934,12 @@ function fitToScreen() {
     const { width, height } = getVideoSize();
     const scale = Math.max(window.innerWidth / width, window.innerHeight / height);
 
-    [UI.video, UI.canvasOutput, UI.canvasThree].forEach(layer => {
-        layer.style.width = `${width * scale}px`;
-        layer.style.height = `${height * scale}px`;
-        layer.style.left = "50%";
-        layer.style.top = "50%";
-        layer.style.transform = "translate(-50%, -50%)";
+    [UI.canvasOutput, UI.canvasThree].forEach(canvas => {
+        canvas.style.width = `${width * scale}px`;
+        canvas.style.height = `${height * scale}px`;
+        canvas.style.left = "50%";
+        canvas.style.top = "50%";
+        canvas.style.transform = "translate(-50%, -50%)";
     });
 
     positionOrganLabels();
