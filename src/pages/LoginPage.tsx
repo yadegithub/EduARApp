@@ -26,6 +26,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LoginPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation<LoginLocationState>();
+  const searchParams = new URLSearchParams(location.search);
   const {
     authMode,
     authNotice,
@@ -33,17 +34,19 @@ const LoginPage: React.FC = () => {
     isReady,
     login,
     logout,
-    requestPasswordReset,
     user,
   } = useAuth();
   const { settings } = useAppSettings();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
-  const [resetFeedback, setResetFeedback] = useState("");
-  const [isResetting, setIsResetting] = useState(false);
+  const [resetFeedback, setResetFeedback] = useState(
+    searchParams.get("reset") === "success"
+      ? "Password updated. Sign in with your new password."
+      : "",
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isArabic = settings.language === "ar";
   const copy = isArabic
@@ -142,27 +145,13 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handlePasswordReset = async () => {
-    if (!emailPattern.test(email.trim())) {
-      setResetFeedback("");
-      setError(copy.invalidEmail);
-      return;
-    }
-
-    try {
-      setIsResetting(true);
-      setError("");
-      setResetFeedback("");
-      await requestPasswordReset(email.trim());
-      setResetFeedback(copy.resetSent);
-    } catch (resetError) {
-      setResetFeedback("");
-      setError(
-        resetError instanceof Error ? resetError.message : copy.signInError,
-      );
-    } finally {
-      setIsResetting(false);
-    }
+  const goToResetPassword = () => {
+    const nextEmail = email.trim();
+    history.push(
+      nextEmail
+        ? `/reset-password?email=${encodeURIComponent(nextEmail)}`
+        : "/reset-password",
+    );
   };
 
   const useDemoAccess = () => {
@@ -306,10 +295,9 @@ const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     className="auth-link-button"
-                    onClick={handlePasswordReset}
-                    disabled={isResetting}
+                    onClick={goToResetPassword}
                   >
-                    {isResetting ? copy.sendingReset : copy.forgotPassword}
+                    {copy.forgotPassword}
                   </button>
                 </div>
               ) : null}

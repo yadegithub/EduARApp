@@ -6,6 +6,7 @@ import AppTabs from "./components/AppTabs";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import RegisterPage from "./pages/RegisterPage";
 import SplashPage from "./pages/SplashPage";
 import ViewerPage from "./pages/ViewerPage";
@@ -39,6 +40,9 @@ const App: React.FC = () => (
             </Route>
             <Route exact path="/login">
               <LoginPage />
+            </Route>
+            <Route exact path="/reset-password">
+              <ResetPasswordPage />
             </Route>
             <Route exact path="/register">
               <RegisterPage />

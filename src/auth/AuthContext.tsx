@@ -11,6 +11,7 @@ import {
   findAccountByEmail,
 } from "./accountStore";
 import {
+  confirmPasswordResetWithFirebase,
   isFirebaseAuthConfigured,
   loginWithFirebase,
   refreshFirebaseSession,
@@ -18,6 +19,7 @@ import {
   sendPasswordResetEmailWithFirebase,
   shouldRefreshSession,
   type FirebaseSession,
+  verifyPasswordResetCodeWithFirebase,
 } from "./firebaseAuth";
 import { ensureUserProgressProfile } from "../profile/userProgressStore";
 
@@ -316,6 +318,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     throw new Error(LOCAL_MODE_NOTICE);
   };
 
+  const verifyPasswordResetCode = async (code: string) => {
+    if (authMode === "firebase") {
+      return verifyPasswordResetCodeWithFirebase(code);
+    }
+
+    throw new Error(LOCAL_MODE_NOTICE);
+  };
+
+  const confirmPasswordReset = async (code: string, newPassword: string) => {
+    if (authMode === "firebase") {
+      await confirmPasswordResetWithFirebase(code, newPassword);
+      return;
+    }
+
+    throw new Error(LOCAL_MODE_NOTICE);
+  };
+
   const register = async ({
     email,
     name,
@@ -367,11 +386,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         authNotice: authMode === "local" ? LOCAL_MODE_NOTICE : "",
         isAuthenticated: Boolean(session?.user),
         isReady,
+        confirmPasswordReset,
         login,
         requestPasswordReset,
         register,
         logout,
         user: session?.user ?? null,
+        verifyPasswordResetCode,
       }}
     >
       {children}

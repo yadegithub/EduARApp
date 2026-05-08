@@ -103,6 +103,19 @@ const mapPasswordResetError = (errorCode: string | undefined) => {
   }
 };
 
+const mapPasswordResetCodeError = (errorCode: string | undefined) => {
+  switch (errorCode) {
+    case "EXPIRED_OOB_CODE":
+      return "This reset link has expired. Request a new one.";
+    case "INVALID_OOB_CODE":
+      return "This reset link is invalid. Request a new one.";
+    case "MISSING_OOB_CODE":
+      return "This reset link is missing or invalid.";
+    default:
+      return mapFirebaseError(errorCode);
+  }
+};
+
 const parseFirebaseResponse = async <T>(response: Response): Promise<T> => {
   const payload = (await response.json()) as T & FirebaseErrorResponse;
 
@@ -171,6 +184,14 @@ export const loginWithFirebase = async ({
   return buildSession(response, profileName);
 };
 
+const getResetPasswordPageUrl = () => {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  return `${window.location.origin}/reset-password`;
+};
+
 export const sendPasswordResetEmailWithFirebase = async (email: string) => {
   if (!FIREBASE_API_KEY) {
     throw new Error(
@@ -184,6 +205,8 @@ export const sendPasswordResetEmailWithFirebase = async (email: string) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      canHandleCodeInApp: true,
+      continueUrl: getResetPasswordPageUrl(),
       email: email.trim(),
       requestType: "PASSWORD_RESET",
     }),
@@ -194,6 +217,60 @@ export const sendPasswordResetEmailWithFirebase = async (email: string) => {
   if (!response.ok) {
     throw new Error(mapPasswordResetError(payload.error?.message));
   }
+};
+
+interface FirebasePasswordResetResponse extends FirebaseErrorResponse {
+  email?: string;
+  requestType?: string;
+}
+
+const runPasswordResetAction = async (
+  payload: Record<string, string>,
+): Promise<FirebasePasswordResetResponse> => {
+  if (!FIREBASE_API_KEY) {
+    throw new Error(
+      "Firebase auth is not configured yet. Add VITE_FIREBASE_API_KEY to use real auth.",
+    );
+  }
+
+  const response = await fetch(getFirebaseEndpoint("accounts:resetPassword"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const responsePayload =
+    (await response.json()) as FirebasePasswordResetResponse;
+
+  if (!response.ok) {
+    throw new Error(mapPasswordResetCodeError(responsePayload.error?.message));
+  }
+
+  return responsePayload;
+};
+
+export const verifyPasswordResetCodeWithFirebase = async (oobCode: string) => {
+  const response = await runPasswordResetAction({
+    oobCode,
+  });
+
+  if (!response.email) {
+    throw new Error("Unable to verify this reset link.");
+  }
+
+  return response.email;
+};
+
+export const confirmPasswordResetWithFirebase = async (
+  oobCode: string,
+  newPassword: string,
+) => {
+  await runPasswordResetAction({
+    newPassword,
+    oobCode,
+  });
 };
 
 export const registerWithFirebase = async ({

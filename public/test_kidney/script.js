@@ -27,16 +27,17 @@ window.AR_VIEWER_BOOTSTRAP = {
             arScale: 2.6,
             tracking: {
                 markerLostGraceFrames: 3,
-                trackingLerpAlpha: 0.26,
-                trackingScaleLerpAlpha: 0.22,
-                confirmFrames: 2,
-                qrScanIntervalMs: 20,
-                qrSearchIntervalMs: 40,
-                positionDeadzone: 0.02,
-                scaleDeadzone: 0.018,
-                rotationDeadzoneRad: 0.03,
-                fastFollowDistance: 0.12,
-                fastFollowAlpha: 0.62
+                trackingLerpAlpha: 0.2,
+                trackingScaleLerpAlpha: 0.18,
+                confirmFrames: 3,
+                qrScanIntervalMs: 24,
+                qrSearchIntervalMs: 44,
+                positionDeadzone: 0.035,
+                scaleDeadzone: 0.028,
+                rotationDeadzoneRad: 0.05,
+                fastFollowDistance: 0.18,
+                fastFollowAlpha: 0.5,
+                stabilityLerpAlpha: 0.14
             }
         }
     }
@@ -55,6 +56,7 @@ const DEFAULT_MODEL_ROTATION = BOOT.defaultModelRotation ?? {
 const MARKER_LOST_GRACE_FRAMES = 12;
 const TRACKING_LERP_ALPHA = 0.18;
 const TRACKING_SCALE_LERP_ALPHA = 0.12;
+const TRACKING_STABILITY_ALPHA = 0.14;
 const CONFIRM_FRAMES = 3;
 const MIN_QR_AREA_RATIO = 0.008;
 const MIN_QR_EDGE = 48;
@@ -213,6 +215,7 @@ let scaleDeadzone = 0;
 let rotationDeadzoneRad = 0;
 let fastFollowDistance = 0;
 let fastFollowAlpha = TRACKING_LERP_ALPHA;
+let trackingStabilityAlpha = TRACKING_STABILITY_ALPHA;
 let animationFrameId = 0;
 let openCvCheckTimerId = 0;
 let isArInitialized = false;
@@ -232,6 +235,10 @@ const trackedMatrix = new THREE.Matrix4();
 const trackedPosition = new THREE.Vector3();
 const trackedQuaternion = new THREE.Quaternion();
 const trackedScale = new THREE.Vector3();
+const filteredTrackedPosition = new THREE.Vector3();
+const filteredTrackedQuaternion = new THREE.Quaternion();
+const filteredTrackedScale = new THREE.Vector3();
+let hasFilteredTrackingPose = false;
 
 const baseDefaultConfig = {
     assets: {
@@ -289,7 +296,8 @@ const baseDefaultConfig = {
             scaleDeadzone: 0,
             rotationDeadzoneRad: 0,
             fastFollowDistance: 0,
-            fastFollowAlpha: TRACKING_LERP_ALPHA
+            fastFollowAlpha: TRACKING_LERP_ALPHA,
+            stabilityLerpAlpha: TRACKING_STABILITY_ALPHA
         }
     }
 };
@@ -495,6 +503,16 @@ function applyTrackingSettings(config) {
         Math.max(
             trackingLerpAlpha,
             Number(runtimeTracking.fastFollowAlpha ?? trackingLerpAlpha)
+        )
+    );
+    trackingStabilityAlpha = Math.min(
+        1,
+        Math.max(
+            0.01,
+            Number(
+                runtimeTracking.stabilityLerpAlpha ??
+                    TRACKING_STABILITY_ALPHA
+            )
         )
     );
 }
@@ -1261,18 +1279,68 @@ function runQrDetection() {
                 );
                 trackedScale.setScalar(uniformTrackedScale);
 
+                if (!hasFilteredTrackingPose) {
+                    filteredTrackedPosition.copy(trackedPosition);
+                    filteredTrackedQuaternion.copy(trackedQuaternion);
+                    filteredTrackedScale.copy(trackedScale);
+                    hasFilteredTrackingPose = true;
+                } else {
+                    const filteredPositionDistance =
+                        filteredTrackedPosition.distanceTo(trackedPosition);
+                    const filteredRotationDistance =
+                        filteredTrackedQuaternion.angleTo(trackedQuaternion);
+                    const filteredScaleDistance = Math.abs(
+                        filteredTrackedScale.x - trackedScale.x
+                    );
+                    const stabilityFollowAlpha =
+                        fastFollowDistance > 0 &&
+                        filteredPositionDistance > fastFollowDistance
+                            ? fastFollowAlpha
+                            : trackingStabilityAlpha;
+
+                    if (filteredPositionDistance > positionDeadzone * 0.5) {
+                        filteredTrackedPosition.lerp(
+                            trackedPosition,
+                            stabilityFollowAlpha
+                        );
+                    }
+
+                    if (
+                        filteredRotationDistance >
+                        Math.max(rotationDeadzoneRad * 0.5, 0.01)
+                    ) {
+                        filteredTrackedQuaternion.slerp(
+                            trackedQuaternion,
+                            stabilityFollowAlpha
+                        );
+                    }
+
+                    if (
+                        filteredScaleDistance >
+                        Math.max(scaleDeadzone * 0.5, 0.006)
+                    ) {
+                        filteredTrackedScale.lerp(
+                            trackedScale,
+                            Math.min(
+                                stabilityFollowAlpha,
+                                trackingScaleLerpAlpha
+                            )
+                        );
+                    }
+                }
+
                 if (!hasTrackingPose) {
-                    arGroup.position.copy(trackedPosition);
-                    arGroup.quaternion.copy(trackedQuaternion);
-                    arGroup.scale.copy(trackedScale);
+                    arGroup.position.copy(filteredTrackedPosition);
+                    arGroup.quaternion.copy(filteredTrackedQuaternion);
+                    arGroup.scale.copy(filteredTrackedScale);
                     hasTrackingPose = true;
                 } else {
                     const positionDistance =
-                        arGroup.position.distanceTo(trackedPosition);
+                        arGroup.position.distanceTo(filteredTrackedPosition);
                     const rotationDistance =
-                        arGroup.quaternion.angleTo(trackedQuaternion);
+                        arGroup.quaternion.angleTo(filteredTrackedQuaternion);
                     const scaleDistance = Math.abs(
-                        arGroup.scale.x - trackedScale.x
+                        arGroup.scale.x - filteredTrackedScale.x
                     );
                     const followAlpha =
                         fastFollowDistance > 0 &&
@@ -1281,19 +1349,22 @@ function runQrDetection() {
                             : trackingLerpAlpha;
 
                     if (positionDistance > positionDeadzone) {
-                        arGroup.position.lerp(trackedPosition, followAlpha);
+                        arGroup.position.lerp(
+                            filteredTrackedPosition,
+                            followAlpha
+                        );
                     }
 
                     if (rotationDistance > rotationDeadzoneRad) {
                         arGroup.quaternion.slerp(
-                            trackedQuaternion,
+                            filteredTrackedQuaternion,
                             followAlpha
                         );
                     }
 
                     if (scaleDistance > scaleDeadzone) {
                         arGroup.scale.lerp(
-                            trackedScale,
+                            filteredTrackedScale,
                             trackingScaleLerpAlpha
                         );
                     }
@@ -1317,6 +1388,7 @@ function runQrDetection() {
         } else {
             arGroup.visible = false;
             hasTrackingPose = false;
+            hasFilteredTrackingPose = false;
             lostMarkerFrames = 0;
         }
     }
@@ -1425,6 +1497,7 @@ function cleanup() {
     focusedPartIndex = -1;
     lostMarkerFrames = 0;
     hasTrackingPose = false;
+    hasFilteredTrackingPose = false;
     hasLiveMarkerDetection = false;
     isModelMounted = false;
     resetDetectionConfidence();

@@ -86,16 +86,17 @@
     "arScale": 2.6,
     "tracking": {
       "markerLostGraceFrames": 3,
-      "trackingLerpAlpha": 0.26,
-      "trackingScaleLerpAlpha": 0.22,
-      "confirmFrames": 2,
-      "qrScanIntervalMs": 20,
-      "qrSearchIntervalMs": 40,
-      "positionDeadzone": 0.02,
-      "scaleDeadzone": 0.018,
-      "rotationDeadzoneRad": 0.03,
-      "fastFollowDistance": 0.12,
-      "fastFollowAlpha": 0.62
+      "trackingLerpAlpha": 0.2,
+      "trackingScaleLerpAlpha": 0.18,
+      "confirmFrames": 3,
+      "qrScanIntervalMs": 24,
+      "qrSearchIntervalMs": 44,
+      "positionDeadzone": 0.035,
+      "scaleDeadzone": 0.028,
+      "rotationDeadzoneRad": 0.05,
+      "fastFollowDistance": 0.18,
+      "fastFollowAlpha": 0.5,
+      "stabilityLerpAlpha": 0.14
     },
     "debugMode": false
   }

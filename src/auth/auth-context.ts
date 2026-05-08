@@ -27,10 +27,12 @@ export interface AuthContextValue {
   isAuthenticated: boolean;
   isReady: boolean;
   login: (payload: LoginPayload) => Promise<AuthUser>;
+  confirmPasswordReset: (code: string, newPassword: string) => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<AuthUser>;
   logout: () => void;
   user: AuthUser | null;
+  verifyPasswordResetCode: (code: string) => Promise<string>;
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
