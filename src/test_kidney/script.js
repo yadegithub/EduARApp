@@ -1,5 +1,5 @@
 window.AR_VIEWER_BOOTSTRAP = {
-    defaultModelPath: "assets/kidney.glb",
+    defaultModelPath: "kidney_with_labels.glb",
     defaultTitle: "HUMAN KIDNEY",
     defaultStatusLoading: "Loading human kidney model...",
     defaultStatusTracking: "Human kidney placed",
@@ -15,7 +15,7 @@ window.AR_VIEWER_BOOTSTRAP = {
             models: {
                 primary: {
                     name: "Human Kidney",
-                    path: "assets/kidney.glb",
+                    path: "assets/kidney_with_labels.glb",
                     scale: { x: 0.16, y: 0.16, z: 0.16 },
                     position: { x: 0.0, y: 0.0, z: 0.0 },
                     rotation: { x: 0.0, y: Math.PI, z: 0.0 },

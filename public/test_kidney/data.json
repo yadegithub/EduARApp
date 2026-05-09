@@ -3,7 +3,7 @@
     "models": {
       "primary": {
         "name": "Human Kidney",
-        "path": "assets/kidney.glb",
+        "path": "assets/kidney_with_labels.glb",
         "scale": { "x": 0.16, "y": 0.16, "z": 0.16 },
         "position": { "x": 0.0, "y": 0.0, "z": 0.0 },
         "rotation": { "x": 0.0, "y": 3.141592653589793, "z": 0.0 },
