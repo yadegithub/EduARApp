@@ -8,8 +8,8 @@ document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
 
 const MODEL_PATH = "assets/solar_system.glb";
 const DEFAULT_ROTATION = { x: 0, y: 0, z: 0 };
-const LOST_GRACE_FRAMES = 20;
-const TRACK_ALPHA = 0.58;
+const LOST_GRACE_FRAMES = 25;
+const TRACK_ALPHA = 0.12;
 const CONFIRM_FRAMES = 2;
 const MIN_QR_AREA_RATIO = 0.016;
 const MIN_QR_EDGE = 70;
@@ -264,6 +264,6 @@ const defaultConfig = {
     },
   },
   settings: {
-    arScale: 1.75,
+    arScale: 2.2,
   },
 };
