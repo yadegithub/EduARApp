@@ -172,7 +172,7 @@ const DashboardPage: React.FC = () => {
             <div className="brand-lockup">
               <div className="brand-copy">
                 <span className="brand-copy__eyebrow">{copy.eyebrow}</span>
-                <strong>AR Learn</strong>
+                <strong>EduAR</strong>
               </div>
             </div>
 

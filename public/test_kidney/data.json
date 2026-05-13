@@ -42,7 +42,7 @@
     },
     "ui": {
       "en": {
-        "appEyebrow": "AR Learn live scan",
+        "appEyebrow": "EduAR live scan",
         "appTitle": "HUMAN KIDNEY",
         "statusLoading": "Loading human kidney model...",
         "statusTracking": "Human kidney placed",

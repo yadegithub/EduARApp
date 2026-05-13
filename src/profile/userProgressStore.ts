@@ -13,7 +13,7 @@ import {
 } from "../data/arData";
 
 const USER_PROGRESS_KEY = "arlearn.user-progress";
-const DEMO_EMAIL = "sara@arlearn.app";
+const DEMO_EMAIL = "sara@eduar.app";
 
 const subjectBadgeMap: Record<SubjectId, string> = {
   biology: "bio",
@@ -119,7 +119,7 @@ const createStarterProfile = (user: AuthUser): UserProgressProfile => {
       {
         id: "account-created",
         title: "Account created",
-        description: `${firstName}, your AR Learn profile is ready for its first lesson.`,
+        description: `${firstName}, your EduAR profile is ready for its first lesson.`,
         time: formatDateLabel(new Date()),
       },
     ],

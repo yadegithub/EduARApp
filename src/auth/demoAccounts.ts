@@ -6,7 +6,7 @@ interface DemoAccount extends AuthUser {
 
 export const demoAccounts: DemoAccount[] = [
   {
-    email: "sarah@arlearn.app",
+    email: "sarah@eduar.app",
     name: "Sarah Jones",
     password: "Learn123!",
     role: "Student",

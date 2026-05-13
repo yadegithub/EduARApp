@@ -160,7 +160,7 @@ if (currentLanguage === "ar") {
 }
 
 const copyEn = {
-    appEyebrow: "AR Learn live scan",
+    appEyebrow: "EduAR live scan",
     appTitle: "HUMAN HEART",
     rotate: "Rotate",
     scale: "Scale",
@@ -388,7 +388,7 @@ function applyCopy() {
     if (UI.overviewText) {
         UI.overviewText.textContent = copy.overviewText;
     }
-    document.title = `AR Learn - ${copy.appTitle}`;
+    document.title = `EduAR - ${copy.appTitle}`;
     updateInfoCard();
     positionInfoCard();
     setStatus(copy.statusStarting);

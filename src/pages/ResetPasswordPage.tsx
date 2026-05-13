@@ -255,7 +255,7 @@ const ResetPasswordPage: React.FC = () => {
               <div className="brand-hero brand-hero--login">
                 <BrandMark className="brand-mark--hero" />
                 <div className="brand-hero__copy">
-                  <strong>AR Learn</strong>
+                  <strong>EduAR</strong>
                   <p>
                     {isCodeMode
                       ? copy.codeSubtitle

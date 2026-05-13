@@ -103,7 +103,7 @@ const defaultAnatomyParts = [
 }));
 
 const defaultCopy = {
-    appEyebrow: "AR Learn live scan",
+    appEyebrow: "EduAR live scan",
     appTitle: "CASTLE OF CONSUEGRA",
     rotate: "Rotate",
     scale: "Scale",
@@ -217,7 +217,7 @@ const defaultConfig = {
         },
         ui: {
             en: {
-                appEyebrow: "AR Learn live scan",
+                appEyebrow: "EduAR live scan",
                 appTitle: "CASTLE OF CONSUEGRA",
                 rotate: "Rotate",
                 scale: "Scale",
@@ -536,7 +536,7 @@ function applyCopy() {
         UI.collisionLabel.textContent = copy.launchCollision;
     }
     UI.labelsLabel.textContent = copy.labels;
-    document.title = `AR Learn - ${copy.appTitle}`;
+    document.title = `EduAR - ${copy.appTitle}`;
     updateInfoCard();
     positionInfoCard();
     setStatus(copy.statusStarting);

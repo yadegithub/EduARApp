@@ -97,7 +97,7 @@ function deepMerge(baseValue, overrideValue) {
 }
 
 const genericDefaultCopy = {
-    appEyebrow: "AR Learn live scan",
+    appEyebrow: "EduAR live scan",
     appTitle: BOOT.defaultTitle ?? "MODEL EXPERIENCE",
     rotate: "Rotate",
     scale: "Scale",
@@ -604,7 +604,7 @@ function applyCopy() {
     UI.rotateLabel.textContent = copy.rotate;
     UI.scaleLabel.textContent = copy.scale;
     UI.labelsLabel.textContent = copy.labels;
-    document.title = `AR Learn - ${copy.appTitle}`;
+    document.title = `EduAR - ${copy.appTitle}`;
     updateInfoCard();
     positionInfoCard();
     setStatus(copy.statusStarting);

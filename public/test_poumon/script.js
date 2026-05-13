@@ -240,7 +240,7 @@ function applyInfoCard() {
             labels: "Labels On/Off"
         },
         en: {
-            eyebrow: "AR Learn live scan",
+            eyebrow: "EduAR live scan",
             appTitle: "HUMAN LUNGS",
             rotate: "Rotate",
             scale: "Scale",

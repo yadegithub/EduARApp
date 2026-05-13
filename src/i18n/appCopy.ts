@@ -488,14 +488,14 @@ export const getAchievementCopy = (
     return language === "ar"
       ? {
           title: "تم إنشاء الحساب",
-          description: `${firstName}، ملفك في AR Learn جاهز لأول درس.`,
+          description: `${firstName}، ملفك في EduAR جاهز لأول درس.`,
           time: formatDateLabel(achievement.time, language),
         }
       : {
           title: "Account created",
           description:
             achievement.description ||
-            `${firstName}, your AR Learn profile is ready for its first lesson.`,
+            `${firstName}, your EduAR profile is ready for its first lesson.`,
           time: formatDateLabel(achievement.time, language),
         };
   }

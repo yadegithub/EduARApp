@@ -185,7 +185,7 @@ const LandingPage: React.FC = () => {
                   onClick={(event) => handleSectionLinkClick(event, "top")}
                   className="landing-brand text-lg font-semibold tracking-tight text-slate-950 transition hover:text-slate-700"
                 >
-                  AR Learn
+                  EduAR
                 </a>
 
                 <div className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
@@ -476,7 +476,7 @@ const LandingPage: React.FC = () => {
                     <div className="flex flex-1 items-center justify-center py-8">
                       <img
                         src={DEMO_QR_CODE_URL}
-                        alt="QR code de demonstration AR Learn"
+                        alt="QR code de demonstration EduAR"
                         className="mx-auto h-60 w-60 rounded-[2rem] border border-slate-200 bg-white object-contain p-5 shadow-inner sm:h-64 sm:w-64"
                       />
                     </div>

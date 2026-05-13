@@ -88,7 +88,7 @@ const COPY = currentLanguage === "ar"
         launch: "تشغيل"
     }
     : {
-        appEyebrow: "AR Learn live scan",
+        appEyebrow: "EduAR live scan",
         appTitle: "SIMPLE PENDULUM",
         cardHint: "Touch a side ball or use Launch to start the motion.",
         cardInfo: "This model illustrates conservation of momentum and energy. When one ball collides, the impulse travels through the still balls and exits on the other side.",
@@ -492,7 +492,7 @@ function applyLocalizedCopy() {
     UI.cardTag.textContent = COPY.cardTag;
     UI.partInfo.textContent = COPY.cardInfo;
     UI.partName.textContent = COPY.cardName;
-    document.title = `AR Learn - ${COPY.appTitle}`;
+    document.title = `EduAR - ${COPY.appTitle}`;
 }
 
 function setupInteraction() {

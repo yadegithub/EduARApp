@@ -42,7 +42,7 @@
     },
     "ui": {
       "en": {
-        "appEyebrow": "AR Learn live scan",
+        "appEyebrow": "EduAR live scan",
         "appTitle": "HUMAN SKIN",
         "statusLoading": "Loading human skin model...",
         "statusTracking": "Human skin placed",

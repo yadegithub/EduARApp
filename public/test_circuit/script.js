@@ -210,7 +210,7 @@ function applyInfoCard() {
             modelTag: "نموذج فيزيائي"
         }
         : {
-            eyebrow: "AR Learn live scan",
+            eyebrow: "EduAR live scan",
             appTitle: "ELECTRIC CIRCUIT",
             rotate: "Rotate",
             scale: "Scale",

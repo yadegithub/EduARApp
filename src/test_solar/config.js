@@ -214,7 +214,7 @@ const DIRECT_PLANET_SCALE_FACTORS = {
 };
 
 const copyEn = {
-  appEyebrow: "AR Learn live scan",
+  appEyebrow: "EduAR live scan",
   appTitle: "SOLAR SYSTEM",
   rotate: "Rotate",
   scale: "Scale",

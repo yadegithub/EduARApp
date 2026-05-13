@@ -42,7 +42,7 @@
     },
     "ui": {
       "en": {
-        "appEyebrow": "AR Learn live scan",
+        "appEyebrow": "EduAR live scan",
         "appTitle": "FEMALE REPRODUCTIVE SYSTEM",
         "statusLoading": "Loading reproductive system model...",
         "statusTracking": "Reproductive system placed",

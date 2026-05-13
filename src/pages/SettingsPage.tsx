@@ -131,7 +131,7 @@ const SettingsPage: React.FC = () => {
             <p>{copy.intro}</p>
             <div className="settings-user-chip">
               <strong>{user?.name ?? copy.signedInUser}</strong>
-              <span>{user?.email ?? "guest@arlearn.app"}</span>
+              <span>{user?.email ?? "guest@eduar.app"}</span>
             </div>
           </section>
 
