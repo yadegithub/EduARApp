@@ -7,7 +7,7 @@ const HEADER_OFFSET = 104;
 const DEMO_QR_CODE_URL = "/site-demo/demo-qr.png";
 const DEMO_URL = "https://4c69zz.csb.app/";
 const APK_DOWNLOAD_URL =
-  "https://github.com/yadegithub/EduARApp/releases/latest/download/eduar-release.apk";
+  "https://github.com/yadegithub/EduARApp/releases/download/v1.0.0/EduAR_App.apk";
 
 const features = [
   {
