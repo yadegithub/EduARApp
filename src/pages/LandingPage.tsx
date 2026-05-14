@@ -4,9 +4,10 @@ import { Link, useLocation } from "react-router-dom";
 import DashboardPhonePreview from "../components/DashboardPhonePreview";
 
 const HEADER_OFFSET = 104;
-const DEMO_VIDEO_URL = "/site-demo/demo-video.mp4";
 const DEMO_QR_CODE_URL = "/site-demo/demo-qr.png";
 const DEMO_URL = "https://4c69zz.csb.app/";
+const APK_DOWNLOAD_URL =
+  "https://github.com/yadegithub/EduARApp/releases/latest/download/eduar-release.apk";
 
 const features = [
   {
@@ -266,7 +267,20 @@ const LandingPage: React.FC = () => {
                     >
                       Se connecter
                     </Link>
+                    <a
+                      className="inline-flex items-center justify-center rounded-full border border-sky-300 bg-sky-50 px-5 py-3 text-sm font-medium text-sky-900 transition hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-100"
+                      href={APK_DOWNLOAD_URL}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      Installer l'APK Android
+                    </a>
                   </div>
+
+                  <p className="mt-4 text-sm leading-6 text-slate-500">
+                    Sur Android, ce bouton telecharge directement la derniere version
+                    de l'application.
+                  </p>
                 </div>
 
                 <div
@@ -449,19 +463,23 @@ const LandingPage: React.FC = () => {
                       Apercu video
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-slate-600">
-                      Regardez un court apercu pour voir comment l'experience RA se lance et se presente sur mobile.
+                      La video de demonstration sera ajoutee plus tard. Pour l'instant, utilisez le QR code ou le lien de demo pour ouvrir l'experience.
                     </p>
                     <div className="mt-6 flex justify-center">
-                      <video
-                        className="w-full max-w-[18rem] rounded-[2rem] border border-slate-200 bg-slate-950 shadow-inner sm:max-w-[20rem]"
-                        controls
-                        playsInline
-                        preload="metadata"
+                      <div
+                        className="flex w-full max-w-[18rem] flex-col items-center justify-center rounded-[2rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center shadow-inner sm:max-w-[20rem]"
                         style={{ aspectRatio: "5 / 9" }}
                       >
-                        <source src={DEMO_VIDEO_URL} type="video/mp4" />
-                        Votre navigateur ne prend pas en charge la lecture video.
-                      </video>
+                        <span className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                          Demo video
+                        </span>
+                        <p className="mt-4 text-sm leading-6 text-slate-600">
+                          Placeholder temporaire pour alleger l'application.
+                        </p>
+                        <p className="mt-3 text-xs uppercase tracking-[0.18em] text-slate-400">
+                          Video coming soon
+                        </p>
+                      </div>
                     </div>
                   </article>
 
@@ -488,6 +506,14 @@ const LandingPage: React.FC = () => {
                       target="_blank"
                     >
                       Essayer la demo
+                    </a>
+                    <a
+                      className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-sky-300 bg-sky-50 px-5 py-3 text-sm font-medium text-sky-900 transition hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-100"
+                      href={APK_DOWNLOAD_URL}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      Telecharger l'APK Android
                     </a>
                   </article>
                 </div>

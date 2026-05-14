@@ -21,8 +21,7 @@
         }
       }
     },
-    "audio": "assets/heartbeat.mp3",
-    "icon": "assets/heart-icon.jpeg"
+    "audio": "/test_shared/assets/heartbeat.mp3"
   },
   "content": {
     "defaultPart": {
@@ -42,6 +41,13 @@
   },
   "settings": {
     "arScale": 2.4,
+    "tracking": {
+      "markerLostGraceFrames": 20,
+      "trackingLerpAlpha": 0.28,
+      "confirmFrames": 2,
+      "qrScanIntervalMs": 80,
+      "qrSearchIntervalMs": 120
+    },
     "debugMode": false
   }
 }

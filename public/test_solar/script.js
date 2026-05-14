@@ -71,10 +71,12 @@ function updateInfoCard() {
 
 function syncLabels() {
   const shouldShowLabels =
-    labelsVisible && Boolean(arGroup?.visible);
+    labelsVisible &&
+    (Boolean(arGroup?.visible) || hasLiveMarkerDetection || hasTrackingPose);
 
   labels.forEach((entry) => {
     const isActive = entry.index === focusedPartIndex;
+    entry.label.element.style.display = shouldShowLabels ? "inline-flex" : "none";
     entry.label.element.style.opacity = shouldShowLabels ? "1" : "0";
     entry.label.element.style.visibility = shouldShowLabels
       ? "visible"
@@ -93,7 +95,10 @@ function positionInfoCard() {
   }
 
   const selectedEntry = focusedPartIndex >= 0 ? labels[focusedPartIndex] : null;
-  if (!selectedEntry || !arGroup?.visible) {
+  if (
+    !selectedEntry ||
+    !(Boolean(arGroup?.visible) || hasLiveMarkerDetection || hasTrackingPose)
+  ) {
     UI.card.classList.remove("info-card--floating");
     UI.card.style.left = "50%";
     UI.card.style.top = "";
@@ -293,7 +298,7 @@ function initThree(config) {
   labelRenderer.domElement.style.top = "0";
   labelRenderer.domElement.style.left = "0";
   labelRenderer.domElement.style.pointerEvents = "none";
-  labelRenderer.domElement.style.zIndex = "25";
+  labelRenderer.domElement.style.zIndex = "80";
   document.body.appendChild(labelRenderer.domElement);
 
   scene = new THREE.Scene();
@@ -893,7 +898,12 @@ function processFrame(timestamp) {
     setStatus(copy.statusSearching);
   }
 
-  if (!arGroup?.visible && focusedPartIndex !== -1) {
+  if (
+    !arGroup?.visible &&
+    !hasLiveMarkerDetection &&
+    !hasTrackingPose &&
+    focusedPartIndex !== -1
+  ) {
     setFocusedPart(-1);
   } else {
     syncLabels();

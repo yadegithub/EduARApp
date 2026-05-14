@@ -22,8 +22,7 @@
         "autoCenter": true
       }
     },
-    "audio": "assets/heartbeat.mp3",
-    "icon": "assets/volcano_icon.jpg"
+    "audio": "/test_shared/assets/heartbeat.mp3"
   },
   "content": {
     "defaultPart": {

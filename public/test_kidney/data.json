@@ -22,8 +22,7 @@
         "autoCenter": true
       }
     },
-    "audio": "assets/heartbeat.mp3",
-    "icon": "assets/Human kidney icon.jpg"
+    "audio": "/test_shared/assets/heartbeat.mp3"
   },
   "content": {
     "defaultPart": {
@@ -214,20 +213,19 @@
     ]
   },
   "settings": {
-    "arScale": 2.6,
+    "arScale": 1.35,
     "tracking": {
-      "markerLostGraceFrames": 3,
-      "trackingLerpAlpha": 0.2,
-      "trackingScaleLerpAlpha": 0.18,
+      "markerLostGraceFrames": 24,
+      "trackingLerpAlpha": 0.16,
+      "trackingScaleLerpAlpha": 0.14,
       "confirmFrames": 3,
-      "qrScanIntervalMs": 24,
-      "qrSearchIntervalMs": 44,
-      "positionDeadzone": 0.035,
-      "scaleDeadzone": 0.028,
-      "rotationDeadzoneRad": 0.05,
-      "fastFollowDistance": 0.18,
-      "fastFollowAlpha": 0.5,
-      "stabilityLerpAlpha": 0.14
+      "qrScanIntervalMs": 80,
+      "qrSearchIntervalMs": 120,
+      "positionDeadzone": 0.018,
+      "scaleDeadzone": 0.02,
+      "rotationDeadzoneRad": 0.045,
+      "fastFollowDistance": 0.14,
+      "fastFollowAlpha": 0.24
     },
     "debugMode": false
   }

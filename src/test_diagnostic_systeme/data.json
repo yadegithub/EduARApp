@@ -22,8 +22,7 @@
         "autoCenter": true
       }
     },
-    "audio": "assets/heartbeat.mp3",
-    "icon": "assets/heart-icon.jpeg"
+    "audio": "/test_shared/assets/heartbeat.mp3"
   },
   "content": {
     "defaultPart": {
@@ -209,12 +208,12 @@
   "settings": {
     "arScale": 2.2,
     "tracking": {
-      "markerLostGraceFrames": 30,
+      "markerLostGraceFrames": 20,
       "trackingLerpAlpha": 0.28,
       "trackingScaleLerpAlpha": 0.22,
       "confirmFrames": 2,
-      "qrScanIntervalMs": 60,
-      "qrSearchIntervalMs": 100,
+      "qrScanIntervalMs": 80,
+      "qrSearchIntervalMs": 120,
       "positionDeadzone": 0.01,
       "scaleDeadzone": 0.012,
       "rotationDeadzoneRad": 0.02,

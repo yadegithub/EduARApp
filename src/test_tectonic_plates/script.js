@@ -210,7 +210,7 @@ const defaultConfig = {
                 autoCenter: true
             }
         },
-        audio: "assets/heartbeat.mp3"
+        audio: "/test_shared/assets/heartbeat.mp3"
     },
     content: {
         defaultPart: {

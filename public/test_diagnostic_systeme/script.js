@@ -26,12 +26,12 @@ window.AR_VIEWER_BOOTSTRAP = {
         settings: {
             arScale: 2.2,
             tracking: {
-                markerLostGraceFrames: 30,
+                markerLostGraceFrames: 20,
                 trackingLerpAlpha: 0.28,
                 trackingScaleLerpAlpha: 0.22,
                 confirmFrames: 2,
-                qrScanIntervalMs: 60,
-                qrSearchIntervalMs: 100,
+                qrScanIntervalMs: 80,
+                qrSearchIntervalMs: 120,
                 positionDeadzone: 0.01,
                 scaleDeadzone: 0.012,
                 rotationDeadzoneRad: 0.02,
@@ -52,7 +52,7 @@ const DEFAULT_MODEL_ROTATION = BOOT.defaultModelRotation ?? {
     y: Math.PI,
     z: 0
 };
-const LOST_GRACE_FRAMES = 30;
+const LOST_GRACE_FRAMES = 20;
 const TRACKING_LERP_ALPHA = 0.18;
 const TRACKING_SCALE_LERP_ALPHA = 0.12;
 const CONFIRM_FRAMES = 3;
@@ -60,10 +60,8 @@ const MIN_QR_AREA_RATIO = 0.008;
 const MIN_QR_EDGE = 48;
 const MAX_QR_EDGE_RATIO = 2.3;
 const MAX_CENTER_JUMP_RATIO = 0.12;
-const QR_SCAN_INTERVAL_MS = 60;
-const QR_SEARCH_INTERVAL_MS = 100;
-const QR_SCAN_FRAME_WIDTH = 480;
-const QR_SCAN_FRAME_HEIGHT = 270;
+const QR_SCAN_INTERVAL_MS = 80;
+const QR_SEARCH_INTERVAL_MS = 120;
 const MAX_RENDER_PIXEL_RATIO = BOOT.maxRenderPixelRatio ?? 1;
 const CAMERA_IDEAL_WIDTH = 960;
 const CAMERA_IDEAL_HEIGHT = 540;
@@ -243,7 +241,7 @@ const baseDefaultConfig = {
                 autoCenter: false
             }
         },
-        audio: BOOT.defaultAudioPath ?? ""
+        audio: BOOT.defaultAudioPath ?? "/test_shared/assets/heartbeat.mp3"
     },
     content: {
         defaultPart: {
@@ -718,12 +716,6 @@ async function startCamera(config) {
         const height = UI.video.videoHeight;
 
         [UI.video, UI.canvasOutput, UI.canvasThree].forEach((element) => {
-            if (element === UI.canvasOutput) {
-                element.width = QR_SCAN_FRAME_WIDTH;
-                element.height = QR_SCAN_FRAME_HEIGHT;
-                return;
-            }
-
             element.width = width;
             element.height = height;
         });
@@ -1510,9 +1502,9 @@ async function runQrDetection() {
             formats: ["QRCode"],
             maxNumberOfSymbols: 1,
             tryDownscale: true,
-            tryHarder: !isTrackingActive,
-            tryInvert: !isTrackingActive,
-            tryRotate: !isTrackingActive
+            tryHarder: true,
+            tryInvert: true,
+            tryRotate: true
         });
 
         const detectedBarcode = results.find((result) => result?.position);

@@ -201,7 +201,7 @@ const baseDefaultConfig = {
                 autoCenter: false
             }
         },
-        audio: BOOT.defaultAudioPath ?? ""
+        audio: BOOT.defaultAudioPath ?? "/test_shared/assets/heartbeat.mp3"
     },
     content: {
         defaultPart: {

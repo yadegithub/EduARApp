@@ -8,6 +8,23 @@
     }
   },
   "settings": {
-    "arScale": 0.1
+    "arScale": 0.1,
+    "tracking": {
+      "markerLostGraceFrames": 20,
+      "trackingLerpAlpha": 0.28,
+      "trackingScaleLerpAlpha": 0.22,
+      "confirmFrames": 2,
+      "minQrAreaRatio": 0.008,
+      "minQrEdge": 48,
+      "maxQrEdgeRatio": 2.3,
+      "maxCenterJumpRatio": 0.12,
+      "qrScanIntervalMs": 80,
+      "qrSearchIntervalMs": 120,
+      "positionDeadzone": 0.01,
+      "scaleDeadzone": 0.012,
+      "rotationDeadzoneRad": 0.02,
+      "fastFollowDistance": 0.08,
+      "fastFollowAlpha": 0.68
+    }
   }
 }

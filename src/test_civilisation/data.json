@@ -21,8 +21,7 @@
         },
         "autoCenter": true
       }
-    },
-    "icon": "assets/civilisation_icon.jpg"
+    }
   },
   "content": {
     "defaultPart": {

@@ -6,7 +6,6 @@ import heartImage from "../assets/images/Coeur humain.jpg";
 import kidneyImage from "../assets/images/Human kidney.jpg";
 import lungImage from "../assets/images/human lung.jpg";
 import skinImage from "../assets/images/human skin.jpg";
-import magneticImage from "../assets/images/Magnetic Fields.png";
 import pendulumImage from "../assets/images/Simple Pendulum.png";
 import solarImage from "../assets/images/Solar System Model.jpg";
 import tectonicsImage from "../assets/images/Tectonic Plates.jpg";
@@ -224,22 +223,6 @@ export const experiences: Experience[] = [
     subjectId: "physics",
     artwork: "circuit",
     image: electricCircuitImage,
-    featured: false,
-  },
-  {
-    id: "magnetic-fields",
-    title: "Magnetic Fields",
-    shortDescription:
-      "Reveal magnetic lines, polarity and field strength around a live core.",
-    teaser: "Turn invisible field lines into an interactive glowing structure.",
-    focusTitle: "Flux Density",
-    focusCopy:
-      "See how field lines tighten near the poles and spread wider as magnetic force becomes weaker.",
-    duration: "9 min lesson",
-    xp: 160,
-    subjectId: "physics",
-    artwork: "magnetic",
-    image: magneticImage,
     featured: false,
   },
   {
