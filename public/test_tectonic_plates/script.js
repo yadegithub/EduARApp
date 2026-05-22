@@ -200,9 +200,9 @@ const defaultConfig = {
             primary: {
                 name: "Tectonic Plates",
                 path: DEFAULT_MODEL_PATH,
-                position: { x: 0.5, y: 0.5, z: 0.14 },
+                position: { x: 0, y: 0.18, z: 0 },
                 scale: { x: 0.9, y: 0.9, z: 0.9 },
-                rotation: DEFAULT_MODEL_ROTATION,
+                rotation: { x: 0, y: Math.PI, z: 0 },
                 autoCenter: true
             }
         },

@@ -3,23 +3,7 @@
     "models": {
       "pendulum": {
         "name": "Pendule de Newton",
-        "path": "./assets/newtons_cradle (1).glb",
-        "scale": {
-          "x": 0.45,
-          "y": 0.45,
-          "z": 0.45
-        },
-        "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "rotation": {
-          "x": -1.5707963267948966,
-          "y": 3.141592653589793,
-          "z": 0
-        },
-        "autoCenter": true
+        "path": "./assets/newtons_cradle (1).glb"
       }
     }
   },

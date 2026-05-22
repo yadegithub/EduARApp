@@ -367,20 +367,8 @@ function syncLabels() {
 }
 
 function updateLabelScale() {
-    if (!heartModel) {
-        return;
-    }
-
-    const baseScale = baseHeartModelScale || 1;
-    const currentScale = heartModel.scale.x || baseScale;
-    const relativeScale = currentScale / baseScale;
-    const labelScale = Math.max(
-        LABEL_SCALE_MIN,
-        Math.min(LABEL_SCALE_MAX, 1 + (relativeScale - 1) * LABEL_SCALE_RESPONSE)
-    );
-
     anatomyLabels.forEach((entry) => {
-        entry.label.element.style.transform = `scale(${labelScale})`;
+        entry.label.element.style.transform = "scale(1)";
     });
 }
 

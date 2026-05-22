@@ -543,20 +543,8 @@ function syncLabels() {
 }
 
 function updateLabelScale() {
-    if (!heartModel) {
-        return;
-    }
-
-    const originScale = baseModelScale || 1;
-    const currentScale = heartModel.scale.x || originScale;
-    const relativeScale = currentScale / originScale;
-    const labelScale = Math.max(
-        LABEL_SCALE_MIN,
-        Math.min(LABEL_SCALE_MAX, 1 + (relativeScale - 1) * LABEL_SCALE_RESPONSE)
-    );
-
     anatomyLabels.forEach((entry) => {
-        entry.label.element.style.setProperty("--label-scale", String(labelScale));
+        entry.label.element.style.setProperty("--label-scale", "1");
     });
 }
 
@@ -1074,8 +1062,8 @@ function setupInteraction() {
             heartModel.rotation.x += deltaY * 0.01;
         } else if (currentMode === "scale") {
             const factor = Math.max(0.65, Math.min(1.45, 1 - deltaY * 0.005));
-            heartModel.scale.multiplyScalar(factor);
-            updateLabelScale();
+            const scaleTarget = heartModel.parent ?? heartModel;
+            scaleTarget.scale.multiplyScalar(factor);
         }
 
         prevPos = { x: point.clientX, y: point.clientY };

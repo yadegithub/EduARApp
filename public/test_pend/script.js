@@ -417,40 +417,7 @@ function setupThreeJS(modelPath, modelConfig = {}) {
     const loader = new THREE.GLTFLoader();
     loader.load(modelPath, (gltf) => {
         mainModel = gltf.scene;
-        const modelPosition = modelConfig.position ?? DEFAULT_MODEL_POSITION;
-        const modelScale = modelConfig.scale ?? DEFAULT_MODEL_SCALE;
-        const modelRotation = modelConfig.rotation ?? DEFAULT_MODEL_ROTATION;
-        const autoCenter = modelConfig.autoCenter ?? true;
-        const localBounds = new THREE.Box3().setFromObject(mainModel);
-        const modelCenter = localBounds.getCenter(new THREE.Vector3());
-
-        const modelAnchor = new THREE.Group();
-        modelAnchor.position.set(
-            modelPosition.x ?? DEFAULT_MODEL_POSITION.x,
-            modelPosition.y ?? DEFAULT_MODEL_POSITION.y,
-            modelPosition.z ?? DEFAULT_MODEL_POSITION.z
-        );
-        arGroup.add(modelAnchor);
-
-        const modelRig = new THREE.Group();
-        modelRig.scale.set(
-            modelScale.x ?? DEFAULT_MODEL_SCALE.x,
-            modelScale.y ?? DEFAULT_MODEL_SCALE.y,
-            modelScale.z ?? DEFAULT_MODEL_SCALE.z
-        );
-        modelRig.rotation.set(
-            modelRotation.x ?? DEFAULT_MODEL_ROTATION.x,
-            modelRotation.y ?? DEFAULT_MODEL_ROTATION.y,
-            modelRotation.z ?? DEFAULT_MODEL_ROTATION.z
-        );
-        modelAnchor.add(modelRig);
-
-        mainModel.position.set(
-            autoCenter ? -modelCenter.x : 0,
-            autoCenter ? -modelCenter.y : 0,
-            autoCenter ? -modelCenter.z : 0
-        );
-        modelRig.add(mainModel);
+        arGroup.add(mainModel);
         setupPendulumBalls();
         setupInteraction();
         setStatus(COPY.ready);
