@@ -40,6 +40,7 @@ const UI = {
     cardTag: document.getElementById("card-tag"),
     labelToggle: document.getElementById("label-toggle"),
     labelsLabel: document.getElementById("labels-label"),
+    listenBtn: document.getElementById("listen-btn"),
     modelTitle: document.getElementById("model-title-pill"),
     overviewTitle: document.getElementById("overview-title"),
     overviewText: document.getElementById("overview-text"),
@@ -257,6 +258,7 @@ let focalLength = 0;
 let qrScannerReady = false;
 let qrScanInFlight = false;
 let scanContext;
+let availableSpeechVoices = [];
 
 const trackedMatrix = new THREE.Matrix4();
 const trackedPosition = new THREE.Vector3();
@@ -327,16 +329,30 @@ function getSelectedPart() {
     return focusedPartIndex >= 0 ? anatomyParts[focusedPartIndex] : null;
 }
 
+function loadSpeechVoices() {
+    if (!("speechSynthesis" in window)) {
+        availableSpeechVoices = [];
+        return availableSpeechVoices;
+    }
+
+    availableSpeechVoices = window.speechSynthesis.getVoices() ?? [];
+    return availableSpeechVoices;
+}
+
 function updateInfoCard() {
-    if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint) {
+    if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint || !UI.listenBtn) {
         return;
     }
 
     const selectedPart = getSelectedPart();
 
     if (!selectedPart) {
+        if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+        }
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
+        UI.listenBtn.disabled = true;
         return;
     }
 
@@ -344,8 +360,44 @@ function updateInfoCard() {
     UI.partName.textContent = selectedPart.title;
     UI.partInfo.textContent = selectedPart.info;
     UI.cardHint.textContent = selectedPart.hint;
+    UI.listenBtn.disabled = !("speechSynthesis" in window);
     UI.card.classList.add("info-card--visible");
     UI.card.classList.add("info-card--selected");
+}
+
+function speakSelectedPartInfo() {
+    const selectedPart = getSelectedPart();
+    if (!selectedPart || !("speechSynthesis" in window)) {
+        return;
+    }
+
+    const synthesis = window.speechSynthesis;
+    const voices = loadSpeechVoices();
+    const utterance = new SpeechSynthesisUtterance(selectedPart.info);
+    const preferredLangs = currentLanguage === "ar"
+        ? ["ar-SA", "ar-EG", "ar"]
+        : ["en-US", "en-GB", "en"];
+    const matchingVoice = preferredLangs
+        .map((lang) =>
+            voices.find((voice) => voice.lang?.toLowerCase().startsWith(lang.toLowerCase()))
+        )
+        .find(Boolean)
+        ?? voices.find((voice) =>
+            currentLanguage === "ar"
+                ? voice.lang?.toLowerCase().includes("ar")
+                : voice.lang?.toLowerCase().startsWith("en")
+        )
+        ?? voices.find((voice) => voice.default)
+        ?? voices[0];
+
+    utterance.lang = currentLanguage === "ar" ? "ar-SA" : "en-US";
+    if (matchingVoice) {
+        utterance.voice = matchingVoice;
+    }
+    utterance.rate = 1;
+    synthesis.cancel();
+    synthesis.speak(utterance);
+    window.setTimeout(() => synthesis.resume(), 0);
 }
 
 function syncLabels() {
@@ -425,6 +477,7 @@ function applyCopy() {
     UI.scaleLabel.textContent = copy.scale;
     UI.soundLabel.textContent = copy.sound;
     UI.labelsLabel.textContent = copy.labels;
+    UI.listenBtn.textContent = currentLanguage === "ar" ? "استمع" : "Listen";
     if (UI.modelTitle) {
         UI.modelTitle.textContent = copy.modelTitle;
     }
@@ -463,6 +516,11 @@ async function loadConfig() {
     } finally {
         isSessionStarting = false;
     }
+}
+
+if ("speechSynthesis" in window) {
+    loadSpeechVoices();
+    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 
 async function startCamera(config) {
@@ -752,6 +810,7 @@ function setupControls() {
     UI.rotateBtn.onclick = () => setMode("rotate");
     UI.scaleBtn.onclick = () => setMode("scale");
     UI.soundBtn.onclick = toggleSound;
+    UI.listenBtn.onclick = speakSelectedPartInfo;
     UI.labelToggle.onchange = (event) => {
         labelsVisible = event.target.checked;
         syncLabels();
@@ -1340,6 +1399,10 @@ function cleanup() {
     if (heartSound) {
         heartSound.pause();
         heartSound.currentTime = 0;
+    }
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
     }
 
     isSoundPlaying = false;
