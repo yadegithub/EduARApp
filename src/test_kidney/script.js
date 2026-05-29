@@ -85,6 +85,7 @@ const UI = {
     cardTag: document.getElementById("card-tag"),
     labelToggle: document.getElementById("label-toggle"),
     labelsLabel: document.getElementById("labels-label"),
+    listenBtn: document.getElementById("listen-btn"),
     partInfo: document.getElementById("part-info"),
     partName: document.getElementById("part-name"),
     rotateBtn: document.getElementById("btn-rotate"),
@@ -178,6 +179,7 @@ let copy = {
     ...defaultCopy,
     overview: { ...defaultCopy.overview }
 };
+let availableSpeechVoices = [];
 
 let renderer;
 let labelRenderer;
@@ -503,6 +505,91 @@ function getSelectedPart() {
     return focusedPartIndex >= 0 ? anatomyParts[focusedPartIndex] : null;
 }
 
+function ensureListenButton() {
+    if (!UI.card) {
+        return null;
+    }
+
+    UI.card.style.pointerEvents = "auto";
+
+    if (UI.listenBtn?.isConnected) {
+        return UI.listenBtn;
+    }
+
+    const textArea = UI.card.querySelector(".text-area");
+    if (!textArea) {
+        return null;
+    }
+
+    let button = textArea.querySelector("#listen-btn");
+    if (!button) {
+        button = document.createElement("button");
+        button.id = "listen-btn";
+        button.type = "button";
+        button.className = "card-action";
+        button.style.marginTop = "12px";
+        button.style.padding = "9px 14px";
+        button.style.border = "1px solid rgba(125, 233, 255, 0.28)";
+        button.style.borderRadius = "999px";
+        button.style.background = "linear-gradient(135deg, rgba(41, 213, 255, 0.18) 0%, rgba(27, 143, 255, 0.28) 100%)";
+        button.style.color = "#f7fbff";
+        button.style.fontSize = "0.76rem";
+        button.style.fontWeight = "700";
+        button.style.letterSpacing = "0.04em";
+        button.style.transition = "opacity 160ms ease, transform 160ms ease, border-color 160ms ease";
+        textArea.appendChild(button);
+    }
+
+    button.onclick = speakSelectedPartInfo;
+    UI.listenBtn = button;
+    return button;
+}
+
+function setListenButtonState(isEnabled) {
+    const listenButton = ensureListenButton();
+    if (!listenButton) {
+        return;
+    }
+
+    listenButton.disabled = !isEnabled;
+    listenButton.style.opacity = isEnabled ? "1" : "0.45";
+    listenButton.style.cursor = isEnabled ? "pointer" : "default";
+}
+
+function loadSpeechVoices() {
+    if (!("speechSynthesis" in window)) {
+        availableSpeechVoices = [];
+        return availableSpeechVoices;
+    }
+
+    availableSpeechVoices = window.speechSynthesis.getVoices() ?? [];
+    return availableSpeechVoices;
+}
+
+function getPreferredSpeechLocales() {
+    if (currentLanguage === "ar") {
+        return ["ar-SA", "ar-EG", "ar"];
+    }
+
+    if (currentLanguage === "fr") {
+        return ["fr-FR", "fr-CA", "fr"];
+    }
+
+    return ["en-US", "en-GB", "en"];
+}
+
+function getListenButtonLabel() {
+    if (currentLanguage === "ar") {
+        return "Ø§Ø³ØªÙ…Ø¹";
+    }
+
+    if (currentLanguage === "fr") {
+        return "Ecouter";
+    }
+
+    return "Listen";
+}
+
 function updateInfoCard() {
     if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint) {
         return;
@@ -511,8 +598,12 @@ function updateInfoCard() {
     const selectedPart = getSelectedPart();
 
     if (!selectedPart) {
+        if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+        }
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
+        setListenButtonState(false);
         return;
     }
 
@@ -520,8 +611,49 @@ function updateInfoCard() {
     UI.partName.textContent = selectedPart.title;
     UI.partInfo.textContent = selectedPart.info;
     UI.cardHint.textContent = selectedPart.hint;
+    setListenButtonState("speechSynthesis" in window);
     UI.card.classList.add("info-card--visible");
     UI.card.classList.add("info-card--selected");
+}
+
+function speakSelectedPartInfo() {
+    const selectedPart = getSelectedPart();
+    if (!selectedPart || !("speechSynthesis" in window)) {
+        return;
+    }
+
+    const synthesis = window.speechSynthesis;
+    const voices = loadSpeechVoices();
+    const preferredLocales = getPreferredSpeechLocales();
+    const utterance = new SpeechSynthesisUtterance(selectedPart.info);
+    const matchingVoice = preferredLocales
+        .map((locale) =>
+            voices.find((voice) => voice.lang?.toLowerCase().startsWith(locale.toLowerCase()))
+        )
+        .find(Boolean)
+        ?? voices.find((voice) => {
+            const normalizedLang = voice.lang?.toLowerCase();
+            if (!normalizedLang) {
+                return false;
+            }
+
+            return preferredLocales.some((locale) => {
+                const normalizedLocale = locale.toLowerCase();
+                return normalizedLang.startsWith(normalizedLocale)
+                    || normalizedLang.includes(normalizedLocale.split("-")[0]);
+            });
+        })
+        ?? voices.find((voice) => voice.default)
+        ?? voices[0];
+
+    utterance.lang = preferredLocales[0] ?? "en-US";
+    if (matchingVoice) {
+        utterance.voice = matchingVoice;
+    }
+    utterance.rate = 1;
+    synthesis.cancel();
+    synthesis.speak(utterance);
+    window.setTimeout(() => synthesis.resume(), 0);
 }
 
 function syncLabels() {
@@ -654,6 +786,10 @@ function applyCopy() {
     UI.rotateLabel.textContent = copy.rotate;
     UI.scaleLabel.textContent = copy.scale;
     UI.labelsLabel.textContent = copy.labels;
+    const listenButton = ensureListenButton();
+    if (listenButton) {
+        listenButton.textContent = getListenButtonLabel();
+    }
     document.title = `EduAR - ${copy.appTitle}`;
     updateInfoCard();
     positionInfoCard();
@@ -687,6 +823,11 @@ async function loadConfig() {
     } finally {
         isSessionStarting = false;
     }
+}
+
+if ("speechSynthesis" in window) {
+    loadSpeechVoices();
+    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 
 async function startCamera(config) {
@@ -738,7 +879,7 @@ async function startCamera(config) {
         setupControls();
         animationFrameId = window.requestAnimationFrame(processFrame);
     } catch (error) {
-        console.error("Kidney QR session failed to start.", error);
+        console.error("Digestive QR session failed to start.", error);
         setStatus(copy.statusCameraError);
     }
 }
@@ -1021,6 +1162,10 @@ function setupControls() {
     UI.scaleBtn.onclick = () => setMode("scale");
     if (UI.soundBtn) {
         UI.soundBtn.onclick = toggleSound;
+    }
+    const listenButton = ensureListenButton();
+    if (listenButton) {
+        listenButton.onclick = speakSelectedPartInfo;
     }
     UI.labelToggle.onchange = (event) => {
         labelsVisible = event.target.checked;
@@ -1556,7 +1701,7 @@ async function runQrDetection() {
         hasLiveMarkerDetection = liveMarkerDetected;
         lastScanResult = { markerFound, shouldHoldSteady };
     } catch (error) {
-        console.error("Kidney QR scan failed.", error);
+        console.error("Digestive QR scan failed.", error);
     } finally {
         qrScanInFlight = false;
     }
@@ -1637,6 +1782,10 @@ function cleanup() {
     if (heartSound) {
         heartSound.pause();
         heartSound.currentTime = 0;
+    }
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
     }
 
     isSoundPlaying = false;

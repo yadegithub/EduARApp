@@ -42,6 +42,7 @@ const UI = {
     collisionLabel: document.getElementById("collision-label"),
     labelToggle: document.getElementById("label-toggle"),
     labelsLabel: document.getElementById("labels-label"),
+    listenBtn: document.getElementById("listen-btn"),
     partInfo: document.getElementById("part-info"),
     partName: document.getElementById("part-name"),
     rotateBtn: document.getElementById("btn-rotate"),
@@ -465,6 +466,50 @@ function updateInfoCard() {
     UI.card.classList.add("info-card--selected");
 }
 
+function speakSelectedPartInfo() {
+    const selectedPart = getSelectedPart();
+    if (!selectedPart || !("speechSynthesis" in window)) {
+        return;
+    }
+
+    const synthesis = window.speechSynthesis;
+    const voices = loadSpeechVoices();
+    const preferredLocales = getPreferredSpeechLocales();
+    const utterance = new SpeechSynthesisUtterance(selectedPart.info);
+    const matchingVoice =
+        preferredLocales
+            .map((locale) =>
+                voices.find((voice) =>
+                    voice.lang?.toLowerCase().startsWith(locale.toLowerCase())
+                )
+            )
+            .find(Boolean) ??
+        voices.find((voice) => {
+            const normalizedLang = voice.lang?.toLowerCase();
+            if (!normalizedLang) {
+                return false;
+            }
+
+            return preferredLocales.some((locale) => {
+                const normalizedLocale = locale.toLowerCase();
+                return (
+                    normalizedLang.startsWith(normalizedLocale) ||
+                    normalizedLang.includes(normalizedLocale.split("-")[0])
+                );
+            });
+        }) ??
+        voices.find((voice) => voice.default) ??
+        voices[0];
+
+    utterance.lang = preferredLocales[0] ?? "en-US";
+    if (matchingVoice) {
+        utterance.voice = matchingVoice;
+    }
+    utterance.rate = 1;
+    synthesis.cancel();
+    synthesis.speak(utterance);
+    window.setTimeout(() => synthesis.resume(), 0);
+}
 function syncLabels() {
     const shouldShowLabels =
         labelsVisible && Boolean(arGroup?.visible) && (hasLiveMarkerDetection || hasTrackingPose);
@@ -538,6 +583,10 @@ function applyCopy() {
         UI.collisionLabel.textContent = copy.launchCollision;
     }
     UI.labelsLabel.textContent = copy.labels;
+    const listenButton = ensureListenButton();
+    if (listenButton) {
+        listenButton.textContent = getListenButtonLabel();
+    }
     document.title = `EduAR - ${copy.appTitle}`;
     updateInfoCard();
     positionInfoCard();
@@ -570,6 +619,11 @@ async function loadConfig() {
     } finally {
         isSessionStarting = false;
     }
+}
+
+if ("speechSynthesis" in window) {
+    loadSpeechVoices();
+    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 
 async function startCamera(config) {
@@ -908,6 +962,10 @@ function setupControls() {
     }
     if (UI.soundBtn) {
         UI.soundBtn.onclick = toggleSound;
+    }
+    const listenButton = ensureListenButton();
+    if (listenButton) {
+        listenButton.onclick = speakSelectedPartInfo;
     }
     UI.labelToggle.onchange = (event) => {
         labelsVisible = event.target.checked;

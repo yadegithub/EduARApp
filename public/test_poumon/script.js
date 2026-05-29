@@ -16,6 +16,7 @@ const UI = {
     cardTag: document.getElementById("card-tag"),
     labelsLayer: document.getElementById("organ-labels"),
     labelToggle: document.getElementById("label-toggle"),
+    listenBtn: document.getElementById("listen-btn"),
     modelTitle: document.getElementById("model-title-pill"),
     overviewCard: document.getElementById("overview-card"),
     overviewTitle: document.getElementById("overview-title"),
@@ -139,9 +140,36 @@ const ORGAN_PARTS_AR = {
     }
 };
 
+const ORGAN_PARTS_EN = {
+    "right-lung": {
+        label: "Right Lung",
+        info: "The right lung receives oxygen-rich air and helps the body remove carbon dioxide.",
+        hint: "It is slightly larger than the left lung and has three lobes."
+    },
+    "left-lung": {
+        label: "Left Lung",
+        info: "The left lung supports gas exchange just like the right lung.",
+        hint: "It is smaller because it leaves room for the heart."
+    },
+    trachea: {
+        label: "Trachea",
+        info: "The trachea is the tube that carries air from the nose and mouth into the chest.",
+        hint: "At the bottom, it divides into two bronchi that enter the lungs."
+    },
+    bronchi: {
+        label: "Bronchi",
+        info: "The bronchi are branching air passages that distribute air inside the lungs.",
+        hint: "They become smaller and smaller deeper inside the lungs."
+    }
+};
+
 if (currentLanguage === "ar") {
     ORGAN_PARTS.forEach((part) => {
         Object.assign(part, ORGAN_PARTS_AR[part.id] ?? {});
+    });
+} else if (currentLanguage === "en") {
+    ORGAN_PARTS.forEach((part) => {
+        Object.assign(part, ORGAN_PARTS_EN[part.id] ?? {});
     });
 }
 
@@ -154,6 +182,7 @@ let activeStream;
 let organLabels = [];
 let activeOrganIndex = -1;
 let labelsVisible = true;
+let availableSpeechVoices = [];
 
 let AR_SCALE = 0.12;
 const BUILD_VERSION = "20260506-4";
@@ -226,6 +255,91 @@ function getCopy() {
     return INFO_COPY[currentLanguage] || INFO_COPY.en;
 }
 
+function ensureListenButton() {
+    if (!UI.card) {
+        return null;
+    }
+
+    UI.card.style.pointerEvents = "auto";
+
+    if (UI.listenBtn?.isConnected) {
+        return UI.listenBtn;
+    }
+
+    const textArea = UI.card.querySelector(".text-area");
+    if (!textArea) {
+        return null;
+    }
+
+    let button = textArea.querySelector("#listen-btn");
+    if (!button) {
+        button = document.createElement("button");
+        button.id = "listen-btn";
+        button.type = "button";
+        button.className = "card-action";
+        button.style.marginTop = "12px";
+        button.style.padding = "9px 14px";
+        button.style.border = "1px solid rgba(125, 233, 255, 0.28)";
+        button.style.borderRadius = "999px";
+        button.style.background = "linear-gradient(135deg, rgba(41, 213, 255, 0.18) 0%, rgba(27, 143, 255, 0.28) 100%)";
+        button.style.color = "#f7fbff";
+        button.style.fontSize = "0.76rem";
+        button.style.fontWeight = "700";
+        button.style.letterSpacing = "0.04em";
+        button.style.transition = "opacity 160ms ease, transform 160ms ease, border-color 160ms ease";
+        textArea.appendChild(button);
+    }
+
+    button.onclick = speakSelectedPartInfo;
+    UI.listenBtn = button;
+    return button;
+}
+
+function setListenButtonState(isEnabled) {
+    const listenButton = ensureListenButton();
+    if (!listenButton) {
+        return;
+    }
+
+    listenButton.disabled = !isEnabled;
+    listenButton.style.opacity = isEnabled ? "1" : "0.45";
+    listenButton.style.cursor = isEnabled ? "pointer" : "default";
+}
+
+function loadSpeechVoices() {
+    if (!("speechSynthesis" in window)) {
+        availableSpeechVoices = [];
+        return availableSpeechVoices;
+    }
+
+    availableSpeechVoices = window.speechSynthesis.getVoices() ?? [];
+    return availableSpeechVoices;
+}
+
+function getPreferredSpeechLocales() {
+    if (currentLanguage === "ar") {
+        return ["ar-SA", "ar-EG", "ar"];
+    }
+
+    if (currentLanguage === "fr") {
+        return ["fr-FR", "fr-CA", "fr"];
+    }
+
+    return ["en-US", "en-GB", "en"];
+}
+
+function getListenButtonLabel() {
+    if (currentLanguage === "ar") {
+        return "استمع";
+    }
+
+    if (currentLanguage === "fr") {
+        return "Ecouter";
+    }
+
+    return "Listen";
+}
+
 function applyInfoCard() {
     const copy = getCopy();
     const menuCopy = {
@@ -294,6 +408,14 @@ function applyInfoCard() {
     if (UI.card) {
         UI.card.classList.remove("info-card--visible", "info-card--selected");
     }
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+    setListenButtonState(false);
+    const listenButton = ensureListenButton();
+    if (listenButton) {
+        listenButton.textContent = getListenButtonLabel();
+    }
     updateOrganLabels();
     positionInfoCard();
 }
@@ -303,8 +425,61 @@ function hideSelectedInfoCard() {
     if (UI.card) {
         UI.card.classList.remove("info-card--visible", "info-card--selected");
     }
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+    setListenButtonState(false);
     updateOrganLabels();
     positionInfoCard();
+}
+
+function speakSelectedPartInfo() {
+    if (activeOrganIndex < 0 || !("speechSynthesis" in window)) {
+        return;
+    }
+
+    const selectedPart = ORGAN_PARTS[activeOrganIndex];
+    if (!selectedPart?.info) {
+        return;
+    }
+
+    const synthesis = window.speechSynthesis;
+    const voices = loadSpeechVoices();
+    const preferredLocales = getPreferredSpeechLocales();
+    const utterance = new SpeechSynthesisUtterance(selectedPart.info);
+    const matchingVoice =
+        preferredLocales
+            .map((locale) =>
+                voices.find((voice) =>
+                    voice.lang?.toLowerCase().startsWith(locale.toLowerCase())
+                )
+            )
+            .find(Boolean) ??
+        voices.find((voice) => {
+            const normalizedLang = voice.lang?.toLowerCase();
+            if (!normalizedLang) {
+                return false;
+            }
+
+            return preferredLocales.some((locale) => {
+                const normalizedLocale = locale.toLowerCase();
+                return (
+                    normalizedLang.startsWith(normalizedLocale) ||
+                    normalizedLang.includes(normalizedLocale.split("-")[0])
+                );
+            });
+        }) ??
+        voices.find((voice) => voice.default) ??
+        voices[0];
+
+    utterance.lang = preferredLocales[0] ?? "en-US";
+    if (matchingVoice) {
+        utterance.voice = matchingVoice;
+    }
+    utterance.rate = 1;
+    synthesis.cancel();
+    synthesis.speak(utterance);
+    window.setTimeout(() => synthesis.resume(), 0);
 }
 
 function setOrganInfo(index) {
@@ -338,6 +513,7 @@ function setOrganInfo(index) {
         UI.card.classList.add("info-card--visible", "info-card--selected");
     }
 
+    setListenButtonState("speechSynthesis" in window);
     updateOrganLabels();
     positionInfoCard();
 }
@@ -806,6 +982,11 @@ function setupControls() {
         };
     }
 
+    const listenButton = ensureListenButton();
+    if (listenButton) {
+        listenButton.onclick = speakSelectedPartInfo;
+    }
+
     if (UI.labelToggle) {
         UI.labelToggle.onchange = (event) => {
             labelsVisible = event.target.checked;
@@ -818,6 +999,11 @@ function setupControls() {
         };
     }
 
+}
+
+if ("speechSynthesis" in window) {
+    loadSpeechVoices();
+    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 
 function setupInteraction() {
