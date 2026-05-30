@@ -452,6 +452,16 @@ function updateInfoCard() {
     const selectedPart = getSelectedPart();
 
     if (!selectedPart) {
+        if (window.EduARTTS && typeof window.EduARTTS.stop === "function") {
+            try {
+                window.EduARTTS.stop();
+            } catch (error) {
+                console.warn("Failed to stop native TTS.", error);
+            }
+        }
+        if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+        }
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
         return;
@@ -467,13 +477,26 @@ function updateInfoCard() {
 
 function speakSelectedPartInfo() {
     const selectedPart = getSelectedPart();
-    if (!selectedPart || !("speechSynthesis" in window)) {
+    if (!selectedPart) {
+        return;
+    }
+
+    const preferredLocales = getPreferredSpeechLocales();
+    if (window.EduARTTS && typeof window.EduARTTS.speak === "function") {
+        try {
+            window.EduARTTS.speak(selectedPart.info, preferredLocales[0] ?? "en-US");
+            return;
+        } catch (error) {
+            console.warn("Native TTS failed, falling back to Web Speech.", error);
+        }
+    }
+
+    if (!("speechSynthesis" in window)) {
         return;
     }
 
     const synthesis = window.speechSynthesis;
     const voices = loadSpeechVoices();
-    const preferredLocales = getPreferredSpeechLocales();
     const utterance = new SpeechSynthesisUtterance(selectedPart.info);
     const matchingVoice =
         preferredLocales

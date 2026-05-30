@@ -339,6 +339,36 @@ function loadSpeechVoices() {
     return availableSpeechVoices;
 }
 
+function getPreferredSpeechLocales() {
+    if (currentLanguage === "ar") {
+        return ["ar-SA", "ar-EG", "ar"];
+    }
+
+    return ["en-US", "en-GB", "en"];
+}
+
+function hasNativeTtsSupport() {
+    return Boolean(window.EduARTTS && typeof window.EduARTTS.speak === "function");
+}
+
+function canUseSpeechPlayback() {
+    return hasNativeTtsSupport() || ("speechSynthesis" in window);
+}
+
+function stopSpeechPlayback() {
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.stop();
+        } catch (error) {
+            console.warn("Failed to stop native TTS.", error);
+        }
+    }
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+}
+
 function updateInfoCard() {
     if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint || !UI.listenBtn) {
         return;
@@ -347,9 +377,7 @@ function updateInfoCard() {
     const selectedPart = getSelectedPart();
 
     if (!selectedPart) {
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
-        }
+        stopSpeechPlayback();
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
         UI.listenBtn.disabled = true;
@@ -360,37 +388,55 @@ function updateInfoCard() {
     UI.partName.textContent = selectedPart.title;
     UI.partInfo.textContent = selectedPart.info;
     UI.cardHint.textContent = selectedPart.hint;
-    UI.listenBtn.disabled = !("speechSynthesis" in window);
+    UI.listenBtn.disabled = !canUseSpeechPlayback();
     UI.card.classList.add("info-card--visible");
     UI.card.classList.add("info-card--selected");
 }
 
 function speakSelectedPartInfo() {
     const selectedPart = getSelectedPart();
-    if (!selectedPart || !("speechSynthesis" in window)) {
+    if (!selectedPart) {
+        return;
+    }
+
+    const preferredLocales = getPreferredSpeechLocales();
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.speak(selectedPart.info, preferredLocales[0] ?? "en-US");
+            return;
+        } catch (error) {
+            console.warn("Native TTS failed, falling back to Web Speech.", error);
+        }
+    }
+
+    if (!("speechSynthesis" in window)) {
         return;
     }
 
     const synthesis = window.speechSynthesis;
     const voices = loadSpeechVoices();
     const utterance = new SpeechSynthesisUtterance(selectedPart.info);
-    const preferredLangs = currentLanguage === "ar"
-        ? ["ar-SA", "ar-EG", "ar"]
-        : ["en-US", "en-GB", "en"];
-    const matchingVoice = preferredLangs
-        .map((lang) =>
-            voices.find((voice) => voice.lang?.toLowerCase().startsWith(lang.toLowerCase()))
+    const matchingVoice = preferredLocales
+        .map((locale) =>
+            voices.find((voice) => voice.lang?.toLowerCase().startsWith(locale.toLowerCase()))
         )
         .find(Boolean)
-        ?? voices.find((voice) =>
-            currentLanguage === "ar"
-                ? voice.lang?.toLowerCase().includes("ar")
-                : voice.lang?.toLowerCase().startsWith("en")
-        )
+        ?? voices.find((voice) => {
+            const normalizedLang = voice.lang?.toLowerCase();
+            if (!normalizedLang) {
+                return false;
+            }
+
+            return preferredLocales.some((locale) => {
+                const normalizedLocale = locale.toLowerCase();
+                return normalizedLang.startsWith(normalizedLocale)
+                    || normalizedLang.includes(normalizedLocale.split("-")[0]);
+            });
+        })
         ?? voices.find((voice) => voice.default)
         ?? voices[0];
 
-    utterance.lang = currentLanguage === "ar" ? "ar-SA" : "en-US";
+    utterance.lang = preferredLocales[0] ?? "en-US";
     if (matchingVoice) {
         utterance.voice = matchingVoice;
     }
@@ -1401,9 +1447,7 @@ function cleanup() {
         heartSound.currentTime = 0;
     }
 
-    if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-    }
+    stopSpeechPlayback();
 
     isSoundPlaying = false;
     isDragging = false;

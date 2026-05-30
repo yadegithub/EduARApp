@@ -566,6 +566,28 @@ function loadSpeechVoices() {
     return availableSpeechVoices;
 }
 
+function hasNativeTtsSupport() {
+    return Boolean(window.EduARTTS && typeof window.EduARTTS.speak === "function");
+}
+
+function canUseSpeechPlayback() {
+    return hasNativeTtsSupport() || ("speechSynthesis" in window);
+}
+
+function stopSpeechPlayback() {
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.stop();
+        } catch (error) {
+            console.warn("Failed to stop native TTS.", error);
+        }
+    }
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+}
+
 function getPreferredSpeechLocales() {
     if (currentLanguage === "ar") {
         return ["ar-SA", "ar-EG", "ar"];
@@ -598,9 +620,7 @@ function updateInfoCard() {
     const selectedPart = getSelectedPart();
 
     if (!selectedPart) {
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
-        }
+        stopSpeechPlayback();
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
         setListenButtonState(false);
@@ -611,20 +631,33 @@ function updateInfoCard() {
     UI.partName.textContent = selectedPart.title;
     UI.partInfo.textContent = selectedPart.info;
     UI.cardHint.textContent = selectedPart.hint;
-    setListenButtonState("speechSynthesis" in window);
+    setListenButtonState(canUseSpeechPlayback());
     UI.card.classList.add("info-card--visible");
     UI.card.classList.add("info-card--selected");
 }
 
 function speakSelectedPartInfo() {
     const selectedPart = getSelectedPart();
-    if (!selectedPart || !("speechSynthesis" in window)) {
+    if (!selectedPart) {
+        return;
+    }
+
+    const preferredLocales = getPreferredSpeechLocales();
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.speak(selectedPart.info, preferredLocales[0] ?? "en-US");
+            return;
+        } catch (error) {
+            console.warn("Native TTS failed, falling back to Web Speech.", error);
+        }
+    }
+
+    if (!("speechSynthesis" in window)) {
         return;
     }
 
     const synthesis = window.speechSynthesis;
     const voices = loadSpeechVoices();
-    const preferredLocales = getPreferredSpeechLocales();
     const utterance = new SpeechSynthesisUtterance(selectedPart.info);
     const matchingVoice = preferredLocales
         .map((locale) =>

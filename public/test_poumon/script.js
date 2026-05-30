@@ -316,6 +316,28 @@ function loadSpeechVoices() {
     return availableSpeechVoices;
 }
 
+function hasNativeTtsSupport() {
+    return Boolean(window.EduARTTS && typeof window.EduARTTS.speak === "function");
+}
+
+function canUseSpeechPlayback() {
+    return hasNativeTtsSupport() || ("speechSynthesis" in window);
+}
+
+function stopSpeechPlayback() {
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.stop();
+        } catch (error) {
+            console.warn("Failed to stop native TTS.", error);
+        }
+    }
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+}
+
 function getPreferredSpeechLocales() {
     if (currentLanguage === "ar") {
         return ["ar-SA", "ar-EG", "ar"];
@@ -408,9 +430,7 @@ function applyInfoCard() {
     if (UI.card) {
         UI.card.classList.remove("info-card--visible", "info-card--selected");
     }
-    if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-    }
+    stopSpeechPlayback();
     setListenButtonState(false);
     const listenButton = ensureListenButton();
     if (listenButton) {
@@ -425,16 +445,14 @@ function hideSelectedInfoCard() {
     if (UI.card) {
         UI.card.classList.remove("info-card--visible", "info-card--selected");
     }
-    if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-    }
+    stopSpeechPlayback();
     setListenButtonState(false);
     updateOrganLabels();
     positionInfoCard();
 }
 
 function speakSelectedPartInfo() {
-    if (activeOrganIndex < 0 || !("speechSynthesis" in window)) {
+    if (activeOrganIndex < 0) {
         return;
     }
 
@@ -443,9 +461,22 @@ function speakSelectedPartInfo() {
         return;
     }
 
+    const preferredLocales = getPreferredSpeechLocales();
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.speak(selectedPart.info, preferredLocales[0] ?? "en-US");
+            return;
+        } catch (error) {
+            console.warn("Native TTS failed, falling back to Web Speech.", error);
+        }
+    }
+
+    if (!("speechSynthesis" in window)) {
+        return;
+    }
+
     const synthesis = window.speechSynthesis;
     const voices = loadSpeechVoices();
-    const preferredLocales = getPreferredSpeechLocales();
     const utterance = new SpeechSynthesisUtterance(selectedPart.info);
     const matchingVoice =
         preferredLocales
@@ -513,7 +544,7 @@ function setOrganInfo(index) {
         UI.card.classList.add("info-card--visible", "info-card--selected");
     }
 
-    setListenButtonState("speechSynthesis" in window);
+    setListenButtonState(canUseSpeechPlayback());
     updateOrganLabels();
     positionInfoCard();
 }
