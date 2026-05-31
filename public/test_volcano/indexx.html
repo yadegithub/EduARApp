@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/zxing-wasm@2.2.1/dist/iife/reader/index.js"></script>
 </head>
 <body>
-    <video id="videoInput" playsinline muted></video>
+    <video id="videoInput" autoplay playsinline muted></video>
     <canvas id="canvasOutput"></canvas>
     <canvas id="canvasThree"></canvas>
 
@@ -20,6 +20,8 @@
             <span id="app-eyebrow">EduAR live scan</span>
             <div id="app-title">VOLCANO</div>
         </div>
+
+        <div id="status" class="status-text">Starting camera...</div>
 
         <div id="side-menu" class="glass">
             <button class="menu-btn active" id="btn-rotate" type="button">

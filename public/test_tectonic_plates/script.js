@@ -152,6 +152,7 @@ let animationMixer;
 let animationClock;
 let collisionActions = [];
 let activeStream;
+let availableSpeechVoices = [];
 let anatomyLabels = [];
 let currentMode = null;
 let labelsVisible = true;
@@ -476,6 +477,55 @@ function updateInfoCard() {
     UI.card.classList.add("info-card--selected");
 }
 
+function ensureListenButton() {
+    if (!UI.card) {
+        return null;
+    }
+
+    UI.card.style.pointerEvents = "auto";
+
+    if (UI.listenBtn?.isConnected) {
+        return UI.listenBtn;
+    }
+
+    const textArea = UI.card.querySelector(".text-area");
+    if (!textArea) {
+        return null;
+    }
+
+    let button = textArea.querySelector("#listen-btn");
+    if (!button) {
+        button = document.createElement("button");
+        button.id = "listen-btn";
+        button.type = "button";
+        button.className = "card-action";
+        button.textContent = getListenButtonLabel();
+        textArea.appendChild(button);
+    }
+
+    button.onclick = speakSelectedPartInfo;
+    UI.listenBtn = button;
+    return button;
+}
+
+function loadSpeechVoices() {
+    if (!("speechSynthesis" in window)) {
+        availableSpeechVoices = [];
+        return availableSpeechVoices;
+    }
+
+    availableSpeechVoices = window.speechSynthesis.getVoices() ?? [];
+    return availableSpeechVoices;
+}
+
+function getPreferredSpeechLocales() {
+    return currentLanguage === "ar" ? ["ar-SA", "ar-EG", "ar"] : ["en-US", "en-GB", "en"];
+}
+
+function getListenButtonLabel() {
+    return currentLanguage === "ar" ? "Listen" : "Listen";
+}
+
 function speakSelectedPartInfo() {
     const selectedPart = getSelectedPart();
     if (!selectedPart) {
@@ -649,6 +699,27 @@ if ("speechSynthesis" in window) {
     window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 
+async function openCameraStream() {
+    const preferredConstraints = {
+        video: {
+            facingMode: "environment",
+            width: { ideal: CAMERA_IDEAL_WIDTH },
+            height: { ideal: CAMERA_IDEAL_HEIGHT },
+            frameRate: {
+                ideal: CAMERA_IDEAL_FRAME_RATE,
+                max: CAMERA_MAX_FRAME_RATE
+            }
+        }
+    };
+
+    try {
+        return await navigator.mediaDevices.getUserMedia(preferredConstraints);
+    } catch (error) {
+        console.warn("Preferred camera constraints failed; retrying with default camera.", error);
+        return navigator.mediaDevices.getUserMedia({ video: true });
+    }
+}
+
 async function startCamera(config) {
     if (activeStream) {
         return;
@@ -657,17 +728,7 @@ async function startCamera(config) {
     setStatus(copy.statusStarting);
 
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: "environment",
-                width: { ideal: CAMERA_IDEAL_WIDTH },
-                height: { ideal: CAMERA_IDEAL_HEIGHT },
-                frameRate: {
-                    ideal: CAMERA_IDEAL_FRAME_RATE,
-                    max: CAMERA_MAX_FRAME_RATE
-                }
-            }
-        });
+        const stream = await openCameraStream();
         activeStream = stream;
 
         await new Promise((resolve) => {
@@ -690,6 +751,7 @@ async function startCamera(config) {
             element.height = height;
         });
 
+        document.body.classList.add("camera-ready");
         fitToScreen();
         await initQrScanner();
         isArInitialized = true;
@@ -1607,6 +1669,7 @@ function cleanup() {
         UI.video.pause();
         UI.video.srcObject = null;
     }
+    document.body.classList.remove("camera-ready");
 
     if (heartSound) {
         heartSound.pause();
