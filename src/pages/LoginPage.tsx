@@ -336,12 +336,7 @@ const LoginPage: React.FC = () => {
                     </span>
                   </div>
                 </>
-              ) : (
-                <div className="auth-hint">
-                  <strong>{copy.firebaseTitle}</strong>
-                  <span>{copy.firebaseCopy}</span>
-                </div>
-              )}
+              ) : null}
 
               <div className="auth-switch">
                 <span>{copy.newHere}</span>
