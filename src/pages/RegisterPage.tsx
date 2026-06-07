@@ -17,7 +17,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const RegisterPage: React.FC = () => {
   const history = useHistory();
-  const { authNotice, isAuthenticated, register } = useAuth();
+  const { isAuthenticated, register } = useAuth();
   const { settings } = useAppSettings();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -163,15 +163,6 @@ const RegisterPage: React.FC = () => {
               <div className="section-head section-head--compact">
                 <h2>{copy.register}</h2>
               </div>
-
-              {authNotice ? (
-                <p className="auth-hint auth-hint--status">{authNotice}</p>
-              ) : (
-                <div className="auth-hint">
-                  <strong>{copy.firebaseTitle}</strong>
-                  <span>{copy.firebaseCopy}</span>
-                </div>
-              )}
 
               <label className="auth-field">
                 <span>{copy.fullName}</span>

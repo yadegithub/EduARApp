@@ -40,7 +40,7 @@
     }
   },
   "settings": {
-    "arScale": 2.4,
+    "arScale": 2,
     "tracking": {
       "markerLostGraceFrames": 20,
       "trackingLerpAlpha": 0.28,

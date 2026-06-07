@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import heartIcon from "../test_heart/assets/heart-icon.jpeg";
 import "./HeartArPage.css";
 
-const QUIZ_DELAY_SECONDS = 180;
+const QUIZ_DELAY_SECONDS = 60;
 
 type QuizQuestion = {
   id: string;
@@ -56,7 +56,7 @@ const HeartArPage: React.FC<HeartArPageProps> = ({
               "\u062a\u0645 \u0625\u0643\u0645\u0627\u0644 \u0627\u062e\u062a\u0628\u0627\u0631 \u0627\u0644\u0642\u0644\u0628",
             quizEyebrow: "\u062a\u0642\u064a\u064a\u0645 \u0633\u0631\u064a\u0639",
             quizIntro:
-              "\u0628\u0639\u062f \u0645\u0631\u0648\u0631 \u062b\u0644\u0627\u062b \u062f\u0642\u0627\u0626\u0642\u060c \u062d\u0627\u0646 \u0627\u0644\u0648\u0642\u062a \u0644\u0644\u0625\u062c\u0627\u0628\u0629 \u0639\u0646 \u0623\u0633\u0626\u0644\u0629 \u0633\u0631\u064a\u0639\u0629 \u062d\u0648\u0644 \u0627\u0644\u0642\u0644\u0628.",
+              "\u0628\u0639\u062f \u0645\u0631\u0648\u0631 \u062f\u0642\u064a\u0642\u0629 \u0648\u0627\u062d\u062f\u0629\u060c \u062d\u0627\u0646 \u0627\u0644\u0648\u0642\u062a \u0644\u0644\u0625\u062c\u0627\u0628\u0629 \u0639\u0646 \u0623\u0633\u0626\u0644\u0629 \u0633\u0631\u064a\u0639\u0629 \u062d\u0648\u0644 \u0627\u0644\u0642\u0644\u0628.",
             quizNote:
               "\u0623\u062c\u0628 \u0639\u0646 \u062c\u0645\u064a\u0639 \u0627\u0644\u0623\u0633\u0626\u0644\u0629 \u0642\u0628\u0644 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631.",
             quizResult: "\u0623\u062d\u0631\u0632\u062a {score} \u0645\u0646 {total}.",
@@ -74,7 +74,7 @@ const HeartArPage: React.FC<HeartArPageProps> = ({
             quizComplete: "Heart quiz completed",
             quizEyebrow: "Quick check",
             quizIntro:
-              "Three minutes have passed. Answer a short questionnaire about the human heart.",
+              "One minute has passed. Answer a short questionnaire about the human heart.",
             quizNote:
               "Answer every question before submitting the quiz.",
             quizResult: "You scored {score} out of {total}.",
