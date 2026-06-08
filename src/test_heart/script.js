@@ -9,6 +9,7 @@ const DEFAULT_HEART_ROTATION = {
 };
 const MARKER_LOST_GRACE_FRAMES = 20;
 const TRACKING_LERP_ALPHA = 0.18;
+const TRACKING_SCALE_LERP_ALPHA = 0.12;
 const CONFIRM_FRAMES = 2;
 const MIN_QR_AREA_RATIO = 0.008;
 const MIN_QR_EDGE = 48;
@@ -16,7 +17,7 @@ const MAX_QR_EDGE_RATIO = 2.3;
 const MAX_CENTER_JUMP_RATIO = 0.12;
 const QR_SCAN_INTERVAL_MS = 80;
 const QR_SEARCH_INTERVAL_MS = 120;
-const MAX_RENDER_PIXEL_RATIO = 1.25;
+const MAX_RENDER_PIXEL_RATIO = 1;
 const CAMERA_IDEAL_WIDTH = 960;
 const CAMERA_IDEAL_HEIGHT = 540;
 const CAMERA_IDEAL_FRAME_RATE = 24;
@@ -251,14 +252,23 @@ let lastScanResult = {
 };
 let markerLostGraceFrames = MARKER_LOST_GRACE_FRAMES;
 let trackingLerpAlpha = TRACKING_LERP_ALPHA;
+let trackingScaleLerpAlpha = TRACKING_SCALE_LERP_ALPHA;
 let confirmFrames = CONFIRM_FRAMES;
 let qrScanIntervalMs = QR_SCAN_INTERVAL_MS;
 let qrSearchIntervalMs = QR_SEARCH_INTERVAL_MS;
+let positionDeadzone = 0;
+let scaleDeadzone = 0;
+let rotationDeadzoneRad = 0;
+let fastFollowDistance = 0;
+let fastFollowAlpha = TRACKING_LERP_ALPHA;
 let focalLength = 0;
 let qrScannerReady = false;
 let qrScanInFlight = false;
 let scanContext;
 let availableSpeechVoices = [];
+let preloadedModelPath = "";
+let preloadedModelPromise;
+let isModelMounted = false;
 
 const trackedMatrix = new THREE.Matrix4();
 const trackedPosition = new THREE.Vector3();
@@ -282,12 +292,35 @@ const defaultConfig = {
         tracking: {
             markerLostGraceFrames: MARKER_LOST_GRACE_FRAMES,
             trackingLerpAlpha: TRACKING_LERP_ALPHA,
+            trackingScaleLerpAlpha: 0.22,
             confirmFrames: CONFIRM_FRAMES,
             qrScanIntervalMs: QR_SCAN_INTERVAL_MS,
-            qrSearchIntervalMs: QR_SEARCH_INTERVAL_MS
+            qrSearchIntervalMs: QR_SEARCH_INTERVAL_MS,
+            positionDeadzone: 0.01,
+            scaleDeadzone: 0.012,
+            rotationDeadzoneRad: 0.02,
+            fastFollowDistance: 0.08,
+            fastFollowAlpha: 0.68
         }
     }
 };
+
+function startModelPreload(config) {
+    const modelConfig = config?.assets?.models?.heart ?? defaultConfig.assets.models.heart;
+    const modelPath = modelConfig.path ?? HEART_MODEL_PATH;
+
+    if (preloadedModelPromise && preloadedModelPath === modelPath) {
+        return preloadedModelPromise;
+    }
+
+    preloadedModelPath = modelPath;
+    preloadedModelPromise = new Promise((resolve, reject) => {
+        const loader = new THREE.GLTFLoader();
+        loader.load(modelPath, resolve, undefined, reject);
+    });
+
+    return preloadedModelPromise;
+}
 
 function setStatus(message) {
     if (!UI.status || UI.status.textContent === message) {
@@ -311,6 +344,16 @@ function applyTrackingSettings(config) {
             Number(runtimeTracking.trackingLerpAlpha ?? TRACKING_LERP_ALPHA)
         )
     );
+    trackingScaleLerpAlpha = Math.min(
+        1,
+        Math.max(
+            0.01,
+            Number(
+                runtimeTracking.trackingScaleLerpAlpha ??
+                    TRACKING_SCALE_LERP_ALPHA
+            )
+        )
+    );
     confirmFrames = Math.max(
         1,
         Number(runtimeTracking.confirmFrames ?? CONFIRM_FRAMES)
@@ -322,6 +365,26 @@ function applyTrackingSettings(config) {
     qrSearchIntervalMs = Math.max(
         10,
         Number(runtimeTracking.qrSearchIntervalMs ?? QR_SEARCH_INTERVAL_MS)
+    );
+    positionDeadzone = Math.max(
+        0,
+        Number(runtimeTracking.positionDeadzone ?? 0)
+    );
+    scaleDeadzone = Math.max(0, Number(runtimeTracking.scaleDeadzone ?? 0));
+    rotationDeadzoneRad = Math.max(
+        0,
+        Number(runtimeTracking.rotationDeadzoneRad ?? 0)
+    );
+    fastFollowDistance = Math.max(
+        0,
+        Number(runtimeTracking.fastFollowDistance ?? 0)
+    );
+    fastFollowAlpha = Math.min(
+        1,
+        Math.max(
+            trackingLerpAlpha,
+            Number(runtimeTracking.fastFollowAlpha ?? trackingLerpAlpha)
+        )
     );
 }
 
@@ -511,6 +574,9 @@ async function loadConfig() {
         config = defaultConfig;
     }
 
+    applyTrackingSettings(config ?? defaultConfig);
+    startModelPreload(config ?? defaultConfig);
+
     try {
         await startCamera(config);
     } finally {
@@ -564,7 +630,6 @@ async function startCamera(config) {
             element.height = height;
         });
 
-        applyTrackingSettings(config ?? defaultConfig);
         fitToScreen();
         document.body.classList.add("camera-ready");
         await initQrScanner();
@@ -643,7 +708,8 @@ function initThree(config) {
     renderer = new THREE.WebGLRenderer({
         canvas: UI.canvasThree,
         alpha: true,
-        antialias: true
+        antialias: false,
+        powerPreference: "high-performance"
     });
     renderer.setSize(UI.video.width, UI.video.height, false);
     renderer.setPixelRatio(
@@ -684,24 +750,42 @@ function initThree(config) {
     accentLight.position.set(-4, 3, 4);
     scene.add(accentLight);
 
-    const loader = new THREE.GLTFLoader();
-    const modelConfig = config.assets?.models?.heart ?? defaultConfig.assets.models.heart;
-    const modelPath = modelConfig.path ?? HEART_MODEL_PATH;
-    const modelPosition = modelConfig.position ?? defaultConfig.assets.models.heart.position;
-    const modelScale = modelConfig.scale ?? defaultConfig.assets.models.heart.scale;
-    const modelRotation =
-        modelConfig.rotation ?? defaultConfig.assets.models.heart.rotation;
-
     arScale = config.settings?.arScale ?? defaultConfig.settings.arScale;
     heartSound = new Audio(config.assets?.audio ?? defaultConfig.assets.audio);
     heartSound.loop = true;
 
     setStatus(copy.statusLoading);
+    mountHeartModel(config);
+}
 
-    loader.load(
-        modelPath,
-        (gltf) => {
+function mountHeartModel(config) {
+    const modelConfig = config?.assets?.models?.heart ?? defaultConfig.assets.models.heart;
+    const modelPosition = modelConfig.position ?? defaultConfig.assets.models.heart.position;
+    const modelScale = modelConfig.scale ?? defaultConfig.assets.models.heart.scale;
+    const modelRotation =
+        modelConfig.rotation ?? defaultConfig.assets.models.heart.rotation;
+
+    startModelPreload(config)
+        .then((gltf) => {
+            if (!arGroup || isModelMounted) {
+                return;
+            }
+
             heartModel = gltf.scene;
+
+            if (heartModel.parent) {
+                heartModel.parent.remove(heartModel);
+            }
+
+            heartModel.traverse((node) => {
+                if (!node?.isMesh) {
+                    return;
+                }
+
+                node.castShadow = false;
+                node.receiveShadow = false;
+            });
+
             heartModel.position.set(
                 modelPosition.x ?? 0,
                 modelPosition.y ?? 0,
@@ -720,22 +804,22 @@ function initThree(config) {
             );
             arGroup.add(heartModel);
 
+            anatomyLabels = [];
             anatomyParts.forEach((part, index) => {
                 addAnatomyLabel(part, index);
             });
 
+            isModelMounted = true;
             setupInteraction();
             updateInfoCard();
             syncLabels();
             updateLabelScale();
             positionInfoCard();
-            setStatus(copy.statusReady);
-        },
-        undefined,
-        () => {
+            setStatus(hasLiveMarkerDetection ? copy.statusTracking : copy.statusReady);
+        })
+        .catch(() => {
             setStatus(copy.statusModelError);
-        }
-    );
+        });
 }
 
 function addAnatomyLabel(part, index) {
@@ -1224,6 +1308,15 @@ function updateTrackedPoseFromCorners(corners) {
         trackedScale
     );
 
+    const uniformTrackedScale = Math.max(
+        arScale * 0.84,
+        Math.min(
+            arScale * 1.16,
+            (trackedScale.x + trackedScale.y + trackedScale.z) / 3
+        )
+    );
+    trackedScale.setScalar(uniformTrackedScale);
+
     return Number.isFinite(trackedPosition.x) && Number.isFinite(trackedScale.x);
 }
 
@@ -1239,9 +1332,25 @@ function applyTrackedPose(immediate = false) {
         return;
     }
 
-    arGroup.position.lerp(trackedPosition, trackingLerpAlpha);
-    arGroup.quaternion.slerp(trackedQuaternion, trackingLerpAlpha);
-    arGroup.scale.lerp(trackedScale, trackingLerpAlpha);
+    const positionDistance = arGroup.position.distanceTo(trackedPosition);
+    const rotationDistance = arGroup.quaternion.angleTo(trackedQuaternion);
+    const scaleDistance = Math.abs(arGroup.scale.x - trackedScale.x);
+    const followAlpha =
+        fastFollowDistance > 0 && positionDistance > fastFollowDistance
+            ? fastFollowAlpha
+            : trackingLerpAlpha;
+
+    if (positionDistance > positionDeadzone) {
+        arGroup.position.lerp(trackedPosition, followAlpha);
+    }
+
+    if (rotationDistance > rotationDeadzoneRad) {
+        arGroup.quaternion.slerp(trackedQuaternion, followAlpha);
+    }
+
+    if (scaleDistance > scaleDeadzone) {
+        arGroup.scale.lerp(trackedScale, trackingScaleLerpAlpha);
+    }
 }
 
 async function runQrDetection() {
@@ -1422,6 +1531,14 @@ function cleanup() {
     qrScanInFlight = false;
     scanContext = undefined;
     focalLength = 0;
+    positionDeadzone = 0;
+    scaleDeadzone = 0;
+    rotationDeadzoneRad = 0;
+    fastFollowDistance = 0;
+    fastFollowAlpha = TRACKING_LERP_ALPHA;
+    preloadedModelPath = "";
+    preloadedModelPromise = undefined;
+    isModelMounted = false;
 
     if (renderer) {
         renderer.dispose();
