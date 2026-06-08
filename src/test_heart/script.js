@@ -1,7 +1,9 @@
-const query = new URLSearchParams(window.location.search);
+﻿const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
 const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const isEmbeddedApp = query.get("embed") === "app";
 const HEART_MODEL_PATH = "assets/human_heart.glb";
+const QUIZ_DELAY_SECONDS = 30;
 const DEFAULT_HEART_ROTATION = {
     x: 0,
     y: Math.PI,
@@ -30,6 +32,7 @@ const LABEL_SCALE_RESPONSE = 0.35;
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
 document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+document.documentElement.dataset.embed = isEmbeddedApp ? "app" : "standalone";
 
 const UI = {
     appEyebrow: document.getElementById("app-eyebrow"),
@@ -47,6 +50,16 @@ const UI = {
     overviewText: document.getElementById("overview-text"),
     partInfo: document.getElementById("part-info"),
     partName: document.getElementById("part-name"),
+    quizActionBtn: document.getElementById("quiz-action-btn"),
+    quizEyebrow: document.getElementById("quiz-eyebrow"),
+    quizIntro: document.getElementById("quiz-intro"),
+    quizLayer: document.getElementById("quiz-layer"),
+    quizList: document.getElementById("quiz-list"),
+    quizPill: document.getElementById("quiz-pill"),
+    quizPillIcon: document.getElementById("quiz-pill-icon"),
+    quizPillText: document.getElementById("quiz-pill-text"),
+    quizSummary: document.getElementById("quiz-summary"),
+    quizTitle: document.getElementById("quiz-title"),
     rotateBtn: document.getElementById("btn-rotate"),
     rotateLabel: document.getElementById("rotate-label"),
     scaleBtn: document.getElementById("btn-scale"),
@@ -164,6 +177,81 @@ if (currentLanguage === "ar") {
     });
 }
 
+const quizQuestionsEn = [
+    {
+        id: "left-ventricle",
+        prompt: "Which chamber pumps oxygen-rich blood to the rest of the body?",
+        options: [
+            { id: "a", label: "Left ventricle", isCorrect: true },
+            { id: "b", label: "Right atrium", isCorrect: false },
+            { id: "c", label: "Right ventricle", isCorrect: false }
+        ]
+    },
+    {
+        id: "aorta",
+        prompt: "What is the name of the main vessel that carries blood away from the heart?",
+        options: [
+            { id: "a", label: "Vena cava", isCorrect: false },
+            { id: "b", label: "Aorta", isCorrect: true },
+            { id: "c", label: "Pulmonary artery", isCorrect: false }
+        ]
+    },
+    {
+        id: "right-side",
+        prompt: "What does the right side of the heart mainly do?",
+        options: [
+            { id: "a", label: "Sends oxygen-poor blood to the lungs", isCorrect: true },
+            { id: "b", label: "Sends blood straight to the brain", isCorrect: false },
+            { id: "c", label: "Controls the heart rhythm directly", isCorrect: false }
+        ]
+    }
+];
+
+const quizQuestionsAr = [
+    {
+        id: "left-ventricle",
+        prompt:
+            "\u0623\u064a \u062d\u062c\u0631\u0629 \u0641\u064a \u0627\u0644\u0642\u0644\u0628 \u062a\u0636\u062e \u0627\u0644\u062f\u0645 \u0627\u0644\u063a\u0646\u064a \u0628\u0627\u0644\u0623\u0643\u0633\u062c\u064a\u0646 \u0625\u0644\u0649 \u0633\u0627\u0626\u0631 \u0627\u0644\u062c\u0633\u0645\u061f",
+        options: [
+            { id: "a", label: "\u0627\u0644\u0628\u0637\u064a\u0646 \u0627\u0644\u0623\u064a\u0633\u0631", isCorrect: true },
+            { id: "b", label: "\u0627\u0644\u0623\u0630\u064a\u0646 \u0627\u0644\u0623\u064a\u0645\u0646", isCorrect: false },
+            { id: "c", label: "\u0627\u0644\u0628\u0637\u064a\u0646 \u0627\u0644\u0623\u064a\u0645\u0646", isCorrect: false }
+        ]
+    },
+    {
+        id: "aorta",
+        prompt:
+            "\u0645\u0627 \u0627\u0633\u0645 \u0627\u0644\u0648\u0639\u0627\u0621 \u0627\u0644\u062f\u0645\u0648\u064a \u0627\u0644\u0631\u0626\u064a\u0633\u064a \u0627\u0644\u0630\u064a \u064a\u062d\u0645\u0644 \u0627\u0644\u062f\u0645 \u0628\u0639\u064a\u062f\u0627\u064b \u0639\u0646 \u0627\u0644\u0642\u0644\u0628\u061f",
+        options: [
+            { id: "a", label: "\u0627\u0644\u0648\u0631\u064a\u062f \u0627\u0644\u0623\u062c\u0648\u0641", isCorrect: false },
+            { id: "b", label: "\u0627\u0644\u0623\u0628\u0647\u0631", isCorrect: true },
+            { id: "c", label: "\u0627\u0644\u0634\u0631\u064a\u0627\u0646 \u0627\u0644\u0631\u0626\u0648\u064a", isCorrect: false }
+        ]
+    },
+    {
+        id: "right-side",
+        prompt:
+            "\u0645\u0627 \u0627\u0644\u0648\u0638\u064a\u0641\u0629 \u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629 \u0644\u0644\u062c\u0627\u0646\u0628 \u0627\u0644\u0623\u064a\u0645\u0646 \u0645\u0646 \u0627\u0644\u0642\u0644\u0628\u061f",
+        options: [
+            {
+                id: "a",
+                label: "\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u062f\u0645 \u0627\u0644\u0641\u0642\u064a\u0631 \u0628\u0627\u0644\u0623\u0643\u0633\u062c\u064a\u0646 \u0625\u0644\u0649 \u0627\u0644\u0631\u0626\u062a\u064a\u0646",
+                isCorrect: true
+            },
+            {
+                id: "b",
+                label: "\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u062f\u0645 \u0625\u0644\u0649 \u0627\u0644\u062f\u0645\u0627\u063a \u0645\u0628\u0627\u0634\u0631\u0629",
+                isCorrect: false
+            },
+            {
+                id: "c",
+                label: "\u0627\u0644\u062a\u062d\u0643\u0645 \u0641\u064a \u0636\u0631\u0628\u0627\u062a \u0627\u0644\u0642\u0644\u0628",
+                isCorrect: false
+            }
+        ]
+    }
+];
+
 const copyEn = {
     appEyebrow: "EduAR live scan",
     appTitle: "HUMAN HEART",
@@ -181,8 +269,18 @@ const copyEn = {
     statusModelError: "The heart model could not be loaded.",
     focusTag: "Selected part",
     modelTitle: "CARDIOVASCULAR SYSTEM",
+    continueAr: "Continue AR",
     overviewTitle: "Human Heart",
     overviewText: "An interactive anatomy model that shows the chambers, vessels and blood flow pathways.",
+    quizActive: "Heart quiz ready",
+    quizComplete: "Heart quiz completed",
+    quizEyebrow: "Quick check",
+    quizIntro: "Thirty seconds have passed. Answer a short questionnaire about the human heart.",
+    quizNote: "Answer every question before submitting the quiz.",
+    quizResult: "You scored {score} out of {total}.",
+    quizTimer: "Quiz in",
+    quizTitle: "Human Heart Questionnaire",
+    submitQuiz: "Submit answers",
     overview: {
         tag: "Open-heart view",
         title: "OPEN HEART",
@@ -192,29 +290,39 @@ const copyEn = {
 };
 
 const copyAr = {
-    appEyebrow: "مسح مباشر",
-    appTitle: "قلب الإنسان",
-    rotate: "تدوير",
-    scale: "تحجيم",
-    sound: "صوت",
-    labels: "الأرقام تشغيل/إيقاف",
-    statusStarting: "جار تشغيل الكاميرا...",
-    statusLoading: "جار تحميل نموذج القلب...",
-    statusReady: "الكاميرا جاهزة",
-    statusTracking: "تم وضع القلب",
-    statusHoldSteady: "ثبّت الجهاز أثناء التقاط رمز QR...",
-    statusSearching: "جار البحث عن رمز QR...",
-    statusCameraError: "تم رفض الوصول إلى الكاميرا.",
-    statusModelError: "تعذر تحميل نموذج القلب.",
-    focusTag: "الجزء المحدد",
-    modelTitle: "الجهاز القلبي الوعائي",
-    overviewTitle: "قلب الإنسان",
-    overviewText: "نموذج تشريحي تفاعلي يوضح حجرات القلب والأوعية ومسارات تدفق الدم.",
+    appEyebrow: "\u0645\u0633\u062d \u0645\u0628\u0627\u0634\u0631",
+    appTitle: "\u0642\u0644\u0628 \u0627\u0644\u0625\u0646\u0633\u0627\u0646",
+    rotate: "\u062a\u062f\u0648\u064a\u0631",
+    scale: "\u062a\u062d\u062c\u064a\u0645",
+    sound: "\u0635\u0648\u062a",
+    labels: "\u0627\u0644\u0623\u0631\u0642\u0627\u0645 \u062a\u0634\u063a\u064a\u0644/\u0625\u064a\u0642\u0627\u0641",
+    statusStarting: "\u062c\u0627\u0631 \u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u0643\u0627\u0645\u064a\u0631\u0627...",
+    statusLoading: "\u062c\u0627\u0631 \u062a\u062d\u0645\u064a\u0644 \u0646\u0645\u0648\u0630\u062c \u0627\u0644\u0642\u0644\u0628...",
+    statusReady: "\u0627\u0644\u0643\u0627\u0645\u064a\u0631\u0627 \u062c\u0627\u0647\u0632\u0629",
+    statusTracking: "\u062a\u0645 \u0648\u0636\u0639 \u0627\u0644\u0642\u0644\u0628",
+    statusHoldSteady: "\u062b\u0628\u0651\u062a \u0627\u0644\u062c\u0647\u0627\u0632 \u0623\u062b\u0646\u0627\u0621 \u0627\u0644\u062a\u0642\u0627\u0637 \u0631\u0645\u0632 QR...",
+    statusSearching: "\u062c\u0627\u0631 \u0627\u0644\u0628\u062d\u062b \u0639\u0646 \u0631\u0645\u0632 QR...",
+    statusCameraError: "\u062a\u0645 \u0631\u0641\u0636 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0627\u0644\u0643\u0627\u0645\u064a\u0631\u0627.",
+    statusModelError: "\u062a\u0639\u0630\u0631 \u062a\u062d\u0645\u064a\u0644 \u0646\u0645\u0648\u0630\u062c \u0627\u0644\u0642\u0644\u0628.",
+    focusTag: "\u0627\u0644\u062c\u0632\u0621 \u0627\u0644\u0645\u062d\u062f\u062f",
+    modelTitle: "\u0627\u0644\u062c\u0647\u0627\u0632 \u0627\u0644\u0642\u0644\u0628\u064a \u0627\u0644\u0648\u0639\u0627\u0626\u064a",
+    continueAr: "\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0639\u0631\u0636",
+    overviewTitle: "\u0642\u0644\u0628 \u0627\u0644\u0625\u0646\u0633\u0627\u0646",
+    overviewText: "\u0646\u0645\u0648\u0630\u062c \u062a\u0634\u0631\u064a\u062d\u064a \u062a\u0641\u0627\u0639\u0644\u064a \u064a\u0648\u0636\u062d \u062d\u062c\u0631\u0627\u062a \u0627\u0644\u0642\u0644\u0628 \u0648\u0627\u0644\u0623\u0648\u0639\u064a\u0629 \u0648\u0645\u0633\u0627\u0631\u0627\u062a \u062a\u062f\u0641\u0642 \u0627\u0644\u062f\u0645.",
+    quizActive: "\u0627\u062e\u062a\u0628\u0627\u0631 \u0627\u0644\u0642\u0644\u0628 \u062c\u0627\u0647\u0632",
+    quizComplete: "\u062a\u0645 \u0625\u0643\u0645\u0627\u0644 \u0627\u062e\u062a\u0628\u0627\u0631 \u0627\u0644\u0642\u0644\u0628",
+    quizEyebrow: "\u062a\u0642\u064a\u064a\u0645 \u0633\u0631\u064a\u0639",
+    quizIntro: "\u0628\u0639\u062f \u0645\u0631\u0648\u0631 \u062b\u0644\u0627\u062b\u064a\u0646 \u062b\u0627\u0646\u064a\u0629\u060c \u062d\u0627\u0646 \u0627\u0644\u0648\u0642\u062a \u0644\u0644\u0625\u062c\u0627\u0628\u0629 \u0639\u0646 \u0623\u0633\u0626\u0644\u0629 \u0633\u0631\u064a\u0639\u0629 \u062d\u0648\u0644 \u0627\u0644\u0642\u0644\u0628.",
+    quizNote: "\u0623\u062c\u0628 \u0639\u0646 \u062c\u0645\u064a\u0639 \u0627\u0644\u0623\u0633\u0626\u0644\u0629 \u0642\u0628\u0644 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631.",
+    quizResult: "\u0623\u062d\u0631\u0632\u062a {score} \u0645\u0646 {total}.",
+    quizTimer: "\u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631 \u0628\u0639\u062f",
+    quizTitle: "\u0627\u0633\u062a\u0628\u064a\u0627\u0646 \u0627\u0644\u0642\u0644\u0628 \u0627\u0644\u0628\u0634\u0631\u064a",
+    submitQuiz: "\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0625\u062c\u0627\u0628\u0627\u062a",
     overview: {
-        tag: "عرض القلب المفتوح",
-        title: "القلب المفتوح",
-        info: "اضغط على علامة مرقمة لقراءة تعريف كل بنية داخل القلب.",
-        hint: "دوّر النموذج حتى تظهر جهة المقطع، أو استخدم التحجيم للاقتراب أكثر."
+        tag: "\u0639\u0631\u0636 \u0627\u0644\u0642\u0644\u0628 \u0627\u0644\u0645\u0641\u062a\u0648\u062d",
+        title: "\u0627\u0644\u0642\u0644\u0628 \u0627\u0644\u0645\u0641\u062a\u0648\u062d",
+        info: "\u0627\u0636\u063a\u0637 \u0639\u0644\u0649 \u0639\u0644\u0627\u0645\u0629 \u0645\u0631\u0642\u0645\u0629 \u0644\u0642\u0631\u0627\u0621\u0629 \u062a\u0639\u0631\u064a\u0641 \u0643\u0644 \u0628\u0646\u064a\u0629 \u062f\u0627\u062e\u0644 \u0627\u0644\u0642\u0644\u0628.",
+        hint: "\u062f\u0648\u0651\u0631 \u0627\u0644\u0646\u0645\u0648\u0630\u062c \u062d\u062a\u0649 \u062a\u0638\u0647\u0631 \u062c\u0647\u0629 \u0627\u0644\u0645\u0642\u0637\u0639\u060c \u0623\u0648 \u0627\u0633\u062a\u062e\u062f\u0645 \u0627\u0644\u062a\u062d\u062c\u064a\u0645 \u0644\u0644\u0627\u0642\u062a\u0631\u0627\u0628 \u0623\u0643\u062b\u0631."
     }
 };
 
@@ -269,6 +377,12 @@ let availableSpeechVoices = [];
 let preloadedModelPath = "";
 let preloadedModelPromise;
 let isModelMounted = false;
+let quizTimerId = 0;
+let quizTimeLeft = QUIZ_DELAY_SECONDS;
+let isQuizVisible = false;
+let isQuizCompleted = false;
+let quizScore = null;
+let quizAnswers = {};
 
 const trackedMatrix = new THREE.Matrix4();
 const trackedPosition = new THREE.Vector3();
@@ -328,6 +442,217 @@ function setStatus(message) {
     }
 
     UI.status.textContent = message;
+}
+
+function getQuizQuestions() {
+    return currentLanguage === "ar" ? quizQuestionsAr : quizQuestionsEn;
+}
+
+function formatQuizTime(seconds) {
+    const minutes = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const remainingSeconds = String(seconds % 60).padStart(2, "0");
+    return `${minutes}:${remainingSeconds}`;
+}
+
+function hasAnsweredEveryQuizQuestion() {
+    return getQuizQuestions().every((question) => Boolean(quizAnswers[question.id]));
+}
+
+function getQuizSummaryText() {
+    if (quizScore === null) {
+        return copy.quizNote;
+    }
+
+    return copy.quizResult
+        .replace("{score}", String(quizScore))
+        .replace("{total}", String(getQuizQuestions().length));
+}
+
+function syncQuizPill() {
+    if (!UI.quizPill || !UI.quizPillText || !UI.quizPillIcon) {
+        return;
+    }
+
+    UI.quizPill.classList.toggle("quiz-pill--done", isQuizCompleted);
+    UI.quizPillIcon.textContent = isQuizCompleted ? "✓" : "⏱";
+    UI.quizPillText.textContent = isQuizCompleted
+        ? copy.quizComplete
+        : isQuizVisible
+            ? copy.quizActive
+            : `${copy.quizTimer} ${formatQuizTime(quizTimeLeft)}`;
+}
+
+function syncQuizLayer() {
+    if (!UI.quizLayer) {
+        return;
+    }
+
+    UI.quizLayer.classList.toggle("quiz-layer--visible", isQuizVisible);
+    UI.quizLayer.setAttribute("aria-hidden", String(!isQuizVisible));
+    document.body.classList.toggle("quiz-open", isQuizVisible);
+}
+
+function handleQuizAnswerChange(questionId, optionId) {
+    quizAnswers = {
+        ...quizAnswers,
+        [questionId]: optionId
+    };
+    renderQuiz();
+}
+
+function submitQuiz() {
+    if (!hasAnsweredEveryQuizQuestion()) {
+        return;
+    }
+
+    quizScore = getQuizQuestions().reduce((score, question) => {
+        const selectedOption = question.options.find(
+            (option) => option.id === quizAnswers[question.id]
+        );
+
+        return selectedOption?.isCorrect ? score + 1 : score;
+    }, 0);
+    renderQuiz();
+}
+
+function openQuiz() {
+    isQuizVisible = true;
+    setFocusedPart(-1);
+    if (quizTimerId) {
+        window.clearInterval(quizTimerId);
+        quizTimerId = 0;
+    }
+    renderQuiz();
+}
+
+function closeQuiz() {
+    isQuizVisible = false;
+    isQuizCompleted = true;
+    renderQuiz();
+}
+
+function handleQuizAction() {
+    if (quizScore === null) {
+        submitQuiz();
+        return;
+    }
+
+    closeQuiz();
+}
+
+function renderQuiz() {
+    if (
+        !UI.quizList ||
+        !UI.quizSummary ||
+        !UI.quizActionBtn ||
+        !UI.quizEyebrow ||
+        !UI.quizIntro ||
+        !UI.quizTitle
+    ) {
+        return;
+    }
+
+    UI.quizEyebrow.textContent = copy.quizEyebrow;
+    UI.quizTitle.textContent = copy.quizTitle;
+    UI.quizIntro.textContent = copy.quizIntro;
+    UI.quizList.textContent = "";
+
+    getQuizQuestions().forEach((question, index) => {
+        const questionSection = document.createElement("section");
+        questionSection.className = "quiz-question";
+
+        const questionTitle = document.createElement("strong");
+        questionTitle.textContent = `${index + 1}. ${question.prompt}`;
+        questionSection.appendChild(questionTitle);
+
+        const optionsWrap = document.createElement("div");
+        optionsWrap.className = "quiz-options";
+
+        question.options.forEach((option) => {
+            const isSelected = quizAnswers[question.id] === option.id;
+            const optionLabel = document.createElement("label");
+            optionLabel.className = [
+                "quiz-option",
+                isSelected ? "quiz-option--selected" : "",
+                quizScore !== null && option.isCorrect ? "quiz-option--correct" : "",
+                quizScore !== null && isSelected && !option.isCorrect
+                    ? "quiz-option--wrong"
+                    : ""
+            ]
+                .filter(Boolean)
+                .join(" ");
+
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = question.id;
+            input.value = option.id;
+            input.checked = isSelected;
+            input.disabled = quizScore !== null;
+            input.addEventListener("change", () => {
+                handleQuizAnswerChange(question.id, option.id);
+            });
+
+            const optionText = document.createElement("span");
+            optionText.textContent = option.label;
+
+            optionLabel.appendChild(input);
+            optionLabel.appendChild(optionText);
+            optionsWrap.appendChild(optionLabel);
+        });
+
+        questionSection.appendChild(optionsWrap);
+        UI.quizList.appendChild(questionSection);
+    });
+
+    UI.quizSummary.textContent = getQuizSummaryText();
+    UI.quizSummary.classList.toggle("quiz-summary--scored", quizScore !== null);
+    UI.quizActionBtn.textContent =
+        quizScore === null ? copy.submitQuiz : copy.continueAr;
+    UI.quizActionBtn.disabled =
+        quizScore === null && !hasAnsweredEveryQuizQuestion();
+
+    syncQuizPill();
+    syncQuizLayer();
+}
+
+function startQuizCountdown() {
+    if (quizTimerId) {
+        window.clearInterval(quizTimerId);
+        quizTimerId = 0;
+    }
+
+    syncQuizPill();
+
+    quizTimerId = window.setInterval(() => {
+        if (isQuizVisible || isQuizCompleted) {
+            window.clearInterval(quizTimerId);
+            quizTimerId = 0;
+            return;
+        }
+
+        quizTimeLeft = Math.max(0, quizTimeLeft - 1);
+        if (quizTimeLeft === 0) {
+            openQuiz();
+            return;
+        }
+
+        syncQuizPill();
+    }, 1000);
+}
+
+function resetQuizState() {
+    if (quizTimerId) {
+        window.clearInterval(quizTimerId);
+        quizTimerId = 0;
+    }
+
+    quizTimeLeft = QUIZ_DELAY_SECONDS;
+    isQuizVisible = false;
+    isQuizCompleted = false;
+    quizScore = null;
+    quizAnswers = {};
+    renderQuiz();
+    startQuizCountdown();
 }
 
 function applyTrackingSettings(config) {
@@ -402,6 +727,36 @@ function loadSpeechVoices() {
     return availableSpeechVoices;
 }
 
+function getPreferredSpeechLocales() {
+    if (currentLanguage === "ar") {
+        return ["ar-SA", "ar-EG", "ar"];
+    }
+
+    return ["en-US", "en-GB", "en"];
+}
+
+function hasNativeTtsSupport() {
+    return Boolean(window.EduARTTS && typeof window.EduARTTS.speak === "function");
+}
+
+function canUseSpeechPlayback() {
+    return hasNativeTtsSupport() || ("speechSynthesis" in window);
+}
+
+function stopSpeechPlayback() {
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.stop();
+        } catch (error) {
+            console.warn("Failed to stop native TTS.", error);
+        }
+    }
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+}
+
 function updateInfoCard() {
     if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint || !UI.listenBtn) {
         return;
@@ -410,9 +765,7 @@ function updateInfoCard() {
     const selectedPart = getSelectedPart();
 
     if (!selectedPart) {
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
-        }
+        stopSpeechPlayback();
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
         UI.listenBtn.disabled = true;
@@ -423,37 +776,55 @@ function updateInfoCard() {
     UI.partName.textContent = selectedPart.title;
     UI.partInfo.textContent = selectedPart.info;
     UI.cardHint.textContent = selectedPart.hint;
-    UI.listenBtn.disabled = !("speechSynthesis" in window);
+    UI.listenBtn.disabled = !canUseSpeechPlayback();
     UI.card.classList.add("info-card--visible");
     UI.card.classList.add("info-card--selected");
 }
 
 function speakSelectedPartInfo() {
     const selectedPart = getSelectedPart();
-    if (!selectedPart || !("speechSynthesis" in window)) {
+    if (!selectedPart) {
+        return;
+    }
+
+    const preferredLocales = getPreferredSpeechLocales();
+    if (hasNativeTtsSupport()) {
+        try {
+            window.EduARTTS.speak(selectedPart.info, preferredLocales[0] ?? "en-US");
+            return;
+        } catch (error) {
+            console.warn("Native TTS failed, falling back to Web Speech.", error);
+        }
+    }
+
+    if (!("speechSynthesis" in window)) {
         return;
     }
 
     const synthesis = window.speechSynthesis;
     const voices = loadSpeechVoices();
     const utterance = new SpeechSynthesisUtterance(selectedPart.info);
-    const preferredLangs = currentLanguage === "ar"
-        ? ["ar-SA", "ar-EG", "ar"]
-        : ["en-US", "en-GB", "en"];
-    const matchingVoice = preferredLangs
-        .map((lang) =>
-            voices.find((voice) => voice.lang?.toLowerCase().startsWith(lang.toLowerCase()))
+    const matchingVoice = preferredLocales
+        .map((locale) =>
+            voices.find((voice) => voice.lang?.toLowerCase().startsWith(locale.toLowerCase()))
         )
         .find(Boolean)
-        ?? voices.find((voice) =>
-            currentLanguage === "ar"
-                ? voice.lang?.toLowerCase().includes("ar")
-                : voice.lang?.toLowerCase().startsWith("en")
-        )
+        ?? voices.find((voice) => {
+            const normalizedLang = voice.lang?.toLowerCase();
+            if (!normalizedLang) {
+                return false;
+            }
+
+            return preferredLocales.some((locale) => {
+                const normalizedLocale = locale.toLowerCase();
+                return normalizedLang.startsWith(normalizedLocale)
+                    || normalizedLang.includes(normalizedLocale.split("-")[0]);
+            });
+        })
         ?? voices.find((voice) => voice.default)
         ?? voices[0];
 
-    utterance.lang = currentLanguage === "ar" ? "ar-SA" : "en-US";
+    utterance.lang = preferredLocales[0] ?? "en-US";
     if (matchingVoice) {
         utterance.voice = matchingVoice;
     }
@@ -554,6 +925,7 @@ function applyCopy() {
     updateInfoCard();
     positionInfoCard();
     setStatus(copy.statusStarting);
+    renderQuiz();
 }
 
 async function loadConfig() {
@@ -563,6 +935,10 @@ async function loadConfig() {
 
     isSessionStarting = true;
     applyCopy();
+    if (UI.quizActionBtn) {
+        UI.quizActionBtn.onclick = handleQuizAction;
+    }
+    resetQuizState();
     let config = defaultConfig;
 
     try {
@@ -1494,6 +1870,11 @@ function cleanup() {
         animationFrameId = 0;
     }
 
+    if (quizTimerId) {
+        window.clearInterval(quizTimerId);
+        quizTimerId = 0;
+    }
+
     if (activeStream) {
         activeStream.getTracks().forEach((track) => track.stop());
         activeStream = undefined;
@@ -1510,9 +1891,7 @@ function cleanup() {
         heartSound.currentTime = 0;
     }
 
-    if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-    }
+    stopSpeechPlayback();
 
     isSoundPlaying = false;
     isDragging = false;
@@ -1531,6 +1910,11 @@ function cleanup() {
     qrScanInFlight = false;
     scanContext = undefined;
     focalLength = 0;
+    quizTimeLeft = QUIZ_DELAY_SECONDS;
+    isQuizVisible = false;
+    isQuizCompleted = false;
+    quizScore = null;
+    quizAnswers = {};
     positionDeadzone = 0;
     scaleDeadzone = 0;
     rotationDeadzoneRad = 0;
@@ -1548,6 +1932,7 @@ function cleanup() {
         labelRenderer.domElement.parentNode.removeChild(labelRenderer.domElement);
     }
 
+    document.body.classList.remove("quiz-open");
     anatomyLabels = [];
     baseHeartModelScale = 0.8;
     renderer = undefined;
@@ -1564,3 +1949,4 @@ window.addEventListener("pagehide", cleanup);
 window.addEventListener("beforeunload", cleanup);
 
 loadConfig();
+

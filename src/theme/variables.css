@@ -394,10 +394,12 @@ ion-content.app-page::part(scroll) {
   --brand-mark-accent: #19b8ff;
 }
 
-.brand-mark svg {
+.brand-mark__image {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
 }
 
 .brand-mark__frame,
@@ -462,17 +464,10 @@ ion-content.app-page::part(scroll) {
 }
 
 .brand-mark--hero {
-  width: 82px;
-  height: 82px;
-  padding: 12px;
-  box-sizing: border-box;
-  border-radius: 24px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(241, 247, 255, 0.92) 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.88),
-    0 24px 54px rgba(43, 112, 188, 0.18);
-  color: #10192d;
-  --brand-mark-accent: #22c7ff;
+  width: clamp(108px, 28vw, 146px);
+  height: clamp(108px, 28vw, 146px);
+  border-radius: 30px;
+  overflow: hidden;
 }
 
 .brand-hero {
@@ -567,13 +562,9 @@ ion-content.app-page::part(scroll) {
 }
 
 .brand-hero--login .brand-mark--hero {
-  width: 60px;
-  height: 60px;
-  padding: 9px;
-  border-radius: 22px;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.88),
-    0 16px 34px rgba(43, 112, 188, 0.14);
+  width: clamp(88px, 24vw, 116px);
+  height: clamp(88px, 24vw, 116px);
+  border-radius: 24px;
 }
 
 .brand-hero--login .brand-hero__copy strong {
@@ -2787,10 +2778,9 @@ ion-tab-button ion-label {
   }
 
   .brand-hero--login .brand-mark--hero {
-    width: 54px;
-    height: 54px;
-    padding: 7px;
-    border-radius: 18px;
+    width: 82px;
+    height: 82px;
+    border-radius: 20px;
   }
 
   .brand-hero--login .brand-hero__copy strong {
@@ -3084,10 +3074,9 @@ ion-tab-button ion-label {
   }
 
   .brand-hero--login .brand-mark--hero {
-    width: 50px;
-    height: 50px;
-    padding: 6px;
-    border-radius: 16px;
+    width: 74px;
+    height: 74px;
+    border-radius: 18px;
   }
 
   .brand-hero--login .brand-hero__copy strong {
@@ -3293,21 +3282,13 @@ html[data-theme="dark"] .brand-mark {
 }
 
 html[data-theme="dark"] .brand-mark--hero {
-  background: linear-gradient(
-    180deg,
-    rgba(34, 50, 78, 0.98) 0%,
-    rgba(19, 29, 46, 0.96) 100%
-  );
-  box-shadow:
-    inset 0 0 0 1px rgba(122, 177, 255, 0.14),
-    0 20px 40px rgba(0, 0, 0, 0.28);
+  background: transparent;
+  box-shadow: none;
   color: #eef6ff;
 }
 
 html[data-theme="dark"] .brand-hero--login .brand-mark--hero {
-  box-shadow:
-    inset 0 0 0 1px rgba(122, 177, 255, 0.16),
-    0 16px 34px rgba(0, 0, 0, 0.26);
+  box-shadow: none;
 }
 
 html[data-theme="dark"] .brand-copy__eyebrow,

@@ -25,6 +25,34 @@
 
         <div id="model-title-pill" class="model-title-pill">CARDIOVASCULAR SYSTEM</div>
 
+        <div id="quiz-pill-wrap" aria-live="polite">
+            <div id="quiz-pill" class="quiz-pill">
+                <span id="quiz-pill-icon" class="quiz-pill__icon">⏱</span>
+                <span id="quiz-pill-text">Quiz in 00:30</span>
+            </div>
+        </div>
+
+        <div id="quiz-layer" class="quiz-layer" aria-hidden="true">
+            <div id="quiz-card" class="quiz-card" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
+                <div class="quiz-head">
+                    <span class="quiz-eyebrow" id="quiz-eyebrow">Quick check</span>
+                    <h2 id="quiz-title">Human Heart Questionnaire</h2>
+                    <p id="quiz-intro">
+                        Thirty seconds have passed. Answer a short questionnaire about the human heart.
+                    </p>
+                </div>
+                <div id="quiz-list" class="quiz-list"></div>
+                <div class="quiz-footer">
+                    <p id="quiz-summary" class="quiz-summary">
+                        Answer every question before submitting the quiz.
+                    </p>
+                    <button id="quiz-action-btn" class="quiz-action-btn" type="button" disabled>
+                        Submit answers
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="side-menu" class="glass">
             <button class="menu-btn active" id="btn-rotate" type="button">
                 <span class="menu-icon">R</span>

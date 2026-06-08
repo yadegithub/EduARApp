@@ -40,7 +40,6 @@ const SplashPage: React.FC = () => {
               <BrandMark className="brand-mark--hero" />
               <div className="brand-hero__copy">
                 <span className="brand-copy__eyebrow">{copy.eyebrow}</span>
-                <strong>EduAR</strong>
                 <p>{copy.subtitle}</p>
               </div>
             </div>
