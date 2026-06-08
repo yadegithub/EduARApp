@@ -204,7 +204,8 @@ const defaultConfig = {
                 position: DEFAULT_MARKER_MODEL_POSITION,
                 scale: { x: 0.9, y: 0.9, z: 0.9 },
                 rotation: DEFAULT_MODEL_ROTATION,
-                autoCenter: true
+                autoCenter: true,
+                alignBaseY: false
             }
         },
         audio: "/test_shared/assets/heartbeat.mp3"
@@ -881,6 +882,8 @@ function initThree(config) {
     const modelRotation =
         modelConfig.rotation ?? defaultModelConfig.rotation;
     const autoCenter = modelConfig.autoCenter ?? defaultModelConfig.autoCenter;
+    const alignBaseY =
+        modelConfig.alignBaseY ?? defaultModelConfig.alignBaseY ?? false;
 
     arScale = config.settings?.arScale ?? defaultConfig.settings.arScale;
     heartSound = new Audio(config.assets?.audio ?? defaultConfig.assets.audio);
@@ -927,9 +930,15 @@ function initThree(config) {
             );
             modelAnchor.add(modelRig);
 
+            const modelOffsetY = alignBaseY
+                ? -localBounds.min.y
+                : autoCenter
+                    ? -modelCenter.y
+                    : 0;
+
             heartModel.position.set(
                 autoCenter ? -modelCenter.x : 0,
-                autoCenter ? -modelCenter.y : 0,
+                modelOffsetY,
                 autoCenter ? -modelCenter.z : 0
             );
             modelRig.add(heartModel);

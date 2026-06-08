@@ -56,7 +56,11 @@ function updateInfoCard() {
 
   const selectedBody = getSelectedBody();
   if (!selectedBody) {
-    UI.card.classList.remove("info-card--visible");
+    UI.cardTag.textContent = copy.overview.tag;
+    UI.partName.textContent = copy.overview.title;
+    UI.partInfo.textContent = copy.overview.info;
+    UI.cardHint.textContent = copy.overview.hint;
+    UI.card.classList.add("info-card--visible");
     UI.card.classList.remove("info-card--selected");
     return;
   }

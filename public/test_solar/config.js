@@ -228,6 +228,12 @@ const copyEn = {
   statusCameraError: "Camera access was denied.",
   statusModelError: "The solar model could not be loaded.",
   focusTag: "Selected planet",
+  overview: {
+    tag: "Astronomy model",
+    title: "SOLAR SYSTEM",
+    info: "Explore an AR model of the solar system with the Sun, planets, orbital paths and relative motion.",
+    hint: "Tap a planet label to read details about each body.",
+  },
 };
 
 const copyAr = {
@@ -248,6 +254,9 @@ const copyAr = {
 };
 
 const copy = currentLanguage === "ar" ? copyAr : copyEn;
+if (!copy.overview) {
+  copy.overview = copyEn.overview;
+}
 
 const defaultConfig = {
   assets: {

@@ -19,7 +19,8 @@
           "y": 3,
           "z": 0
         },
-        "autoCenter": true
+        "autoCenter": true,
+        "alignBaseY": true
       }
     }
   },
@@ -201,7 +202,14 @@
     ]
   },
   "settings": {
-    "arScale": 1.2,
+    "arScale": 1.75,
+    "tracking": {
+      "markerLostGraceFrames": 20,
+      "trackingLerpAlpha": 0.28,
+      "confirmFrames": 2,
+      "qrScanIntervalMs": 80,
+      "qrSearchIntervalMs": 120
+    },
     "debugMode": false
   }
 }
