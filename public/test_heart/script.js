@@ -1,6 +1,7 @@
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const languageParam = query.get("lang");
+const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
 const HEART_MODEL_PATH = "assets/human_heart.glb";
 const DEFAULT_HEART_ROTATION = {
     x: 0,
@@ -8,15 +9,17 @@ const DEFAULT_HEART_ROTATION = {
     z: 0
 };
 const MARKER_LOST_GRACE_FRAMES = 20;
-const TRACKING_LERP_ALPHA = 0.18;
-const CONFIRM_FRAMES = 2;
-const MIN_QR_AREA_RATIO = 0.008;
-const MIN_QR_EDGE = 48;
-const MAX_QR_EDGE_RATIO = 2.3;
+const TRACKING_LERP_ALPHA = 0.16;
+const TRACKING_SCALE_LERP_ALPHA = 0.08;
+const CONFIRM_FRAMES = 1;
+const MIN_QR_AREA_RATIO = 0.004;
+const MIN_QR_EDGE = 34;
+const MAX_QR_EDGE_RATIO = 2.8;
 const MAX_CENTER_JUMP_RATIO = 0.12;
 const QR_SCAN_INTERVAL_MS = 80;
 const QR_SEARCH_INTERVAL_MS = 120;
-const MAX_RENDER_PIXEL_RATIO = 1.25;
+const QUIZ_DURATION_SECONDS = 60;
+const MAX_RENDER_PIXEL_RATIO = 1;
 const CAMERA_IDEAL_WIDTH = 960;
 const CAMERA_IDEAL_HEIGHT = 540;
 const CAMERA_IDEAL_FRAME_RATE = 24;
@@ -25,6 +28,12 @@ const SHOW_DEBUG_CAMERA_CANVAS = false;
 const LABEL_SCALE_MIN = 0.9;
 const LABEL_SCALE_MAX = 1.2;
 const LABEL_SCALE_RESPONSE = 0.35;
+const TRACKING_POSITION_DEADZONE = 0.012;
+const TRACKING_SCALE_DEADZONE = 0.01;
+const TRACKING_ROTATION_DEADZONE_RAD = 0.018;
+const TRACKED_SCALE_MIN_RATIO = 0.92;
+const TRACKED_SCALE_MAX_RATIO = 1.08;
+const QR_CORNER_SMOOTHING_ALPHA = 0.28;
 
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
@@ -46,6 +55,15 @@ const UI = {
     overviewText: document.getElementById("overview-text"),
     partInfo: document.getElementById("part-info"),
     partName: document.getElementById("part-name"),
+    quizCloseBtn: document.getElementById("quiz-close"),
+    quizFeedback: document.getElementById("quiz-feedback"),
+    quizModal: document.getElementById("quiz-modal"),
+    quizNextBtn: document.getElementById("quiz-next"),
+    quizOptions: document.getElementById("quiz-options"),
+    quizProgress: document.getElementById("quiz-progress"),
+    quizQuestion: document.getElementById("quiz-question"),
+    quizTimer: document.getElementById("quiz-timer"),
+    quizTitle: document.getElementById("quiz-title"),
     rotateBtn: document.getElementById("btn-rotate"),
     rotateLabel: document.getElementById("rotate-label"),
     scaleBtn: document.getElementById("btn-scale"),
@@ -110,48 +128,94 @@ const anatomyParts = [
     number: index + 1
 }));
 
-const heartPartCopy = {
+const heartPartCopyAr = {
     aorta: {
-        label: "الشريان الأبهر",
-        title: "الشريان الأبهر",
-        info: "ينقل الشريان الأبهر الدم الغني بالأكسجين من البطين الأيسر إلى باقي الجسم.",
-        hint: "هذا هو الشريان الرئيسي الخارج من القلب."
+        label: "Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø£Ø¨Ù‡Ø±",
+        title: "Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø£Ø¨Ù‡Ø±",
+        info: "ÙŠÙ†Ù‚Ù„ Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø£Ø¨Ù‡Ø± Ø§Ù„Ø¯Ù… Ø§Ù„ØºÙ†ÙŠ Ø¨Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ† Ù…Ù† Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø± Ø¥Ù„Ù‰ Ø¨Ø§Ù‚ÙŠ Ø§Ù„Ø¬Ø³Ù….",
+        hint: "Ù‡Ø°Ø§ Ù‡Ùˆ Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠ Ø§Ù„Ø®Ø§Ø±Ø¬ Ù…Ù† Ø§Ù„Ù‚Ù„Ø¨."
     },
     "pulmonary-artery": {
-        label: "الشريان الرئوي",
-        title: "الشريان الرئوي",
-        info: "ينقل الشريان الرئوي الدم الفقير بالأكسجين من القلب إلى الرئتين.",
-        hint: "يبدأ هنا مسار الدورة الدموية الرئوية."
+        label: "Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø±Ø¦ÙˆÙŠ",
+        title: "Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø±Ø¦ÙˆÙŠ",
+        info: "ÙŠÙ†Ù‚Ù„ Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø±Ø¦ÙˆÙŠ Ø§Ù„Ø¯Ù… Ø§Ù„ÙÙ‚ÙŠØ± Ø¨Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ† Ù…Ù† Ø§Ù„Ù‚Ù„Ø¨ Ø¥Ù„Ù‰ Ø§Ù„Ø±Ø¦ØªÙŠÙ†.",
+        hint: "ÙŠØ¨Ø¯Ø£ Ù‡Ù†Ø§ Ù…Ø³Ø§Ø± Ø§Ù„Ø¯ÙˆØ±Ø© Ø§Ù„Ø¯Ù…ÙˆÙŠØ© Ø§Ù„Ø±Ø¦ÙˆÙŠØ©."
     },
     "left-atrium": {
-        label: "الأذين الأيسر",
-        title: "الأذين الأيسر",
-        info: "يستقبل الأذين الأيسر الدم الغني بالأكسجين العائد من الرئتين.",
-        hint: "يمرر الدم المؤكسج إلى البطين الأيسر."
+        label: "Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø±",
+        title: "Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø±",
+        info: "ÙŠØ³ØªÙ‚Ø¨Ù„ Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø± Ø§Ù„Ø¯Ù… Ø§Ù„ØºÙ†ÙŠ Ø¨Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ† Ø§Ù„Ø¹Ø§Ø¦Ø¯ Ù…Ù† Ø§Ù„Ø±Ø¦ØªÙŠÙ†.",
+        hint: "ÙŠÙ…Ø±Ø± Ø§Ù„Ø¯Ù… Ø§Ù„Ù…Ø¤ÙƒØ³Ø¬ Ø¥Ù„Ù‰ Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø±."
     },
     "left-ventricle": {
-        label: "البطين الأيسر",
-        title: "البطين الأيسر",
-        info: "يضخ البطين الأيسر الدم الغني بالأكسجين إلى خارج القلب عبر الشريان الأبهر.",
-        hint: "هذه الحجرة لها الجدار الأكثر سماكة."
+        label: "Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø±",
+        title: "Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø±",
+        info: "ÙŠØ¶Ø® Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠØ³Ø± Ø§Ù„Ø¯Ù… Ø§Ù„ØºÙ†ÙŠ Ø¨Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ† Ø¥Ù„Ù‰ Ø®Ø§Ø±Ø¬ Ø§Ù„Ù‚Ù„Ø¨ Ø¹Ø¨Ø± Ø§Ù„Ø´Ø±ÙŠØ§Ù† Ø§Ù„Ø£Ø¨Ù‡Ø±.",
+        hint: "Ù‡Ø°Ù‡ Ø§Ù„Ø­Ø¬Ø±Ø© Ù„Ù‡Ø§ Ø§Ù„Ø¬Ø¯Ø§Ø± Ø§Ù„Ø£ÙƒØ«Ø± Ø³Ù…Ø§ÙƒØ©."
     },
     "right-atrium": {
-        label: "الأذين الأيمن",
-        title: "الأذين الأيمن",
-        info: "يستقبل الأذين الأيمن الدم الفقير بالأكسجين العائد من الجسم.",
-        hint: "يرسل الدم إلى الأسفل نحو البطين الأيمن."
+        label: "Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù†",
+        title: "Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù†",
+        info: "ÙŠØ³ØªÙ‚Ø¨Ù„ Ø§Ù„Ø£Ø°ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù† Ø§Ù„Ø¯Ù… Ø§Ù„ÙÙ‚ÙŠØ± Ø¨Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ† Ø§Ù„Ø¹Ø§Ø¦Ø¯ Ù…Ù† Ø§Ù„Ø¬Ø³Ù….",
+        hint: "ÙŠØ±Ø³Ù„ Ø§Ù„Ø¯Ù… Ø¥Ù„Ù‰ Ø§Ù„Ø£Ø³ÙÙ„ Ù†Ø­Ùˆ Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù†."
     },
     "right-ventricle": {
-        label: "البطين الأيمن",
-        title: "البطين الأيمن",
-        info: "يضخ البطين الأيمن الدم الفقير بالأكسجين نحو الرئتين.",
-        hint: "يبدأ رحلة الدم نحو الرئتين للحصول على الأكسجين."
+        label: "Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù†",
+        title: "Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù†",
+        info: "ÙŠØ¶Ø® Ø§Ù„Ø¨Ø·ÙŠÙ† Ø§Ù„Ø£ÙŠÙ…Ù† Ø§Ù„Ø¯Ù… Ø§Ù„ÙÙ‚ÙŠØ± Ø¨Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ† Ù†Ø­Ùˆ Ø§Ù„Ø±Ø¦ØªÙŠÙ†.",
+        hint: "ÙŠØ¨Ø¯Ø£ Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ù… Ù†Ø­Ùˆ Ø§Ù„Ø±Ø¦ØªÙŠÙ† Ù„Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ Ø§Ù„Ø£ÙƒØ³Ø¬ÙŠÙ†."
     }
 };
 
-if (currentLanguage === "ar") {
+const heartPartCopyFr = {
+    aorta: {
+        label: "Aorte",
+        title: "AORTE",
+        info: "L'aorte transporte le sang riche en oxygene du ventricule gauche vers le reste du corps.",
+        hint: "C'est l'artere principale qui sort du coeur."
+    },
+    "pulmonary-artery": {
+        label: "Artere pulmonaire",
+        title: "ARTERE PULMONAIRE",
+        info: "L'artere pulmonaire transporte le sang pauvre en oxygene du coeur vers les poumons.",
+        hint: "Elle lance la circulation pulmonaire."
+    },
+    "left-atrium": {
+        label: "Oreillette gauche",
+        title: "OREILLETTE GAUCHE",
+        info: "L'oreillette gauche recoit le sang riche en oxygene qui revient des poumons.",
+        hint: "Elle envoie le sang frais vers le ventricule gauche."
+    },
+    "left-ventricle": {
+        label: "Ventricule gauche",
+        title: "VENTRICULE GAUCHE",
+        info: "Le ventricule gauche propulse le sang riche en oxygene vers l'aorte.",
+        hint: "Cette cavite a la paroi la plus epaisse."
+    },
+    "right-atrium": {
+        label: "Oreillette droite",
+        title: "OREILLETTE DROITE",
+        info: "L'oreillette droite recoit le sang pauvre en oxygene qui revient du corps.",
+        hint: "Elle envoie le sang vers le ventricule droit."
+    },
+    "right-ventricle": {
+        label: "Ventricule droit",
+        title: "VENTRICULE DROIT",
+        info: "Le ventricule droit envoie le sang pauvre en oxygene vers les poumons.",
+        hint: "Il commence le trajet vers les poumons."
+    }
+};
+
+const localizedHeartPartCopy =
+    currentLanguage === "ar"
+        ? heartPartCopyAr
+        : currentLanguage === "fr"
+          ? heartPartCopyFr
+          : null;
+
+if (localizedHeartPartCopy) {
     anatomyParts.forEach((part) => {
-        const localizedPart = heartPartCopy[part.id];
+        const localizedPart = localizedHeartPartCopy[part.id];
         if (!localizedPart) {
             return;
         }
@@ -191,33 +255,158 @@ const copyEn = {
 };
 
 const copyAr = {
-    appEyebrow: "مسح مباشر",
-    appTitle: "قلب الإنسان",
-    rotate: "تدوير",
-    scale: "تحجيم",
-    sound: "صوت",
-    labels: "الأرقام تشغيل/إيقاف",
-    statusStarting: "جار تشغيل الكاميرا...",
-    statusLoading: "جار تحميل نموذج القلب...",
-    statusReady: "الكاميرا جاهزة",
-    statusTracking: "تم وضع القلب",
-    statusHoldSteady: "ثبّت الجهاز أثناء التقاط رمز QR...",
-    statusSearching: "جار البحث عن رمز QR...",
-    statusCameraError: "تم رفض الوصول إلى الكاميرا.",
-    statusModelError: "تعذر تحميل نموذج القلب.",
-    focusTag: "الجزء المحدد",
-    modelTitle: "الجهاز القلبي الوعائي",
-    overviewTitle: "قلب الإنسان",
-    overviewText: "نموذج تشريحي تفاعلي يوضح حجرات القلب والأوعية ومسارات تدفق الدم.",
+    appEyebrow: "Ù…Ø³Ø­ Ù…Ø¨Ø§Ø´Ø±",
+    appTitle: "Ù‚Ù„Ø¨ Ø§Ù„Ø¥Ù†Ø³Ø§Ù†",
+    rotate: "ØªØ¯ÙˆÙŠØ±",
+    scale: "ØªØ­Ø¬ÙŠÙ…",
+    sound: "ØµÙˆØª",
+    labels: "Ø§Ù„Ø£Ø±Ù‚Ø§Ù… ØªØ´ØºÙŠÙ„/Ø¥ÙŠÙ‚Ø§Ù",
+    statusStarting: "Ø¬Ø§Ø± ØªØ´ØºÙŠÙ„ Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§...",
+    statusLoading: "Ø¬Ø§Ø± ØªØ­Ù…ÙŠÙ„ Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù‚Ù„Ø¨...",
+    statusReady: "Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§ Ø¬Ø§Ù‡Ø²Ø©",
+    statusTracking: "ØªÙ… ÙˆØ¶Ø¹ Ø§Ù„Ù‚Ù„Ø¨",
+    statusHoldSteady: "Ø«Ø¨Ù‘Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„ØªÙ‚Ø§Ø· Ø±Ù…Ø² QR...",
+    statusSearching: "Ø¬Ø§Ø± Ø§Ù„Ø¨Ø­Ø« Ø¹Ù† Ø±Ù…Ø² QR...",
+    statusCameraError: "ØªÙ… Ø±ÙØ¶ Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ Ø§Ù„ÙƒØ§Ù…ÙŠØ±Ø§.",
+    statusModelError: "ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù‚Ù„Ø¨.",
+    focusTag: "Ø§Ù„Ø¬Ø²Ø¡ Ø§Ù„Ù…Ø­Ø¯Ø¯",
+    modelTitle: "Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ù‚Ù„Ø¨ÙŠ Ø§Ù„ÙˆØ¹Ø§Ø¦ÙŠ",
+    overviewTitle: "Ù‚Ù„Ø¨ Ø§Ù„Ø¥Ù†Ø³Ø§Ù†",
+    overviewText: "Ù†Ù…ÙˆØ°Ø¬ ØªØ´Ø±ÙŠØ­ÙŠ ØªÙØ§Ø¹Ù„ÙŠ ÙŠÙˆØ¶Ø­ Ø­Ø¬Ø±Ø§Øª Ø§Ù„Ù‚Ù„Ø¨ ÙˆØ§Ù„Ø£ÙˆØ¹ÙŠØ© ÙˆÙ…Ø³Ø§Ø±Ø§Øª ØªØ¯ÙÙ‚ Ø§Ù„Ø¯Ù….",
     overview: {
-        tag: "عرض القلب المفتوح",
-        title: "القلب المفتوح",
-        info: "اضغط على علامة مرقمة لقراءة تعريف كل بنية داخل القلب.",
-        hint: "دوّر النموذج حتى تظهر جهة المقطع، أو استخدم التحجيم للاقتراب أكثر."
+        tag: "Ø¹Ø±Ø¶ Ø§Ù„Ù‚Ù„Ø¨ Ø§Ù„Ù…ÙØªÙˆØ­",
+        title: "Ø§Ù„Ù‚Ù„Ø¨ Ø§Ù„Ù…ÙØªÙˆØ­",
+        info: "Ø§Ø¶ØºØ· Ø¹Ù„Ù‰ Ø¹Ù„Ø§Ù…Ø© Ù…Ø±Ù‚Ù…Ø© Ù„Ù‚Ø±Ø§Ø¡Ø© ØªØ¹Ø±ÙŠÙ ÙƒÙ„ Ø¨Ù†ÙŠØ© Ø¯Ø§Ø®Ù„ Ø§Ù„Ù‚Ù„Ø¨.",
+        hint: "Ø¯ÙˆÙ‘Ø± Ø§Ù„Ù†Ù…ÙˆØ°Ø¬ Ø­ØªÙ‰ ØªØ¸Ù‡Ø± Ø¬Ù‡Ø© Ø§Ù„Ù…Ù‚Ø·Ø¹ØŒ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ù… Ø§Ù„ØªØ­Ø¬ÙŠÙ… Ù„Ù„Ø§Ù‚ØªØ±Ø§Ø¨ Ø£ÙƒØ«Ø±."
     }
 };
 
-const copy = currentLanguage === "ar" ? copyAr : copyEn;
+const copyFr = {
+    appEyebrow: "Scan EduAR en direct",
+    appTitle: "COEUR HUMAIN",
+    rotate: "Rotation",
+    scale: "Echelle",
+    sound: "Audio",
+    labels: "Numeros On/Off",
+    statusStarting: "Demarrage de la camera...",
+    statusLoading: "Chargement du modele du coeur...",
+    statusReady: "Camera prete",
+    statusTracking: "Coeur place",
+    statusHoldSteady: "Gardez le QR stable pendant le verrouillage...",
+    statusSearching: "Recherche du QR code...",
+    statusCameraError: "L'acces a la camera a ete refuse.",
+    statusModelError: "Le modele du coeur n'a pas pu etre charge.",
+    focusTag: "Partie selectionnee",
+    modelTitle: "SYSTEME CARDIOVASCULAIRE",
+    overviewTitle: "Coeur humain",
+    overviewText: "Un modele anatomique interactif qui montre les cavites, les vaisseaux et la circulation du sang.",
+    overview: {
+        tag: "Vue interne du coeur",
+        title: "COEUR OUVERT",
+        info: "Touchez un numero pour lire la definition de chaque structure du coeur.",
+        hint: "Tournez le modele jusqu'a voir la coupe ou utilisez Echelle pour zoomer."
+    }
+};
+
+const copy =
+    currentLanguage === "ar" ? copyAr : currentLanguage === "fr" ? copyFr : copyEn;
+
+const quizCopyEn = {
+    timerPrefix: "Quiz in",
+    timerReady: "Quiz ready",
+    title: "Heart quiz",
+    progress: "Question",
+    of: "of",
+    next: "Next",
+    finish: "Finish",
+    closeLabel: "Close quiz",
+    correct: "Correct.",
+    incorrect: "Not quite. The correct answer is",
+    questions: [
+        {
+            question: "Which vessel carries oxygen-rich blood from the heart to the body?",
+            options: ["Aorta", "Pulmonary artery", "Right atrium"],
+            answer: 0
+        },
+        {
+            question: "Which chamber pumps oxygen-rich blood out through the aorta?",
+            options: ["Left ventricle", "Right ventricle", "Left atrium"],
+            answer: 0
+        },
+        {
+            question: "Where does the pulmonary artery send blood?",
+            options: ["To the lungs", "To the stomach", "To the brain"],
+            answer: 0
+        }
+    ]
+};
+
+const quizCopyAr = {
+    timerPrefix: "الاختبار بعد",
+    timerReady: "الاختبار جاهز",
+    title: "اختبار القلب",
+    progress: "السؤال",
+    of: "من",
+    next: "التالي",
+    finish: "إنهاء",
+    closeLabel: "إغلاق الاختبار",
+    correct: "إجابة صحيحة.",
+    incorrect: "ليست صحيحة. الإجابة الصحيحة هي",
+    questions: [
+        {
+            question: "أي وعاء ينقل الدم الغني بالأكسجين من القلب إلى الجسم؟",
+            options: ["الشريان الأبهر", "الشريان الرئوي", "الأذين الأيمن"],
+            answer: 0
+        },
+        {
+            question: "أي حجرة تضخ الدم الغني بالأكسجين عبر الشريان الأبهر؟",
+            options: ["البطين الأيسر", "البطين الأيمن", "الأذين الأيسر"],
+            answer: 0
+        },
+        {
+            question: "إلى أين يرسل الشريان الرئوي الدم؟",
+            options: ["إلى الرئتين", "إلى المعدة", "إلى الدماغ"],
+            answer: 0
+        }
+    ]
+};
+
+const quizCopyFr = {
+    timerPrefix: "Quiz dans",
+    timerReady: "Quiz pret",
+    title: "Quiz du coeur",
+    progress: "Question",
+    of: "sur",
+    next: "Suivant",
+    finish: "Terminer",
+    closeLabel: "Fermer le quiz",
+    correct: "Correct.",
+    incorrect: "Pas tout a fait. La bonne reponse est",
+    questions: [
+        {
+            question: "Quel vaisseau transporte le sang riche en oxygene du coeur vers le corps ?",
+            options: ["Aorte", "Artere pulmonaire", "Oreillette droite"],
+            answer: 0
+        },
+        {
+            question: "Quelle cavite propulse le sang riche en oxygene dans l'aorte ?",
+            options: ["Ventricule gauche", "Ventricule droit", "Oreillette gauche"],
+            answer: 0
+        },
+        {
+            question: "Ou l'artere pulmonaire envoie-t-elle le sang ?",
+            options: ["Vers les poumons", "Vers l'estomac", "Vers le cerveau"],
+            answer: 0
+        }
+    ]
+};
+
+const quizCopy =
+    currentLanguage === "ar"
+        ? quizCopyAr
+        : currentLanguage === "fr"
+          ? quizCopyFr
+          : quizCopyEn;
 
 let renderer;
 let labelRenderer;
@@ -251,14 +440,30 @@ let lastScanResult = {
 };
 let markerLostGraceFrames = MARKER_LOST_GRACE_FRAMES;
 let trackingLerpAlpha = TRACKING_LERP_ALPHA;
+let trackingScaleLerpAlpha = TRACKING_SCALE_LERP_ALPHA;
 let confirmFrames = CONFIRM_FRAMES;
 let qrScanIntervalMs = QR_SCAN_INTERVAL_MS;
 let qrSearchIntervalMs = QR_SEARCH_INTERVAL_MS;
+let positionDeadzone = 0;
+let scaleDeadzone = 0;
+let rotationDeadzoneRad = 0;
+let fastFollowDistance = 0;
+let fastFollowAlpha = TRACKING_LERP_ALPHA;
 let focalLength = 0;
 let qrScannerReady = false;
 let qrScanInFlight = false;
 let scanContext;
 let availableSpeechVoices = [];
+let preloadedModelPath = "";
+let preloadedModelPromise;
+let isModelMounted = false;
+let smoothedQrCorners = null;
+let quizCountdownIntervalId = 0;
+let quizDeadline = 0;
+let quizControlsReady = false;
+let quizHasOpened = false;
+let activeQuizQuestionIndex = 0;
+let quizAnswered = false;
 
 const trackedMatrix = new THREE.Matrix4();
 const trackedPosition = new THREE.Vector3();
@@ -271,7 +476,7 @@ const defaultConfig = {
             heart: {
                 path: HEART_MODEL_PATH,
                 position: { x: 0.0, y: 0.0, z: 0.0 },
-                scale: { x: 0.8, y: 0.8, z: 0.8 },
+                scale: { x: 0.72, y: 0.72, z: 0.72 },
                 rotation: DEFAULT_HEART_ROTATION
             }
         },
@@ -282,12 +487,35 @@ const defaultConfig = {
         tracking: {
             markerLostGraceFrames: MARKER_LOST_GRACE_FRAMES,
             trackingLerpAlpha: TRACKING_LERP_ALPHA,
+            trackingScaleLerpAlpha: TRACKING_SCALE_LERP_ALPHA,
             confirmFrames: CONFIRM_FRAMES,
             qrScanIntervalMs: QR_SCAN_INTERVAL_MS,
-            qrSearchIntervalMs: QR_SEARCH_INTERVAL_MS
+            qrSearchIntervalMs: QR_SEARCH_INTERVAL_MS,
+            positionDeadzone: TRACKING_POSITION_DEADZONE,
+            scaleDeadzone: TRACKING_SCALE_DEADZONE,
+            rotationDeadzoneRad: TRACKING_ROTATION_DEADZONE_RAD,
+            fastFollowDistance: 0,
+            fastFollowAlpha: TRACKING_LERP_ALPHA
         }
     }
 };
+
+function startModelPreload(config) {
+    const modelConfig = config?.assets?.models?.heart ?? defaultConfig.assets.models.heart;
+    const modelPath = modelConfig.path ?? HEART_MODEL_PATH;
+
+    if (preloadedModelPromise && preloadedModelPath === modelPath) {
+        return preloadedModelPromise;
+    }
+
+    preloadedModelPath = modelPath;
+    preloadedModelPromise = new Promise((resolve, reject) => {
+        const loader = new THREE.GLTFLoader();
+        loader.load(modelPath, resolve, undefined, reject);
+    });
+
+    return preloadedModelPromise;
+}
 
 function setStatus(message) {
     if (!UI.status || UI.status.textContent === message) {
@@ -295,6 +523,182 @@ function setStatus(message) {
     }
 
     UI.status.textContent = message;
+}
+
+function formatQuizTime(totalSeconds) {
+    const safeSeconds = Math.max(0, Math.ceil(totalSeconds));
+    const minutes = Math.floor(safeSeconds / 60);
+    const seconds = String(safeSeconds % 60).padStart(2, "0");
+    return `${minutes}:${seconds}`;
+}
+
+function updateQuizTimerText(remainingSeconds = QUIZ_DURATION_SECONDS) {
+    if (!UI.quizTimer) {
+        return;
+    }
+
+    UI.quizTimer.textContent =
+        remainingSeconds > 0
+            ? `${quizCopy.timerPrefix} ${formatQuizTime(remainingSeconds)}`
+            : quizCopy.timerReady;
+}
+
+function renderQuizQuestion() {
+    if (
+        !UI.quizTitle ||
+        !UI.quizQuestion ||
+        !UI.quizOptions ||
+        !UI.quizFeedback ||
+        !UI.quizProgress ||
+        !UI.quizNextBtn
+    ) {
+        return;
+    }
+
+    const question = quizCopy.questions[activeQuizQuestionIndex];
+    if (!question) {
+        return;
+    }
+
+    quizAnswered = false;
+    UI.quizTitle.textContent = quizCopy.title;
+    UI.quizQuestion.textContent = question.question;
+    UI.quizProgress.textContent = `${quizCopy.progress} ${
+        activeQuizQuestionIndex + 1
+    } ${quizCopy.of} ${quizCopy.questions.length}`;
+    UI.quizFeedback.textContent = "";
+    UI.quizNextBtn.textContent =
+        activeQuizQuestionIndex === quizCopy.questions.length - 1
+            ? quizCopy.finish
+            : quizCopy.next;
+    UI.quizNextBtn.disabled = true;
+
+    UI.quizOptions.replaceChildren();
+    question.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "quiz-option";
+        button.type = "button";
+        button.textContent = option;
+        button.addEventListener("click", () => handleQuizAnswer(index));
+        UI.quizOptions.appendChild(button);
+    });
+}
+
+function handleQuizAnswer(selectedIndex) {
+    if (quizAnswered) {
+        return;
+    }
+
+    const question = quizCopy.questions[activeQuizQuestionIndex];
+    if (!question || !UI.quizOptions || !UI.quizFeedback || !UI.quizNextBtn) {
+        return;
+    }
+
+    quizAnswered = true;
+    const buttons = Array.from(UI.quizOptions.querySelectorAll(".quiz-option"));
+    buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === question.answer) {
+            button.classList.add("quiz-option--correct");
+        } else if (index === selectedIndex) {
+            button.classList.add("quiz-option--wrong");
+        }
+    });
+
+    UI.quizFeedback.textContent =
+        selectedIndex === question.answer
+            ? quizCopy.correct
+            : `${quizCopy.incorrect} ${question.options[question.answer]}.`;
+    UI.quizNextBtn.disabled = false;
+}
+
+function openQuizModal() {
+    if (!UI.quizModal) {
+        return;
+    }
+
+    quizHasOpened = true;
+    activeQuizQuestionIndex = 0;
+    updateQuizTimerText(0);
+    renderQuizQuestion();
+    UI.quizModal.hidden = false;
+}
+
+function closeQuizModal() {
+    if (!UI.quizModal) {
+        return;
+    }
+
+    UI.quizModal.hidden = true;
+}
+
+function handleQuizNext() {
+    if (!quizAnswered) {
+        return;
+    }
+
+    if (activeQuizQuestionIndex >= quizCopy.questions.length - 1) {
+        closeQuizModal();
+        return;
+    }
+
+    activeQuizQuestionIndex += 1;
+    renderQuizQuestion();
+}
+
+function setupQuizControls() {
+    if (quizControlsReady) {
+        updateQuizTimerText();
+        return;
+    }
+
+    if (UI.quizCloseBtn) {
+        UI.quizCloseBtn.setAttribute("aria-label", quizCopy.closeLabel);
+        UI.quizCloseBtn.addEventListener("click", closeQuizModal);
+    }
+
+    if (UI.quizNextBtn) {
+        UI.quizNextBtn.addEventListener("click", handleQuizNext);
+    }
+
+    renderQuizQuestion();
+    updateQuizTimerText();
+    quizControlsReady = true;
+}
+
+function startQuizCountdown() {
+    setupQuizControls();
+
+    if (!UI.quizTimer || quizCountdownIntervalId || quizHasOpened) {
+        return;
+    }
+
+    quizDeadline = Date.now() + QUIZ_DURATION_SECONDS * 1000;
+    updateQuizTimerText(QUIZ_DURATION_SECONDS);
+    quizCountdownIntervalId = window.setInterval(() => {
+        const remainingSeconds = Math.max(
+            0,
+            Math.ceil((quizDeadline - Date.now()) / 1000)
+        );
+        updateQuizTimerText(remainingSeconds);
+
+        if (remainingSeconds > 0) {
+            return;
+        }
+
+        window.clearInterval(quizCountdownIntervalId);
+        quizCountdownIntervalId = 0;
+        openQuizModal();
+    }, 250);
+}
+
+function stopQuizCountdown() {
+    if (!quizCountdownIntervalId) {
+        return;
+    }
+
+    window.clearInterval(quizCountdownIntervalId);
+    quizCountdownIntervalId = 0;
 }
 
 function applyTrackingSettings(config) {
@@ -311,6 +715,16 @@ function applyTrackingSettings(config) {
             Number(runtimeTracking.trackingLerpAlpha ?? TRACKING_LERP_ALPHA)
         )
     );
+    trackingScaleLerpAlpha = Math.min(
+        1,
+        Math.max(
+            0.01,
+            Number(
+                runtimeTracking.trackingScaleLerpAlpha ??
+                    TRACKING_SCALE_LERP_ALPHA
+            )
+        )
+    );
     confirmFrames = Math.max(
         1,
         Number(runtimeTracking.confirmFrames ?? CONFIRM_FRAMES)
@@ -322,6 +736,26 @@ function applyTrackingSettings(config) {
     qrSearchIntervalMs = Math.max(
         10,
         Number(runtimeTracking.qrSearchIntervalMs ?? QR_SEARCH_INTERVAL_MS)
+    );
+    positionDeadzone = Math.max(
+        0,
+        Number(runtimeTracking.positionDeadzone ?? 0)
+    );
+    scaleDeadzone = Math.max(0, Number(runtimeTracking.scaleDeadzone ?? 0));
+    rotationDeadzoneRad = Math.max(
+        0,
+        Number(runtimeTracking.rotationDeadzoneRad ?? 0)
+    );
+    fastFollowDistance = Math.max(
+        0,
+        Number(runtimeTracking.fastFollowDistance ?? 0)
+    );
+    fastFollowAlpha = Math.min(
+        1,
+        Math.max(
+            trackingLerpAlpha,
+            Number(runtimeTracking.fastFollowAlpha ?? trackingLerpAlpha)
+        )
     );
 }
 
@@ -342,6 +776,10 @@ function loadSpeechVoices() {
 function getPreferredSpeechLocales() {
     if (currentLanguage === "ar") {
         return ["ar-SA", "ar-EG", "ar"];
+    }
+
+    if (currentLanguage === "fr") {
+        return ["fr-FR", "fr-CA", "fr"];
     }
 
     return ["en-US", "en-GB", "en"];
@@ -370,7 +808,7 @@ function stopSpeechPlayback() {
 }
 
 function updateInfoCard() {
-    if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint || !UI.listenBtn) {
+    if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint) {
         return;
     }
 
@@ -380,7 +818,9 @@ function updateInfoCard() {
         stopSpeechPlayback();
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
-        UI.listenBtn.disabled = true;
+        if (UI.listenBtn) {
+            UI.listenBtn.disabled = true;
+        }
         return;
     }
 
@@ -388,7 +828,9 @@ function updateInfoCard() {
     UI.partName.textContent = selectedPart.title;
     UI.partInfo.textContent = selectedPart.info;
     UI.cardHint.textContent = selectedPart.hint;
-    UI.listenBtn.disabled = !canUseSpeechPlayback();
+    if (UI.listenBtn) {
+        UI.listenBtn.disabled = !canUseSpeechPlayback();
+    }
     UI.card.classList.add("info-card--visible");
     UI.card.classList.add("info-card--selected");
 }
@@ -523,7 +965,15 @@ function applyCopy() {
     UI.scaleLabel.textContent = copy.scale;
     UI.soundLabel.textContent = copy.sound;
     UI.labelsLabel.textContent = copy.labels;
-    UI.listenBtn.textContent = currentLanguage === "ar" ? "استمع" : "Listen";
+    if (UI.listenBtn) {
+        UI.listenBtn.textContent =
+            currentLanguage === "ar"
+                ? "استمع"
+                : currentLanguage === "fr"
+                  ? "Ecouter"
+                  : "Listen";
+    }
+    setupQuizControls();
     if (UI.modelTitle) {
         UI.modelTitle.textContent = copy.modelTitle;
     }
@@ -556,6 +1006,9 @@ async function loadConfig() {
     } catch (error) {
         config = defaultConfig;
     }
+
+    applyTrackingSettings(config ?? defaultConfig);
+    startModelPreload(config ?? defaultConfig);
 
     try {
         await startCamera(config);
@@ -610,7 +1063,6 @@ async function startCamera(config) {
             element.height = height;
         });
 
-        applyTrackingSettings(config ?? defaultConfig);
         fitToScreen();
         document.body.classList.add("camera-ready");
         await initQrScanner();
@@ -689,7 +1141,8 @@ function initThree(config) {
     renderer = new THREE.WebGLRenderer({
         canvas: UI.canvasThree,
         alpha: true,
-        antialias: true
+        antialias: false,
+        powerPreference: "high-performance"
     });
     renderer.setSize(UI.video.width, UI.video.height, false);
     renderer.setPixelRatio(
@@ -730,29 +1183,42 @@ function initThree(config) {
     accentLight.position.set(-4, 3, 4);
     scene.add(accentLight);
 
-    const loader = new THREE.GLTFLoader();
-    const modelConfig = config.assets?.models?.heart ?? defaultConfig.assets.models.heart;
-    const modelPath = modelConfig.path ?? HEART_MODEL_PATH;
-    const modelPosition = modelConfig.position ?? defaultConfig.assets.models.heart.position;
-    const modelScale = modelConfig.scale ?? defaultConfig.assets.models.heart.scale;
-    const modelRotation =
-        modelConfig.rotation ?? defaultConfig.assets.models.heart.rotation;
-
     arScale = config.settings?.arScale ?? defaultConfig.settings.arScale;
     heartSound = new Audio(config.assets?.audio ?? defaultConfig.assets.audio);
     heartSound.loop = true;
 
     setStatus(copy.statusLoading);
+    mountHeartModel(config);
+}
 
-    loader.load(
-        modelPath,
-        (gltf) => {
+function mountHeartModel(config) {
+    const modelConfig = config?.assets?.models?.heart ?? defaultConfig.assets.models.heart;
+    const modelPosition = modelConfig.position ?? defaultConfig.assets.models.heart.position;
+    const modelScale = modelConfig.scale ?? defaultConfig.assets.models.heart.scale;
+    const modelRotation =
+        modelConfig.rotation ?? defaultConfig.assets.models.heart.rotation;
+
+    startModelPreload(config)
+        .then((gltf) => {
+            if (!arGroup || isModelMounted) {
+                return;
+            }
+
             heartModel = gltf.scene;
-            heartModel.position.set(
-                modelPosition.x ?? 0,
-                modelPosition.y ?? 0,
-                modelPosition.z ?? 0
-            );
+
+            if (heartModel.parent) {
+                heartModel.parent.remove(heartModel);
+            }
+
+            heartModel.traverse((node) => {
+                if (!node?.isMesh) {
+                    return;
+                }
+
+                node.castShadow = false;
+                node.receiveShadow = false;
+            });
+
             heartModel.scale.set(
                 modelScale.x ?? 0.8,
                 modelScale.y ?? 0.8,
@@ -764,24 +1230,32 @@ function initThree(config) {
                 modelRotation.y ?? DEFAULT_HEART_ROTATION.y,
                 modelRotation.z ?? DEFAULT_HEART_ROTATION.z
             );
+            heartModel.updateMatrixWorld(true);
+            const heartBounds = new THREE.Box3().setFromObject(heartModel);
+            const heartCenter = heartBounds.getCenter(new THREE.Vector3());
+            heartModel.position.set(
+                (modelPosition.x ?? 0) - heartCenter.x,
+                (modelPosition.y ?? 0) - heartCenter.y,
+                (modelPosition.z ?? 0) - heartCenter.z
+            );
             arGroup.add(heartModel);
 
+            anatomyLabels = [];
             anatomyParts.forEach((part, index) => {
                 addAnatomyLabel(part, index);
             });
 
+            isModelMounted = true;
             setupInteraction();
             updateInfoCard();
             syncLabels();
             updateLabelScale();
             positionInfoCard();
-            setStatus(copy.statusReady);
-        },
-        undefined,
-        () => {
+            setStatus(hasLiveMarkerDetection ? copy.statusTracking : copy.statusReady);
+        })
+        .catch(() => {
             setStatus(copy.statusModelError);
-        }
-    );
+        });
 }
 
 function addAnatomyLabel(part, index) {
@@ -856,7 +1330,9 @@ function setupControls() {
     UI.rotateBtn.onclick = () => setMode("rotate");
     UI.scaleBtn.onclick = () => setMode("scale");
     UI.soundBtn.onclick = toggleSound;
-    UI.listenBtn.onclick = speakSelectedPartInfo;
+    if (UI.listenBtn) {
+        UI.listenBtn.onclick = speakSelectedPartInfo;
+    }
     UI.labelToggle.onchange = (event) => {
         labelsVisible = event.target.checked;
         syncLabels();
@@ -866,6 +1342,7 @@ function setupControls() {
     syncModeButtons();
     syncSoundButton();
     syncLabels();
+    startQuizCountdown();
 }
 
 function setupInteraction() {
@@ -929,6 +1406,39 @@ function getQrScanInterval() {
     return hasTrackingPose || detectionStreak > 0
         ? qrScanIntervalMs
         : qrSearchIntervalMs;
+}
+
+function smoothQrCorners(corners) {
+    if (!Array.isArray(corners) || corners.length !== 4) {
+        return null;
+    }
+
+    if (
+        !smoothedQrCorners ||
+        !hasTrackingPose ||
+        lostMarkerFrames > 0 ||
+        !hasLiveMarkerDetection
+    ) {
+        smoothedQrCorners = corners.map((point) => ({
+            x: point.x,
+            y: point.y
+        }));
+        return smoothedQrCorners;
+    }
+
+    smoothedQrCorners = corners.map((point, index) => {
+        const previousPoint = smoothedQrCorners[index] ?? point;
+        return {
+            x:
+                previousPoint.x +
+                (point.x - previousPoint.x) * QR_CORNER_SMOOTHING_ALPHA,
+            y:
+                previousPoint.y +
+                (point.y - previousPoint.y) * QR_CORNER_SMOOTHING_ALPHA
+        };
+    });
+
+    return smoothedQrCorners;
 }
 
 function getDetectedCorners(source) {
@@ -1115,10 +1625,10 @@ function computeHomography(corners) {
     }
 
     const sourceCorners = [
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 1, y: 1 },
-        { x: 0, y: 1 }
+        { x: -0.5, y: -0.5 },
+        { x: 0.5, y: -0.5 },
+        { x: 0.5, y: 0.5 },
+        { x: -0.5, y: 0.5 }
     ];
 
     const matrix = [];
@@ -1270,6 +1780,15 @@ function updateTrackedPoseFromCorners(corners) {
         trackedScale
     );
 
+    const uniformTrackedScale = Math.max(
+        arScale * TRACKED_SCALE_MIN_RATIO,
+        Math.min(
+            arScale * TRACKED_SCALE_MAX_RATIO,
+            (trackedScale.x + trackedScale.y + trackedScale.z) / 3
+        )
+    );
+    trackedScale.setScalar(uniformTrackedScale);
+
     return Number.isFinite(trackedPosition.x) && Number.isFinite(trackedScale.x);
 }
 
@@ -1285,9 +1804,25 @@ function applyTrackedPose(immediate = false) {
         return;
     }
 
-    arGroup.position.lerp(trackedPosition, trackingLerpAlpha);
-    arGroup.quaternion.slerp(trackedQuaternion, trackingLerpAlpha);
-    arGroup.scale.lerp(trackedScale, trackingLerpAlpha);
+    const positionDistance = arGroup.position.distanceTo(trackedPosition);
+    const rotationDistance = arGroup.quaternion.angleTo(trackedQuaternion);
+    const scaleDistance = Math.abs(arGroup.scale.x - trackedScale.x);
+    const followAlpha =
+        fastFollowDistance > 0 && positionDistance > fastFollowDistance
+            ? fastFollowAlpha
+            : trackingLerpAlpha;
+
+    if (positionDistance > positionDeadzone) {
+        arGroup.position.lerp(trackedPosition, followAlpha);
+    }
+
+    if (rotationDistance > rotationDeadzoneRad) {
+        arGroup.quaternion.slerp(trackedQuaternion, followAlpha);
+    }
+
+    if (scaleDistance > scaleDeadzone) {
+        arGroup.scale.lerp(trackedScale, trackingScaleLerpAlpha);
+    }
 }
 
 async function runQrDetection() {
@@ -1319,9 +1854,9 @@ async function runQrDetection() {
             formats: ["QRCode"],
             maxNumberOfSymbols: 1,
             tryDownscale: true,
-            tryHarder: true,
-            tryInvert: true,
-            tryRotate: true
+            tryHarder: !hasTrackingPose,
+            tryInvert: !hasTrackingPose,
+            tryRotate: !hasTrackingPose
         });
 
         const detectedBarcode = results.find((result) => result?.position);
@@ -1332,13 +1867,19 @@ async function runQrDetection() {
             const confirmedDetection = updateDetectionConfidence(metrics);
             shouldHoldSteady = Boolean(metrics);
 
-            if (confirmedDetection && corners && updateTrackedPoseFromCorners(corners)) {
-                applyTrackedPose(!hasTrackingPose);
-                hasTrackingPose = true;
-                arGroup.visible = true;
-                markerFound = true;
-                liveMarkerDetected = true;
-                lostMarkerFrames = 0;
+            if (confirmedDetection && corners) {
+                const stableCorners = smoothQrCorners(corners);
+                const isReacquiring =
+                    !hasTrackingPose || lostMarkerFrames > 0 || !hasLiveMarkerDetection;
+
+                if (stableCorners && updateTrackedPoseFromCorners(stableCorners)) {
+                    applyTrackedPose(isReacquiring);
+                    hasTrackingPose = true;
+                    arGroup.visible = true;
+                    markerFound = true;
+                    liveMarkerDetected = true;
+                    lostMarkerFrames = 0;
+                }
             }
         } else {
             resetDetectionConfidence();
@@ -1352,7 +1893,10 @@ async function runQrDetection() {
             } else {
                 arGroup.visible = false;
                 hasTrackingPose = false;
+                hasLiveMarkerDetection = false;
                 lostMarkerFrames = 0;
+                smoothedQrCorners = null;
+                resetDetectionConfidence();
             }
         }
 
@@ -1426,6 +1970,9 @@ function fitToScreen() {
 }
 
 function cleanup() {
+    stopQuizCountdown();
+    closeQuizModal();
+
     if (animationFrameId) {
         window.cancelAnimationFrame(animationFrameId);
         animationFrameId = 0;
@@ -1462,10 +2009,24 @@ function cleanup() {
         markerFound: false,
         shouldHoldSteady: false
     };
+    smoothedQrCorners = null;
     qrScannerReady = false;
     qrScanInFlight = false;
     scanContext = undefined;
     focalLength = 0;
+    positionDeadzone = 0;
+    scaleDeadzone = 0;
+    rotationDeadzoneRad = 0;
+    fastFollowDistance = 0;
+    fastFollowAlpha = TRACKING_LERP_ALPHA;
+    preloadedModelPath = "";
+    preloadedModelPromise = undefined;
+    isModelMounted = false;
+    quizDeadline = 0;
+    quizHasOpened = false;
+    activeQuizQuestionIndex = 0;
+    quizAnswered = false;
+    updateQuizTimerText();
 
     if (renderer) {
         renderer.dispose();

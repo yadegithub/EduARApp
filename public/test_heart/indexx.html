@@ -24,6 +24,7 @@
         <div id="status" class="status-text">Starting camera...</div>
 
         <div id="model-title-pill" class="model-title-pill">CARDIOVASCULAR SYSTEM</div>
+        <div id="quiz-timer" class="quiz-timer" aria-live="polite">Quiz in 01:00</div>
 
         <div id="side-menu" class="glass">
             <button class="menu-btn active" id="btn-rotate" type="button">
@@ -59,8 +60,32 @@
                     <span class="card-hint" id="card-hint">
                         Rotate the model until the cutaway side faces you, or use Scale to zoom closer.
                     </span>
-                    <button id="listen-btn" class="card-action" type="button">Listen</button>
+                    <div class="card-actions">
+                        <button id="listen-btn" class="listen-btn" type="button">Listen</button>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="overview-card" class="overview-card glass">
+            <img class="overview-card__image" src="./assets/heart.png" alt="Human heart">
+            <div class="overview-card__copy">
+                <strong id="overview-title">Human Heart</strong>
+                <p id="overview-text">
+                    An interactive anatomy model that shows the chambers, vessels and blood flow pathways.
+                </p>
+            </div>
+        </div>
+
+        <div id="quiz-modal" class="quiz-modal" hidden>
+            <div class="quiz-card glass" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
+                <button id="quiz-close" class="quiz-close" type="button" aria-label="Close quiz">×</button>
+                <span id="quiz-progress" class="quiz-progress">Question 1 of 3</span>
+                <h2 id="quiz-title">Heart quiz</h2>
+                <p id="quiz-question">Which vessel carries oxygen-rich blood from the heart to the body?</p>
+                <div id="quiz-options" class="quiz-options"></div>
+                <p id="quiz-feedback" class="quiz-feedback" aria-live="polite"></p>
+                <button id="quiz-next" class="quiz-next" type="button" disabled>Next</button>
             </div>
         </div>
 
