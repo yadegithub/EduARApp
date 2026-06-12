@@ -1,6 +1,7 @@
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const languageParam = query.get("lang");
+const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
 
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
@@ -166,7 +167,7 @@ const solarBodies = [
   },
 }));
 
-const solarBodyCopy = {
+const solarBodyCopyAr = {
   sun: ["الشمس", "الشمس", "الشمس نجم يقع في مركز النظام الشمسي ويوفر الضوء والحرارة لكل الكواكب.", "تحتوي على معظم كتلة النظام الشمسي."],
   mercury: ["عطارد", "عطارد", "عطارد أصغر الكواكب وأقربها إلى الشمس.", "يدور حول الشمس بسرعة كبيرة."],
   venus: ["الزهرة", "الزهرة", "الزهرة قريب من حجم الأرض لكنه يملك غلافا جويا كثيفا يحبس الحرارة.", "غالبا ما يكون ألمع كوكب في السماء."],
@@ -178,9 +179,28 @@ const solarBodyCopy = {
   neptune: ["نبتون", "نبتون", "نبتون أبعد كوكب رئيسي عن الشمس ويعرف برياحه القوية.", "هو عملاق جليدي أزرق عميق."]
 };
 
-if (currentLanguage === "ar") {
+const solarBodyCopyFr = {
+  sun: ["Soleil", "SOLEIL", "Le Soleil est l'etoile au centre du systeme solaire et fournit lumiere et chaleur a chaque planete.", "Il contient la plus grande partie de la masse du systeme solaire."],
+  mercury: ["Mercure", "MERCURE", "Mercure est la plus petite planete et la plus proche du Soleil.", "Elle tourne tres vite autour du Soleil."],
+  venus: ["Venus", "VENUS", "Venus a une taille proche de la Terre mais une atmosphere epaisse qui retient la chaleur.", "C'est souvent la planete la plus brillante dans le ciel."],
+  earth: ["Terre", "TERRE", "La Terre est notre planete et le seul monde connu avec une grande quantite d'eau liquide en surface.", "Elle complete une revolution autour du Soleil chaque annee."],
+  mars: ["Mars", "MARS", "Mars est appelee la planete rouge a cause de la poussiere riche en fer qui colore sa surface.", "Les scientifiques l'etudient pour y chercher des traces d'ancienne eau."],
+  jupiter: ["Jupiter", "JUPITER", "Jupiter est la plus grande planete du systeme solaire et elle est celebre pour sa Grande Tache rouge.", "C'est une geante gazeuse qui possede de nombreuses lunes."],
+  saturn: ["Saturne", "SATURNE", "Saturne est une geante gazeuse entouree de larges anneaux brillants composes de glace et de roches.", "Son systeme d'anneaux est le plus reconnaissable du systeme solaire."],
+  uranus: ["Uranus", "URANUS", "Uranus est une geante glacee qui tourne avec une inclinaison tres prononcee.", "On dirait presque qu'elle roule autour du Soleil."],
+  neptune: ["Neptune", "NEPTUNE", "Neptune est la planete majeure la plus eloignee du Soleil et elle est connue pour ses vents puissants.", "C'est une geante glacee d'un bleu profond."]
+};
+
+const localizedSolarBodyCopy =
+  currentLanguage === "ar"
+    ? solarBodyCopyAr
+    : currentLanguage === "fr"
+      ? solarBodyCopyFr
+      : null;
+
+if (localizedSolarBodyCopy) {
   solarBodies.forEach((body) => {
-    const localizedBody = solarBodyCopy[body.id];
+    const localizedBody = localizedSolarBodyCopy[body.id];
     if (!localizedBody) {
       return;
     }
@@ -253,7 +273,30 @@ const copyAr = {
   focusTag: "الكوكب المحدد",
 };
 
-const copy = currentLanguage === "ar" ? copyAr : copyEn;
+const copyFr = {
+  appEyebrow: "Scan EduAR en direct",
+  appTitle: "SYSTEME SOLAIRE",
+  rotate: "Rotation",
+  scale: "Echelle",
+  labels: "Etiquettes On/Off",
+  statusStarting: "Demarrage de la camera...",
+  statusLoading: "Chargement du modele solaire...",
+  statusReady: "Camera prete",
+  statusTracking: "Systeme solaire verrouille",
+  statusSearching: "Pointez la camera vers le QR code",
+  statusHoldSteady: "Gardez le QR stable un instant...",
+  statusCameraError: "L'acces a la camera a ete refuse.",
+  statusModelError: "Le modele solaire n'a pas pu etre charge.",
+  focusTag: "Planete selectionnee",
+  overview: {
+    tag: "Modele d'astronomie",
+    title: "SYSTEME SOLAIRE",
+    info: "Explorez un modele AR du systeme solaire avec le Soleil, les planetes, les orbites et leurs mouvements relatifs.",
+    hint: "Touchez une etiquette pour lire les details de chaque astre.",
+  },
+};
+
+const copy = currentLanguage === "ar" ? copyAr : currentLanguage === "fr" ? copyFr : copyEn;
 if (!copy.overview) {
   copy.overview = copyEn.overview;
 }

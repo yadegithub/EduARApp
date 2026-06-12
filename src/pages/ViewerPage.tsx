@@ -13,6 +13,8 @@ import { useAuth } from "../auth/useAuth";
 import SceneArtwork from "../components/SceneArtwork";
 import { getExperienceById, getSubjectById } from "../data/arData";
 import { getExperienceCopy, getSubjectCopy } from "../i18n/appCopy";
+import { recordExperienceLaunch } from "../profile/userProgressStore";
+import { useAppSettings } from "../settings/AppSettingsContext";
 import CircuitArPage from "./CircuitArPage";
 import CivilisationArPage from "./CivilisationArPage";
 import DigestiveSystemArPage from "./DigestiveSystemArPage";
@@ -22,13 +24,56 @@ import HumanSkinArPage from "./HumanSkinArPage";
 import KidneyArPage from "./KidneyArPage";
 import LungArPage from "./LungArPage";
 import PendulumArPage from "./PendulumArPage";
-import { recordExperienceLaunch } from "../profile/userProgressStore";
-import { useAppSettings } from "../settings/AppSettingsContext";
 import SolarSystemArPage from "./SolarSystemArPage";
 import TectonicPlatesArPage from "./TectonicPlatesArPage";
 import VolcanoArPage from "./VolcanoArPage";
 
 type ToolMode = "rotate" | "scale";
+
+const viewerCopy = {
+  en: {
+    module: "module",
+    moreInfo: "More information",
+    subjectInAr: "in AR",
+    rotate: "Rotate",
+    scale: "Scale",
+    labelsOn: "Labels On",
+    labelsOff: "Labels Off",
+    focusPoint: "Focus point",
+    readMore: "Read More",
+    audioGuide: "Play audio guide",
+    ar: "AR",
+    goBack: "Go back",
+  },
+  ar: {
+    module: "وحدة",
+    moreInfo: "مزيد من المعلومات",
+    subjectInAr: "في الواقع المعزز",
+    rotate: "تدوير",
+    scale: "تحجيم",
+    labelsOn: "التسميات مفعلة",
+    labelsOff: "التسميات متوقفة",
+    focusPoint: "نقطة التركيز",
+    readMore: "اقرأ المزيد",
+    audioGuide: "تشغيل الدليل الصوتي",
+    ar: "الواقع المعزز",
+    goBack: "العودة",
+  },
+  fr: {
+    module: "module",
+    moreInfo: "Plus d'informations",
+    subjectInAr: "en RA",
+    rotate: "Rotation",
+    scale: "Échelle",
+    labelsOn: "Étiquettes activées",
+    labelsOff: "Étiquettes désactivées",
+    focusPoint: "Point clé",
+    readMore: "Lire plus",
+    audioGuide: "Lire le guide audio",
+    ar: "RA",
+    goBack: "Retour",
+  },
+} as const;
 
 const ViewerPage: React.FC = () => {
   const history = useHistory();
@@ -57,6 +102,8 @@ const ViewerPage: React.FC = () => {
     ? getSubjectCopy(subject.id, settings.language)
     : null;
   const isArabic = settings.language === "ar";
+  const copy = viewerCopy[settings.language] ?? viewerCopy.en;
+
   const handleBack = () => {
     if (window.history.length > 1) {
       history.goBack();
@@ -197,36 +244,6 @@ const ViewerPage: React.FC = () => {
       />
     );
   }
-
-  const copy = isArabic
-    ? {
-        module: "وحدة",
-        moreInfo: "مزيد من المعلومات",
-        subjectInAr: "في الواقع المعزز",
-        rotate: "تدوير",
-        scale: "تحجيم",
-        labelsOn: "التسميات مفعلة",
-        labelsOff: "التسميات متوقفة",
-        focusPoint: "نقطة التركيز",
-        readMore: "اقرأ المزيد",
-        audioGuide: "تشغيل الدليل الصوتي",
-        ar: "الواقع المعزز",
-        goBack: "العودة",
-      }
-    : {
-        module: "module",
-        moreInfo: "More information",
-        subjectInAr: "in AR",
-        rotate: "Rotate",
-        scale: "Scale",
-        labelsOn: "Labels On",
-        labelsOff: "Labels Off",
-        focusPoint: "Focus point",
-        readMore: "Read More",
-        audioGuide: "Play audio guide",
-        ar: "AR",
-        goBack: "Go back",
-      };
 
   return (
     <IonPage>

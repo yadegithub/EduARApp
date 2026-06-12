@@ -27,6 +27,46 @@ const subjectImageMap: Record<SubjectId, string> = {
   geography: geographyImage,
 };
 
+const dashboardCopy = {
+  en: {
+    eyebrow: "Immersive classroom",
+    profile: "Profile",
+    title: "Learn with 3D scenes built for mobile AR.",
+    subtitle: "Start with science, then open history and geography in AR.",
+    openDemo: "Open demo",
+    explore: "Explore",
+    subjects: "Subjects",
+    viewAll: "View all",
+    featured: "Featured",
+    featuredTitle: "Featured AR Experiences",
+  },
+  ar: {
+    eyebrow: "فصل دراسي غامر",
+    profile: "الملف الشخصي",
+    title: "تعلّم مع مشاهد ثلاثية الأبعاد مصممة للواقع المعزز على الهاتف.",
+    subtitle: "ابدأ بالعلوم ثم افتح التاريخ والجغرافيا في الواقع المعزز.",
+    openDemo: "افتح العرض",
+    explore: "استكشف",
+    subjects: "المواد",
+    viewAll: "عرض الكل",
+    featured: "مميز",
+    featuredTitle: "تجارب AR المميزة",
+  },
+  fr: {
+    eyebrow: "Classe immersive",
+    profile: "Profil",
+    title: "Apprenez avec des scènes 3D conçues pour la RA mobile.",
+    subtitle:
+      "Commencez par les sciences, puis explorez l'histoire et la géographie en RA.",
+    openDemo: "Ouvrir la démo",
+    explore: "Explorer",
+    subjects: "Matières",
+    viewAll: "Voir tout",
+    featured: "À la une",
+    featuredTitle: "Expériences AR en vedette",
+  },
+} as const;
+
 const DashboardPage: React.FC = () => {
   const DRAG_THRESHOLD = 10;
   const history = useHistory();
@@ -41,31 +81,7 @@ const DashboardPage: React.FC = () => {
   });
   const isArabic = settings.language === "ar";
   const [isDragging, setIsDragging] = useState(false);
-  const copy = isArabic
-    ? {
-        eyebrow: "فصل دراسي غامر",
-        profile: "الملف الشخصي",
-        title: "تعلّم مع مشاهد ثلاثية الأبعاد مصممة للواقع المعزز على الهاتف.",
-        subtitle: "ابدأ بالعلوم ثم افتح التاريخ والجغرافيا في الواقع المعزز.",
-        openDemo: "افتح العرض",
-        explore: "استكشف",
-        subjects: "المواد",
-        viewAll: "عرض الكل",
-        featured: "مميز",
-        featuredTitle: "تجارب AR المميزة",
-      }
-    : {
-        eyebrow: "Immersive classroom",
-        profile: "Profile",
-        title: "Learn with 3D scenes built for mobile AR.",
-        subtitle: "Start with science, then open history and geography in AR.",
-        openDemo: "Open demo",
-        explore: "Explore",
-        subjects: "Subjects",
-        viewAll: "View all",
-        featured: "Featured",
-        featuredTitle: "Featured AR Experiences",
-      };
+  const copy = dashboardCopy[settings.language] ?? dashboardCopy.en;
 
   const handleStripPointerDown = (
     event: ReactPointerEvent<HTMLDivElement>,
@@ -218,7 +234,9 @@ const DashboardPage: React.FC = () => {
                 key={subject.id}
                 type="button"
                 className="subject-card"
-                onClick={() => history.push(`/tabs/library?subject=${subject.id}`)}
+                onClick={() =>
+                  history.push(`/tabs/library?subject=${subject.id}`)
+                }
                 style={{
                   backgroundImage: `url(${subjectImageMap[subject.id]})`,
                   backgroundPosition: "center",
@@ -254,7 +272,8 @@ const DashboardPage: React.FC = () => {
           >
             {featuredExperiences.map((experience) => {
               const localizedExperience =
-                getExperienceCopy(experience.id, settings.language) ?? experience;
+                getExperienceCopy(experience.id, settings.language) ??
+                experience;
 
               return (
                 <button

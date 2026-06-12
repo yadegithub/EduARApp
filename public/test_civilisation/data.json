@@ -5,14 +5,14 @@
         "name": "Castle of Consuegra",
         "path": "assets/castle_of_consuegra_toledo_spain.glb",
         "scale": {
-          "x": 0.9,
-          "y": 0.9,
-          "z": 0.9
+          "x": 1.45,
+          "y": 1.45,
+          "z": 1.45
         },
         "position": {
-          "x": 1,
-          "y": 1,
-          "z": 1
+          "x": 0,
+          "y": 0,
+          "z": 0.03
         },
         "rotation": {
           "x": 0,
@@ -37,6 +37,12 @@
         "name": "قلعة كونسويغرا",
         "info": "استكشف قلعة إسبانية تاريخية في الواقع المعزز واضغط على التسميات المرقمة لمعرفة كيف عملت التحصينات في العصور الوسطى.",
         "hint": "استخدم التدوير والتحجيم والتسميات أثناء عرض النموذج."
+      },
+      "fr": {
+        "tag": "Modele historique",
+        "name": "CHATEAU DE CONSUEGRA",
+        "info": "Explorez un chateau espagnol historique en AR et touchez les numeros pour comprendre le role de ses defenses medievales.",
+        "hint": "Utilisez rotation, echelle et numeros pendant l'affichage du modele."
       }
     },
     "ui": {
@@ -76,6 +82,25 @@
         "focusTag": "ميزة في القلعة",
         "launchCollision": "ابدأ",
         "pauseCollision": "إيقاف"
+      },
+      "fr": {
+        "appEyebrow": "Scan EduAR en direct",
+        "appTitle": "CHATEAU DE CONSUEGRA",
+        "rotate": "Rotation",
+        "scale": "Echelle",
+        "sound": "Audio",
+        "launchCollision": "Lancer",
+        "pauseCollision": "Pause",
+        "labels": "Numeros On/Off",
+        "statusStarting": "Demarrage de la camera...",
+        "statusLoading": "Chargement du modele du chateau...",
+        "statusReady": "Camera prete",
+        "statusTracking": "Chateau place",
+        "statusHoldSteady": "Gardez le QR stable pendant le verrouillage...",
+        "statusSearching": "Recherche du QR code...",
+        "statusCameraError": "L'acces a la camera a ete refuse.",
+        "statusModelError": "Le modele du chateau n'a pas pu etre charge.",
+        "focusTag": "Element du chateau"
       }
     },
     "parts": [
@@ -83,19 +108,23 @@
         "id": "main-keep",
         "label": {
           "en": "Main Keep",
-          "ar": "البرج الرئيسي"
+          "ar": "البرج الرئيسي",
+          "fr": "Donjon principal"
         },
         "title": {
           "en": "MAIN KEEP",
-          "ar": "البرج الرئيسي"
+          "ar": "البرج الرئيسي",
+          "fr": "DONJON PRINCIPAL"
         },
         "info": {
           "en": "The keep was the strongest central structure, used for defense, command and shelter during attacks.",
-          "ar": "كان البرج الرئيسي أقوى بنية مركزية، واستُخدم للدفاع والقيادة والاحتماء أثناء الهجمات."
+          "ar": "كان البرج الرئيسي أقوى بنية مركزية، واستُخدم للدفاع والقيادة والاحتماء أثناء الهجمات.",
+          "fr": "Le donjon etait la structure centrale la plus solide, utilisee pour la defense, le commandement et le refuge."
         },
         "hint": {
           "en": "Look for the highest fortified mass of the castle.",
-          "ar": "ابحث عن أعلى كتلة محصنة في القلعة."
+          "ar": "ابحث عن أعلى كتلة محصنة في القلعة.",
+          "fr": "Reperez la masse fortifiee la plus haute du chateau."
         },
         "normalizedPosition": [
           0,
@@ -107,19 +136,23 @@
         "id": "defensive-walls",
         "label": {
           "en": "Defensive Walls",
-          "ar": "الجدران الدفاعية"
+          "ar": "الجدران الدفاعية",
+          "fr": "Murs defensifs"
         },
         "title": {
           "en": "DEFENSIVE WALLS",
-          "ar": "الجدران الدفاعية"
+          "ar": "الجدران الدفاعية",
+          "fr": "MURS DEFENSIFS"
         },
         "info": {
           "en": "Thick walls protected the interior spaces and slowed attackers before they could reach the main courtyard.",
-          "ar": "حمت الجدران السميكة المساحات الداخلية وأبطأت المهاجمين قبل وصولهم إلى الفناء الرئيسي."
+          "ar": "حمت الجدران السميكة المساحات الداخلية وأبطأت المهاجمين قبل وصولهم إلى الفناء الرئيسي.",
+          "fr": "Les murs epais protegeaient l'interieur et ralentissaient les attaquants avant l'acces a la cour principale."
         },
         "hint": {
           "en": "Rotate the model to follow the wall line around the fortress.",
-          "ar": "دوّر النموذج لتتبع خط الجدار حول الحصن."
+          "ar": "دوّر النموذج لتتبع خط الجدار حول الحصن.",
+          "fr": "Faites tourner le modele pour suivre la ligne des murailles autour de la forteresse."
         },
         "normalizedPosition": [
           -0.34,
@@ -131,19 +164,23 @@
         "id": "watchtower",
         "label": {
           "en": "Watchtower",
-          "ar": "برج المراقبة"
+          "ar": "برج المراقبة",
+          "fr": "Tour de guet"
         },
         "title": {
           "en": "WATCHTOWER",
-          "ar": "برج المراقبة"
+          "ar": "برج المراقبة",
+          "fr": "TOUR DE GUET"
         },
         "info": {
           "en": "Watchtowers gave guards a higher view of the surrounding plains and roads.",
-          "ar": "منحت أبراج المراقبة الحراس رؤية أعلى للسهول والطرق المحيطة."
+          "ar": "منحت أبراج المراقبة الحراس رؤية أعلى للسهول والطرق المحيطة.",
+          "fr": "Les tours de guet donnaient aux gardes une vue plus elevee sur les plaines et les routes voisines."
         },
         "hint": {
           "en": "These raised points helped spot danger before it reached the castle.",
-          "ar": "ساعدت هذه النقاط المرتفعة على رصد الخطر قبل وصوله إلى القلعة."
+          "ar": "ساعدت هذه النقاط المرتفعة على رصد الخطر قبل وصوله إلى القلعة.",
+          "fr": "Ces points hauts permettaient de reperer le danger avant son arrivee."
         },
         "normalizedPosition": [
           0.32,
@@ -155,19 +192,23 @@
         "id": "entrance-gate",
         "label": {
           "en": "Entrance Gate",
-          "ar": "بوابة الدخول"
+          "ar": "بوابة الدخول",
+          "fr": "Porte d entree"
         },
         "title": {
           "en": "ENTRANCE GATE",
-          "ar": "بوابة الدخول"
+          "ar": "بوابة الدخول",
+          "fr": "PORTE D ENTREE"
         },
         "info": {
           "en": "The gate controlled access and was usually one of the most protected parts of a medieval castle.",
-          "ar": "كانت البوابة تتحكم في الدخول وغالبا من أكثر أجزاء القلعة حماية."
+          "ar": "كانت البوابة تتحكم في الدخول وغالبا من أكثر أجزاء القلعة حماية.",
+          "fr": "La porte controlait l'acces et faisait partie des zones les plus protegees du chateau medieval."
         },
         "hint": {
           "en": "Gateways often combined narrow passages, strong doors and defensive angles.",
-          "ar": "جمعت البوابات غالبا بين ممرات ضيقة وأبواب قوية وزوايا دفاعية."
+          "ar": "جمعت البوابات غالبا بين ممرات ضيقة وأبواب قوية وزوايا دفاعية.",
+          "fr": "Les portes combinaient souvent passage etroit, portes solides et angles defensifs."
         },
         "normalizedPosition": [
           0.08,
@@ -179,19 +220,23 @@
         "id": "courtyard",
         "label": {
           "en": "Courtyard",
-          "ar": "الفناء"
+          "ar": "الفناء",
+          "fr": "Cour"
         },
         "title": {
           "en": "COURTYARD",
-          "ar": "الفناء"
+          "ar": "الفناء",
+          "fr": "COUR"
         },
         "info": {
           "en": "The courtyard was the working heart of the fortress, connecting storage, movement and daily activity.",
-          "ar": "كان الفناء قلب الحصن العملي، يربط التخزين والحركة والنشاط اليومي."
+          "ar": "كان الفناء قلب الحصن العملي، يربط التخزين والحركة والنشاط اليومي.",
+          "fr": "La cour etait le coeur pratique de la forteresse, reliant stockage, circulation et activites quotidiennes."
         },
         "hint": {
           "en": "This open area helped organize life inside the walls.",
-          "ar": "ساعدت هذه المساحة المفتوحة على تنظيم الحياة داخل الجدران."
+          "ar": "ساعدت هذه المساحة المفتوحة على تنظيم الحياة داخل الجدران.",
+          "fr": "Cet espace ouvert organisait la vie a l interieur des murs."
         },
         "normalizedPosition": [
           0,
@@ -202,7 +247,7 @@
     ]
   },
   "settings": {
-    "arScale": 0.01,
+    "arScale": 0.012,
     "tracking": {
       "markerLostGraceFrames": 20,
       "trackingLerpAlpha": 0.28,

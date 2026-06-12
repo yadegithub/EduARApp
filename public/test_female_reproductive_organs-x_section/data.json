@@ -37,6 +37,12 @@
         "name": "الجهاز التناسلي الأنثوي",
         "info": "استكشف الأعضاء الرئيسية للجهاز التناسلي الأنثوي في الواقع المعزز واضغط على كل ملاحظة لقراءة دورها.",
         "hint": "استخدم التدوير والتحجيم والتسميات أثناء عرض النموذج."
+      },
+      "fr": {
+        "tag": "Anatomie reproductive",
+        "name": "SYSTEME REPRODUCTEUR FEMININ",
+        "info": "Examinez les principaux organes du systeme reproducteur feminin en AR et touchez les numeros pour lire leur role.",
+        "hint": "Utilisez rotation, echelle et numeros pendant l'affichage du modele."
       }
     },
     "ui": {
@@ -63,6 +69,23 @@
         "statusCameraError": "تم رفض الوصول إلى الكاميرا.",
         "statusModelError": "تعذر تحميل النموذج.",
         "focusTag": "بنية تناسلية"
+      },
+      "fr": {
+        "appEyebrow": "Scan EduAR en direct",
+        "appTitle": "SYSTEME REPRODUCTEUR FEMININ",
+        "rotate": "Rotation",
+        "scale": "Echelle",
+        "sound": "Audio",
+        "labels": "Numeros On/Off",
+        "statusStarting": "Demarrage de la camera...",
+        "statusLoading": "Chargement du modele reproducteur...",
+        "statusReady": "Camera prete",
+        "statusTracking": "Systeme reproducteur place",
+        "statusHoldSteady": "Gardez le QR stable pendant le verrouillage...",
+        "statusSearching": "Recherche du QR code...",
+        "statusCameraError": "L'acces a la camera a ete refuse.",
+        "statusModelError": "Le modele n'a pas pu etre charge.",
+        "focusTag": "Structure reproductive"
       }
     },
     "parts": [
@@ -70,19 +93,23 @@
         "id": "ovary",
         "label": {
           "en": "Ovary",
-          "ar": "المبيض"
+          "ar": "المبيض",
+          "fr": "Ovaire"
         },
         "title": {
           "en": "OVARY",
-          "ar": "المبيض"
+          "ar": "المبيض",
+          "fr": "OVAIRE"
         },
         "info": {
           "en": "The ovary stores egg cells and also produces hormones such as estrogen and progesterone.",
-          "ar": "يخزن المبيض الخلايا البيضية وينتج هرمونات مثل الإستروجين والبروجسترون."
+          "ar": "يخزن المبيض الخلايا البيضية وينتج هرمونات مثل الإستروجين والبروجسترون.",
+          "fr": "L'ovaire stocke les ovules et produit des hormones comme l'estrogene et la progesterone."
         },
         "hint": {
           "en": "This small rounded structure sits near the end of the reproductive pathway.",
-          "ar": "هذه البنية الصغيرة المستديرة تقع قرب نهاية المسار التناسلي."
+          "ar": "هذه البنية الصغيرة المستديرة تقع قرب نهاية المسار التناسلي.",
+          "fr": "Cette petite structure arrondie se situe pres de l extremite du trajet reproducteur."
         },
         "normalizedPosition": [
           -0.42,
@@ -94,19 +121,23 @@
         "id": "fallopian-tube",
         "label": {
           "en": "Fallopian Tube",
-          "ar": "قناة فالوب"
+          "ar": "قناة فالوب",
+          "fr": "Trompe de Fallope"
         },
         "title": {
           "en": "FALLOPIAN TUBE",
-          "ar": "قناة فالوب"
+          "ar": "قناة فالوب",
+          "fr": "TROMPE DE FALLOPE"
         },
         "info": {
           "en": "The fallopian tube carries the egg from the ovary toward the uterus.",
-          "ar": "تنقل قناة فالوب البويضة من المبيض نحو الرحم."
+          "ar": "تنقل قناة فالوب البويضة من المبيض نحو الرحم.",
+          "fr": "La trompe de Fallope transporte l'ovule depuis l'ovaire vers l'uterus."
         },
         "hint": {
           "en": "This curved passage links the ovary to the uterus.",
-          "ar": "هذا الممر المنحني يربط المبيض بالرحم."
+          "ar": "هذا الممر المنحني يربط المبيض بالرحم.",
+          "fr": "Ce passage courbe relie l'ovaire a l'uterus."
         },
         "normalizedPosition": [
           -0.2,
@@ -118,19 +149,23 @@
         "id": "uterus",
         "label": {
           "en": "Uterus",
-          "ar": "الرحم"
+          "ar": "الرحم",
+          "fr": "Uterus"
         },
         "title": {
           "en": "UTERUS",
-          "ar": "الرحم"
+          "ar": "الرحم",
+          "fr": "UTERUS"
         },
         "info": {
           "en": "The uterus is the central muscular organ where a fertilized egg can develop during pregnancy.",
-          "ar": "الرحم عضو عضلي مركزي يمكن أن ينمو داخله الجنين أثناء الحمل."
+          "ar": "الرحم عضو عضلي مركزي يمكن أن ينمو داخله الجنين أثناء الحمل.",
+          "fr": "L'uterus est l'organe musculaire central ou un ovule feconde peut se developper pendant la grossesse."
         },
         "hint": {
           "en": "This is the main chamber at the center of the model.",
-          "ar": "هذه هي الحجرة الرئيسية في مركز النموذج."
+          "ar": "هذه هي الحجرة الرئيسية في مركز النموذج.",
+          "fr": "C est la chambre principale au centre du modele."
         },
         "normalizedPosition": [
           0.02,
@@ -142,19 +177,23 @@
         "id": "endometrium",
         "label": {
           "en": "Endometrium",
-          "ar": "بطانة الرحم"
+          "ar": "بطانة الرحم",
+          "fr": "Endometre"
         },
         "title": {
           "en": "ENDOMETRIUM",
-          "ar": "بطانة الرحم"
+          "ar": "بطانة الرحم",
+          "fr": "ENDOMETRE"
         },
         "info": {
           "en": "The endometrium is the inner lining of the uterus that thickens and sheds during the menstrual cycle.",
-          "ar": "بطانة الرحم هي الطبقة الداخلية التي تزداد سماكتها ثم تنسلخ أثناء الدورة الشهرية."
+          "ar": "بطانة الرحم هي الطبقة الداخلية التي تزداد سماكتها ثم تنسلخ أثناء الدورة الشهرية.",
+          "fr": "L'endometre est la paroi interne de l'uterus qui s'epaissit puis se renouvelle pendant le cycle menstruel."
         },
         "hint": {
           "en": "This inner tissue layer appears inside the uterus cross-section.",
-          "ar": "تظهر هذه الطبقة النسيجية داخل مقطع الرحم."
+          "ar": "تظهر هذه الطبقة النسيجية داخل مقطع الرحم.",
+          "fr": "Cette couche interne apparait dans la coupe de l'uterus."
         },
         "normalizedPosition": [
           0.12,
@@ -166,19 +205,23 @@
         "id": "cervix",
         "label": {
           "en": "Cervix",
-          "ar": "عنق الرحم"
+          "ar": "عنق الرحم",
+          "fr": "Col de l uterus"
         },
         "title": {
           "en": "CERVIX",
-          "ar": "عنق الرحم"
+          "ar": "عنق الرحم",
+          "fr": "COL DE L UTERUS"
         },
         "info": {
           "en": "The cervix is the lower narrow portion of the uterus that opens into the vaginal canal.",
-          "ar": "عنق الرحم هو الجزء السفلي الضيق من الرحم ويفتح على القناة المهبلية."
+          "ar": "عنق الرحم هو الجزء السفلي الضيق من الرحم ويفتح على القناة المهبلية.",
+          "fr": "Le col de l'uterus est la partie inferieure et etroite qui s'ouvre vers le canal vaginal."
         },
         "hint": {
           "en": "It forms the transition between the uterus and the lower tract.",
-          "ar": "يشكل منطقة الانتقال بين الرحم والمسار السفلي."
+          "ar": "يشكل منطقة الانتقال بين الرحم والمسار السفلي.",
+          "fr": "Il forme la transition entre l'uterus et le trajet inferieur."
         },
         "normalizedPosition": [
           0.08,
@@ -190,19 +233,23 @@
         "id": "vagina",
         "label": {
           "en": "Vagina",
-          "ar": "المهبل"
+          "ar": "المهبل",
+          "fr": "Vagin"
         },
         "title": {
           "en": "VAGINA",
-          "ar": "المهبل"
+          "ar": "المهبل",
+          "fr": "VAGIN"
         },
         "info": {
           "en": "The vagina is the muscular canal that connects the cervix to the outside of the body.",
-          "ar": "المهبل قناة عضلية تصل عنق الرحم بخارج الجسم."
+          "ar": "المهبل قناة عضلية تصل عنق الرحم بخارج الجسم.",
+          "fr": "Le vagin est le canal musculaire qui relie le col de l'uterus a l'exterieur du corps."
         },
         "hint": {
           "en": "This lower passage continues downward from the cervix.",
-          "ar": "يمتد هذا الممر السفلي إلى الأسفل من عنق الرحم."
+          "ar": "يمتد هذا الممر السفلي إلى الأسفل من عنق الرحم.",
+          "fr": "Ce passage inferieur se prolonge vers le bas a partir du col de l uterus."
         },
         "normalizedPosition": [
           0.08,
@@ -215,12 +262,17 @@
   "settings": {
     "arScale": 1.45,
     "tracking": {
-      "markerLostGraceFrames": 6,
-      "trackingLerpAlpha": 0.24,
-      "trackingScaleLerpAlpha": 0.18,
-      "confirmFrames": 2,
-      "qrScanIntervalMs": 28,
-      "qrSearchIntervalMs": 48
+      "markerLostGraceFrames": 20,
+      "trackingLerpAlpha": 0.16,
+      "trackingScaleLerpAlpha": 0.08,
+      "confirmFrames": 1,
+      "qrScanIntervalMs": 80,
+      "qrSearchIntervalMs": 120,
+      "positionDeadzone": 0.012,
+      "scaleDeadzone": 0.01,
+      "rotationDeadzoneRad": 0.018,
+      "fastFollowDistance": 0,
+      "fastFollowAlpha": 0.16
     },
     "debugMode": false
   }

@@ -1,6 +1,7 @@
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const languageParam = query.get("lang");
+const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
 
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
@@ -25,6 +26,11 @@ const STATUS_COPY = {
         ready: "Ready: scan the QR code",
         stable: "Model stabilized",
         active: "Circuit powered..."
+    },
+    fr: {
+        ready: "Pret : scannez le QR code",
+        stable: "Modele stabilise",
+        active: "Circuit alimente..."
     },
     ar: {
         ready: "جاهز: امسح رمز QR",
@@ -57,33 +63,56 @@ const INFO_COPY = {
 const ORGAN_PARTS = [
     {
         id: "battery",
-        label: "Pile",
-        info: "La pile fournit l'energie electrique au circuit.",
-        hint: "Elle cree une difference de potentiel entre ses deux bornes.",
+        label: "Battery",
+        info: "The battery provides electrical energy to the circuit.",
+        hint: "It creates a potential difference between its two terminals.",
         screenOffset: { x: -1, y: 0.12 }
     },
     {
         id: "bulb",
-        label: "Ampoule",
-        info: "L'ampoule transforme l'energie electrique en lumiere.",
-        hint: "Elle brille quand le circuit est ferme.",
+        label: "Bulb",
+        info: "The bulb transforms electrical energy into light.",
+        hint: "It glows when the circuit is closed.",
         screenOffset: { x: 1, y: 0.12 }
     },
     {
         id: "wires",
-        label: "Fils",
-        info: "Les fils conducteurs permettent au courant de circuler entre les composants.",
-        hint: "Ils relient la pile, l'interrupteur et l'ampoule.",
+        label: "Wires",
+        info: "The conducting wires let current move between the components.",
+        hint: "They connect the battery, the switch and the bulb.",
         screenOffset: { x: 0, y: -0.9 }
     },
     {
         id: "switch",
-        label: "Interrupteur",
-        info: "L'interrupteur ouvre ou ferme le circuit.",
-        hint: "Circuit ferme : le courant passe. Circuit ouvert : il s'arrete.",
+        label: "Switch",
+        info: "The switch opens or closes the circuit.",
+        hint: "Closed circuit: current flows. Open circuit: it stops.",
         screenOffset: { x: 0, y: -0.22 }
     }
 ];
+
+const ORGAN_PARTS_FR = {
+    battery: {
+        label: "Pile",
+        info: "La pile fournit l'energie electrique au circuit.",
+        hint: "Elle cree une difference de potentiel entre ses deux bornes."
+    },
+    bulb: {
+        label: "Ampoule",
+        info: "L'ampoule transforme l'energie electrique en lumiere.",
+        hint: "Elle brille quand le circuit est ferme."
+    },
+    wires: {
+        label: "Fils",
+        info: "Les fils conducteurs permettent au courant de circuler entre les composants.",
+        hint: "Ils relient la pile, l'interrupteur et l'ampoule."
+    },
+    switch: {
+        label: "Interrupteur",
+        info: "L'interrupteur ouvre ou ferme le circuit.",
+        hint: "Circuit ferme : le courant passe. Circuit ouvert : il s'arrete."
+    }
+};
 
 const ORGAN_PARTS_AR = {
     battery: {
@@ -111,6 +140,10 @@ const ORGAN_PARTS_AR = {
 if (currentLanguage === "ar") {
     ORGAN_PARTS.forEach((part) => {
         Object.assign(part, ORGAN_PARTS_AR[part.id] ?? {});
+    });
+} else if (currentLanguage === "fr") {
+    ORGAN_PARTS.forEach((part) => {
+        Object.assign(part, ORGAN_PARTS_FR[part.id] ?? {});
     });
 }
 
@@ -199,25 +232,36 @@ function getCopy() {
 
 function applyInfoCard() {
     const copy = getCopy();
-    const menuCopy = currentLanguage === "ar"
-        ? {
-            eyebrow: "مسح مباشر",
-            appTitle: "الدائرة الكهربائية",
-            rotate: "تدوير",
-            scale: "تحجيم",
-            launch: "تشغيل",
-            labels: "التسميات تشغيل/إيقاف",
-            modelTag: "نموذج فيزيائي"
-        }
-        : {
-            eyebrow: "EduAR live scan",
-            appTitle: "ELECTRIC CIRCUIT",
-            rotate: "Rotate",
-            scale: "Scale",
-            launch: "Power",
-            labels: "Labels On/Off",
-            modelTag: "PHYSICS MODEL"
-        };
+    const menuCopy =
+        currentLanguage === "ar"
+            ? {
+                eyebrow: "??? ?????",
+                appTitle: "??????? ??????????",
+                rotate: "?????",
+                scale: "?????",
+                launch: "?????",
+                labels: "???????? ?????/?????",
+                modelTag: "????? ???????"
+            }
+            : currentLanguage === "fr"
+              ? {
+                  eyebrow: "Scan EduAR en direct",
+                  appTitle: "CIRCUIT ELECTRIQUE",
+                  rotate: "Rotation",
+                  scale: "Echelle",
+                  launch: "Allumer",
+                  labels: "Etiquettes On/Off",
+                  modelTag: "MODELE DE PHYSIQUE"
+              }
+              : {
+                  eyebrow: "EduAR live scan",
+                  appTitle: "ELECTRIC CIRCUIT",
+                  rotate: "Rotate",
+                  scale: "Scale",
+                  launch: "Power",
+                  labels: "Labels On/Off",
+                  modelTag: "PHYSICS MODEL"
+              };
 
     document.getElementById("app-eyebrow").innerText = menuCopy.eyebrow;
     document.getElementById("app-title").innerText = menuCopy.appTitle;
@@ -259,7 +303,11 @@ function setOrganInfo(index) {
 
     if (UI.cardTag) {
         UI.cardTag.innerText =
-            currentLanguage === "ar" ? "المكوّن المحدد" : "SELECTED COMPONENT";
+            currentLanguage === "ar"
+                ? "المكوّن المحدد"
+                : currentLanguage === "fr"
+                  ? "COMPOSANT SELECTIONNE"
+                  : "SELECTED COMPONENT";
     }
 
     if (UI.partName) {

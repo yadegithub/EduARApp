@@ -15,6 +15,126 @@ import { useAppSettings } from "../settings/AppSettingsContext";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const resetPasswordCopy = {
+  en: {
+    chooseNewPassword: "Choose New Password",
+    resetPassword: "Reset Password",
+    codeSubtitle:
+      "Create a new password, then sign in again with your updated account.",
+    requestSubtitle:
+      "Enter your email to receive a reset link and continue on any device.",
+    newPasswordHeading: "New password",
+    forgotPasswordHeading: "Forgot password",
+    checkingLink: "Checking your reset link...",
+    email: "Email",
+    emailPlaceholder: "you@example.com",
+    account: "Account",
+    checkingAccount: "Checking account...",
+    newPassword: "New Password",
+    newPasswordPlaceholder: "Create a new password",
+    confirmPassword: "Confirm Password",
+    confirmPasswordPlaceholder: "Repeat the new password",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
+    hideConfirmPassword: "Hide confirm password",
+    showConfirmPassword: "Show confirm password",
+    updatingPassword: "Updating password...",
+    sendingResetLink: "Sending reset link...",
+    saveNewPassword: "Save New Password",
+    sendResetLink: "Send Reset Link",
+    rememberedPassword: "Remembered your password?",
+    backToLogin: "Back to Login",
+    invalidEmail: "Enter a valid email address.",
+    resetLinkSent:
+      "Reset link sent. Open the email link to choose your new password on this page.",
+    resetLinkError: "Unable to send the reset link right now.",
+    verifyLinkError: "Unable to verify this reset link.",
+    shortPassword: "Password must be at least 6 characters.",
+    mismatchPassword: "Passwords do not match.",
+    resetError: "Unable to reset your password right now.",
+    localModeNotice:
+      "Real auth is not active yet. Add Firebase config to use the same account on every device.",
+  },
+  ar: {
+    chooseNewPassword: "اختر كلمة مرور جديدة",
+    resetPassword: "إعادة تعيين كلمة المرور",
+    codeSubtitle:
+      "أنشئ كلمة مرور جديدة ثم سجّل الدخول مرة أخرى بحسابك المحدّث.",
+    requestSubtitle:
+      "أدخل بريدك الإلكتروني لتصلك رسالة إعادة التعيين وتكمل على أي جهاز.",
+    newPasswordHeading: "كلمة مرور جديدة",
+    forgotPasswordHeading: "نسيت كلمة المرور",
+    checkingLink: "جارٍ التحقق من رابط إعادة التعيين...",
+    email: "البريد الإلكتروني",
+    emailPlaceholder: "you@example.com",
+    account: "الحساب",
+    checkingAccount: "جارٍ التحقق من الحساب...",
+    newPassword: "كلمة المرور الجديدة",
+    newPasswordPlaceholder: "أنشئ كلمة مرور جديدة",
+    confirmPassword: "تأكيد كلمة المرور",
+    confirmPasswordPlaceholder: "أعد إدخال كلمة المرور الجديدة",
+    hidePassword: "إخفاء كلمة المرور",
+    showPassword: "إظهار كلمة المرور",
+    hideConfirmPassword: "إخفاء تأكيد كلمة المرور",
+    showConfirmPassword: "إظهار تأكيد كلمة المرور",
+    updatingPassword: "جارٍ تحديث كلمة المرور...",
+    sendingResetLink: "جارٍ إرسال رابط إعادة التعيين...",
+    saveNewPassword: "حفظ كلمة المرور الجديدة",
+    sendResetLink: "إرسال رابط إعادة التعيين",
+    rememberedPassword: "تذكرت كلمة المرور؟",
+    backToLogin: "العودة إلى تسجيل الدخول",
+    invalidEmail: "أدخل بريداً إلكترونياً صحيحاً.",
+    resetLinkSent:
+      "تم إرسال رابط إعادة التعيين. افتح رابط البريد لاختيار كلمة مرور جديدة في هذه الصفحة.",
+    resetLinkError: "تعذر إرسال رابط إعادة التعيين الآن.",
+    verifyLinkError: "تعذر التحقق من رابط إعادة التعيين.",
+    shortPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
+    mismatchPassword: "كلمتا المرور غير متطابقتين.",
+    resetError: "تعذر إعادة تعيين كلمة المرور الآن.",
+    localModeNotice:
+      "المصادقة الحقيقية غير مفعّلة بعد. أضف إعدادات Firebase لاستخدام الحساب نفسه على كل جهاز.",
+  },
+  fr: {
+    chooseNewPassword: "Choisir un nouveau mot de passe",
+    resetPassword: "Réinitialiser le mot de passe",
+    codeSubtitle:
+      "Créez un nouveau mot de passe puis reconnectez-vous avec votre compte mis à jour.",
+    requestSubtitle:
+      "Entrez votre e-mail pour recevoir un lien de réinitialisation et continuer sur n'importe quel appareil.",
+    newPasswordHeading: "Nouveau mot de passe",
+    forgotPasswordHeading: "Mot de passe oublié",
+    checkingLink: "Vérification de votre lien de réinitialisation...",
+    email: "E-mail",
+    emailPlaceholder: "you@example.com",
+    account: "Compte",
+    checkingAccount: "Vérification du compte...",
+    newPassword: "Nouveau mot de passe",
+    newPasswordPlaceholder: "Créez un nouveau mot de passe",
+    confirmPassword: "Confirmer le mot de passe",
+    confirmPasswordPlaceholder: "Répétez le nouveau mot de passe",
+    hidePassword: "Masquer le mot de passe",
+    showPassword: "Afficher le mot de passe",
+    hideConfirmPassword: "Masquer la confirmation",
+    showConfirmPassword: "Afficher la confirmation",
+    updatingPassword: "Mise à jour du mot de passe...",
+    sendingResetLink: "Envoi du lien...",
+    saveNewPassword: "Enregistrer le nouveau mot de passe",
+    sendResetLink: "Envoyer le lien",
+    rememberedPassword: "Vous vous souvenez de votre mot de passe ?",
+    backToLogin: "Retour à la connexion",
+    invalidEmail: "Entrez une adresse e-mail valide.",
+    resetLinkSent:
+      "Lien envoyé. Ouvrez l'e-mail pour choisir votre nouveau mot de passe sur cette page.",
+    resetLinkError: "Impossible d'envoyer le lien pour le moment.",
+    verifyLinkError: "Impossible de vérifier ce lien.",
+    shortPassword: "Le mot de passe doit contenir au moins 6 caractères.",
+    mismatchPassword: "Les mots de passe ne correspondent pas.",
+    resetError: "Impossible de réinitialiser le mot de passe pour le moment.",
+    localModeNotice:
+      "L'authentification réelle n'est pas encore active. Ajoutez la configuration Firebase pour utiliser le même compte sur chaque appareil.",
+  },
+} as const;
+
 const ResetPasswordPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
@@ -42,81 +162,9 @@ const ResetPasswordPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCheckingCode, setIsCheckingCode] = useState(isCodeMode);
   const isArabic = settings.language === "ar";
-  const copy = isArabic
-    ? {
-        chooseNewPassword: "اختر كلمة مرور جديدة",
-        resetPassword: "إعادة تعيين كلمة المرور",
-        codeSubtitle:
-          "أنشئ كلمة مرور جديدة، ثم سجل الدخول مرة أخرى بحسابك المحدّث.",
-        requestSubtitle:
-          "أدخل بريدك الإلكتروني لتصلك رسالة إعادة التعيين وتكمل على أي جهاز.",
-        newPasswordHeading: "كلمة مرور جديدة",
-        forgotPasswordHeading: "نسيت كلمة المرور",
-        checkingLink: "جار التحقق من رابط إعادة التعيين...",
-        email: "البريد الإلكتروني",
-        emailPlaceholder: "you@example.com",
-        account: "الحساب",
-        checkingAccount: "جار التحقق من الحساب...",
-        newPassword: "كلمة المرور الجديدة",
-        newPasswordPlaceholder: "أنشئ كلمة مرور جديدة",
-        confirmPassword: "تأكيد كلمة المرور",
-        confirmPasswordPlaceholder: "أعد إدخال كلمة المرور الجديدة",
-        hidePassword: "إخفاء كلمة المرور",
-        showPassword: "إظهار كلمة المرور",
-        hideConfirmPassword: "إخفاء تأكيد كلمة المرور",
-        showConfirmPassword: "إظهار تأكيد كلمة المرور",
-        updatingPassword: "جار تحديث كلمة المرور...",
-        sendingResetLink: "جار إرسال رابط إعادة التعيين...",
-        saveNewPassword: "حفظ كلمة المرور الجديدة",
-        sendResetLink: "إرسال رابط إعادة التعيين",
-        rememberedPassword: "تذكرت كلمة المرور؟",
-        backToLogin: "العودة إلى تسجيل الدخول",
-        invalidEmail: "أدخل بريدًا إلكترونيًا صحيحًا.",
-        resetLinkSent:
-          "تم إرسال رابط إعادة التعيين. افتح رابط البريد لاختيار كلمة مرور جديدة في هذه الصفحة.",
-        resetLinkError: "تعذر إرسال رابط إعادة التعيين الآن.",
-        verifyLinkError: "تعذر التحقق من رابط إعادة التعيين.",
-        shortPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
-        mismatchPassword: "كلمتا المرور غير متطابقتين.",
-        resetError: "تعذر إعادة تعيين كلمة المرور الآن.",
-      }
-    : {
-        chooseNewPassword: "Choose New Password",
-        resetPassword: "Reset Password",
-        codeSubtitle:
-          "Create a new password, then sign in again with your updated account.",
-        requestSubtitle:
-          "Enter your email to receive a reset link and continue on any device.",
-        newPasswordHeading: "New password",
-        forgotPasswordHeading: "Forgot password",
-        checkingLink: "Checking your reset link...",
-        email: "Email",
-        emailPlaceholder: "you@example.com",
-        account: "Account",
-        checkingAccount: "Checking account...",
-        newPassword: "New Password",
-        newPasswordPlaceholder: "Create a new password",
-        confirmPassword: "Confirm Password",
-        confirmPasswordPlaceholder: "Repeat the new password",
-        hidePassword: "Hide password",
-        showPassword: "Show password",
-        hideConfirmPassword: "Hide confirm password",
-        showConfirmPassword: "Show confirm password",
-        updatingPassword: "Updating password...",
-        sendingResetLink: "Sending reset link...",
-        saveNewPassword: "Save New Password",
-        sendResetLink: "Send Reset Link",
-        rememberedPassword: "Remembered your password?",
-        backToLogin: "Back to Login",
-        invalidEmail: "Enter a valid email address.",
-        resetLinkSent:
-          "Reset link sent. Open the email link to choose your new password on this page.",
-        resetLinkError: "Unable to send the reset link right now.",
-        verifyLinkError: "Unable to verify this reset link.",
-        shortPassword: "Password must be at least 6 characters.",
-        mismatchPassword: "Passwords do not match.",
-        resetError: "Unable to reset your password right now.",
-      };
+  const copy = resetPasswordCopy[settings.language] ?? resetPasswordCopy.en;
+  const visibleAuthNotice =
+    authMode === "local" ? copy.localModeNotice : authNotice;
 
   useEffect(() => {
     if (!isCodeMode || authMode !== "firebase") {
@@ -166,9 +214,7 @@ const ResetPasswordPage: React.FC = () => {
 
   const goToLogin = () => {
     const nextEmail = resolvedEmail || email;
-    const query = nextEmail
-      ? `?email=${encodeURIComponent(nextEmail)}`
-      : "";
+    const query = nextEmail ? `?email=${encodeURIComponent(nextEmail)}` : "";
     history.replace(`/login${query}`);
   };
 
@@ -230,9 +276,7 @@ const ResetPasswordPage: React.FC = () => {
     } catch (resetError) {
       setInfo("");
       setError(
-        resetError instanceof Error
-          ? resetError.message
-          : copy.resetError,
+        resetError instanceof Error ? resetError.message : copy.resetError,
       );
     } finally {
       setIsSubmitting(false);
@@ -255,11 +299,7 @@ const ResetPasswordPage: React.FC = () => {
               <div className="brand-hero brand-hero--login">
                 <BrandMark className="brand-mark--hero" />
                 <div className="brand-hero__copy">
-                  <p>
-                    {isCodeMode
-                      ? copy.codeSubtitle
-                      : copy.requestSubtitle}
-                  </p>
+                  <p>{isCodeMode ? copy.codeSubtitle : copy.requestSubtitle}</p>
                 </div>
               </div>
             </section>
@@ -277,13 +317,11 @@ const ResetPasswordPage: React.FC = () => {
               </div>
 
               {authMode !== "firebase" ? (
-                <p className="auth-hint auth-hint--status">{authNotice}</p>
+                <p className="auth-hint auth-hint--status">{visibleAuthNotice}</p>
               ) : null}
 
               {isCheckingCode ? (
-                <p className="auth-hint auth-hint--status">
-                  {copy.checkingLink}
-                </p>
+                <p className="auth-hint auth-hint--status">{copy.checkingLink}</p>
               ) : null}
 
               {!isCodeMode ? (
@@ -390,9 +428,7 @@ const ResetPasswordPage: React.FC = () => {
                 className="auth-submit"
                 disabled={isSubmitting || isCheckingCode || authMode !== "firebase"}
               >
-                <IonIcon
-                  icon={isCodeMode ? keyOutline : mailOutline}
-                />
+                <IonIcon icon={isCodeMode ? keyOutline : mailOutline} />
                 {isSubmitting
                   ? isCodeMode
                     ? copy.updatingPassword

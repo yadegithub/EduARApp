@@ -3,7 +3,18 @@
     "models": {
       "lung": {
         "name": "Poumons humains",
-        "path": "./assets/realistic_human_lungs.glb"
+        "path": "./assets/realistic_human_lungs.glb",
+        "targetSize": 1.05,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0.02
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
       }
     }
   },

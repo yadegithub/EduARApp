@@ -23,6 +23,105 @@ interface LoginLocationState {
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const loginCopy = {
+  en: {
+    welcome: "Welcome back",
+    subtitle: "Sign in to continue your AR lessons on mobile.",
+    login: "Login",
+    restoring: "Restoring your session...",
+    alreadySignedIn: "You are already signed in on this device.",
+    continueDashboard: "Continue to Dashboard",
+    switchAccount: "Switch Account",
+    email: "Email",
+    emailPlaceholder: "you@example.com",
+    password: "Password",
+    passwordPlaceholder: "Enter your password",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
+    keepSignedIn: "Keep me signed in on this device",
+    forgotPassword: "Forgot password?",
+    signingIn: "Signing in...",
+    signIn: "Sign In",
+    useDemo: "Use Demo Login",
+    demoAccount: "Demo account",
+    demoPassword: "Password",
+    newHere: "New here?",
+    createAccount: "Create Account",
+    invalidEmail: "Enter a valid email address.",
+    shortPassword: "Password must be at least 6 characters.",
+    signInError: "Unable to sign in right now.",
+    invalidCredentials: "Invalid email or password.",
+    localModeNotice:
+      "Real auth is not active yet. Add Firebase config to use the same account on every device.",
+    passwordUpdated:
+      "Password updated. Sign in with your new password.",
+  },
+  ar: {
+    welcome: "مرحباً بعودتك",
+    subtitle: "سجل الدخول لمتابعة دروس الواقع المعزز على الهاتف.",
+    login: "تسجيل الدخول",
+    restoring: "جارٍ استعادة الجلسة...",
+    alreadySignedIn: "أنت مسجل الدخول بالفعل على هذا الجهاز.",
+    continueDashboard: "المتابعة إلى الرئيسية",
+    switchAccount: "تبديل الحساب",
+    email: "البريد الإلكتروني",
+    emailPlaceholder: "you@example.com",
+    password: "كلمة المرور",
+    passwordPlaceholder: "أدخل كلمة المرور",
+    hidePassword: "إخفاء كلمة المرور",
+    showPassword: "إظهار كلمة المرور",
+    keepSignedIn: "أبقني مسجل الدخول على هذا الجهاز",
+    forgotPassword: "نسيت كلمة المرور؟",
+    signingIn: "جارٍ تسجيل الدخول...",
+    signIn: "دخول",
+    useDemo: "استخدام حساب تجريبي",
+    demoAccount: "الحساب التجريبي",
+    demoPassword: "كلمة المرور",
+    newHere: "جديد هنا؟",
+    createAccount: "إنشاء حساب",
+    invalidEmail: "أدخل بريداً إلكترونياً صحيحاً.",
+    shortPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
+    signInError: "تعذر تسجيل الدخول الآن.",
+    invalidCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    localModeNotice:
+      "المصادقة الحقيقية غير مفعّلة بعد. أضف إعدادات Firebase لاستخدام الحساب نفسه على كل جهاز.",
+    passwordUpdated:
+      "تم تحديث كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.",
+  },
+  fr: {
+    welcome: "Bon retour",
+    subtitle: "Connectez-vous pour continuer vos leçons AR sur mobile.",
+    login: "Connexion",
+    restoring: "Restauration de votre session...",
+    alreadySignedIn: "Vous êtes déjà connecté sur cet appareil.",
+    continueDashboard: "Continuer vers le tableau de bord",
+    switchAccount: "Changer de compte",
+    email: "E-mail",
+    emailPlaceholder: "you@example.com",
+    password: "Mot de passe",
+    passwordPlaceholder: "Entrez votre mot de passe",
+    hidePassword: "Masquer le mot de passe",
+    showPassword: "Afficher le mot de passe",
+    keepSignedIn: "Rester connecté sur cet appareil",
+    forgotPassword: "Mot de passe oublié ?",
+    signingIn: "Connexion en cours...",
+    signIn: "Se connecter",
+    useDemo: "Utiliser le compte démo",
+    demoAccount: "Compte démo",
+    demoPassword: "Mot de passe",
+    newHere: "Nouveau ici ?",
+    createAccount: "Créer un compte",
+    invalidEmail: "Entrez une adresse e-mail valide.",
+    shortPassword: "Le mot de passe doit contenir au moins 6 caractères.",
+    signInError: "Connexion impossible pour le moment.",
+    invalidCredentials: "E-mail ou mot de passe invalide.",
+    localModeNotice:
+      "L'authentification réelle n'est pas encore active. Ajoutez la configuration Firebase pour utiliser le même compte sur chaque appareil.",
+    passwordUpdated:
+      "Mot de passe mis à jour. Connectez-vous avec votre nouveau mot de passe.",
+  },
+} as const;
+
 const LoginPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation<LoginLocationState>();
@@ -43,78 +142,14 @@ const LoginPage: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isArabic = settings.language === "ar";
-  const copy = isArabic
-    ? {
-        welcome: "مرحبا بعودتك",
-        subtitle: "سجل الدخول لمتابعة دروس الواقع المعزز على الهاتف.",
-        login: "تسجيل الدخول",
-        restoring: "جار استعادة الجلسة...",
-        alreadySignedIn: "أنت مسجل الدخول بالفعل على هذا الجهاز.",
-        continueDashboard: "المتابعة إلى الرئيسية",
-        switchAccount: "تبديل الحساب",
-        email: "البريد الإلكتروني",
-        emailPlaceholder: "you@example.com",
-        password: "كلمة المرور",
-        passwordPlaceholder: "أدخل كلمة المرور",
-        hidePassword: "إخفاء كلمة المرور",
-        showPassword: "إظهار كلمة المرور",
-        keepSignedIn: "أبقني مسجل الدخول على هذا الجهاز",
-        forgotPassword: "نسيت كلمة المرور؟",
-        sendingReset: "جار إرسال رابط إعادة التعيين...",
-        resetSent: "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
-        signingIn: "جار تسجيل الدخول...",
-        signIn: "دخول",
-        useDemo: "استخدام حساب تجريبي",
-        demoAccount: "الحساب التجريبي",
-        demoPassword: "كلمة المرور",
-        firebaseTitle: "مصادقة Firebase بالبريد وكلمة المرور",
-        firebaseCopy: "استخدم الحساب نفسه على المتصفح و Android.",
-        newHere: "جديد هنا؟",
-        createAccount: "إنشاء حساب",
-        invalidEmail: "أدخل بريدا إلكترونيا صحيحا.",
-        shortPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
-        signInError: "تعذر تسجيل الدخول الآن.",
-        passwordUpdated:
-          "تم تحديث كلمة المرور. سجل الدخول بكلمة المرور الجديدة.",
-      }
-    : {
-        welcome: "Welcome back",
-        subtitle: "Sign in to continue your AR lessons on mobile.",
-        login: "Login",
-        restoring: "Restoring your session...",
-        alreadySignedIn: "You are already signed in on this device.",
-        continueDashboard: "Continue to Dashboard",
-        switchAccount: "Switch Account",
-        email: "Email",
-        emailPlaceholder: "you@example.com",
-        password: "Password",
-        passwordPlaceholder: "Enter your password",
-        hidePassword: "Hide password",
-        showPassword: "Show password",
-        keepSignedIn: "Keep me signed in on this device",
-        forgotPassword: "Forgot password?",
-        sendingReset: "Sending reset link...",
-        resetSent: "Password reset email sent. Check your inbox.",
-        signingIn: "Signing in...",
-        signIn: "Sign In",
-        useDemo: "Use Demo Login",
-        demoAccount: "Demo account",
-        demoPassword: "Password",
-        firebaseTitle: "Firebase email/password auth",
-        firebaseCopy: "Use the same account across browser and Android.",
-        newHere: "New here?",
-        createAccount: "Create Account",
-        invalidEmail: "Enter a valid email address.",
-        shortPassword: "Password must be at least 6 characters.",
-        signInError: "Unable to sign in right now.",
-        passwordUpdated: "Password updated. Sign in with your new password.",
-      };
+  const copy = loginCopy[settings.language] ?? loginCopy.en;
   const [resetFeedback, setResetFeedback] = useState(
     searchParams.get("reset") === "success" ? copy.passwordUpdated : "",
   );
 
   const redirectTo = location.state?.from?.pathname ?? "/tabs/dashboard";
+  const visibleAuthNotice =
+    authMode === "local" ? copy.localModeNotice : authNotice;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -138,9 +173,17 @@ const LoginPage: React.FC = () => {
       await login({ email, password, rememberMe });
       history.replace(redirectTo);
     } catch (loginError) {
-      setError(
-        loginError instanceof Error ? loginError.message : copy.signInError,
-      );
+      if (
+        authMode === "local" &&
+        loginError instanceof Error &&
+        loginError.message.startsWith("Invalid email or password.")
+      ) {
+        setError(`${copy.invalidCredentials} ${copy.localModeNotice}`);
+      } else {
+        setError(
+          loginError instanceof Error ? loginError.message : copy.signInError,
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -202,8 +245,8 @@ const LoginPage: React.FC = () => {
                 <p className="auth-hint auth-hint--status">{copy.restoring}</p>
               ) : null}
 
-              {authNotice ? (
-                <p className="auth-hint auth-hint--status">{authNotice}</p>
+              {visibleAuthNotice ? (
+                <p className="auth-hint auth-hint--status">{visibleAuthNotice}</p>
               ) : null}
 
               {isAuthenticated ? (

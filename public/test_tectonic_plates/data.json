@@ -37,6 +37,12 @@
         "name": "الصفائح التكتونية",
         "info": "استكشف الصفائح التكتونية في الواقع المعزز واضغط على العلامات المرقمة لفهم كيف تشكل حركة الصفائح سطح الأرض.",
         "hint": "استخدم التدوير والتحجيم والتسميات أثناء عرض النموذج."
+      },
+      "fr": {
+        "tag": "Modele de geographie",
+        "name": "PLAQUES TECTONIQUES",
+        "info": "Examinez les plaques tectoniques en AR et touchez les numeros pour comprendre comment leurs collisions faconnent la surface de la Terre.",
+        "hint": "Utilisez rotation, echelle et numeros pendant l'affichage du modele."
       }
     },
     "ui": {
@@ -75,6 +81,24 @@
         "statusCameraError": "تم رفض الوصول إلى الكاميرا.",
         "statusModelError": "تعذر تحميل نموذج الصفائح التكتونية.",
         "focusTag": "حد الصفائح"
+      },
+      "fr": {
+        "appEyebrow": "Scan EduAR en direct",
+        "appTitle": "PLAQUES TECTONIQUES",
+        "rotate": "Rotation",
+        "scale": "Echelle",
+        "launchCollision": "Lancer",
+        "pauseCollision": "Pause",
+        "labels": "Numeros On/Off",
+        "statusStarting": "Demarrage de la camera...",
+        "statusLoading": "Chargement du modele des plaques tectoniques...",
+        "statusReady": "Camera prete",
+        "statusTracking": "Plaques tectoniques placees",
+        "statusHoldSteady": "Gardez le QR stable pendant le verrouillage...",
+        "statusSearching": "Recherche du QR code...",
+        "statusCameraError": "L'acces a la camera a ete refuse.",
+        "statusModelError": "Le modele des plaques tectoniques n'a pas pu etre charge.",
+        "focusTag": "Limite de plaque"
       }
     },
     "parts": [
@@ -82,19 +106,23 @@
         "id": "convergent-boundary",
         "label": {
           "en": "Convergent Boundary",
-          "ar": "حد تقاربي"
+          "ar": "حد تقاربي",
+          "fr": "Limite convergente"
         },
         "title": {
           "en": "CONVERGENT BOUNDARY",
-          "ar": "حد تقاربي"
+          "ar": "حد تقاربي",
+          "fr": "LIMITE CONVERGENTE"
         },
         "info": {
           "en": "A convergent boundary forms where two tectonic plates move toward each other.",
-          "ar": "يتشكل الحد التقاربي عندما تتحرك صفيحتان تكتونيتان باتجاه بعضهما."
+          "ar": "يتشكل الحد التقاربي عندما تتحرك صفيحتان تكتونيتان باتجاه بعضهما.",
+          "fr": "Une limite convergente se forme lorsque deux plaques tectoniques se deplacent l une vers l autre."
         },
         "hint": {
           "en": "Watch the collision zone to see how crust can fold, rise, or sink.",
-          "ar": "راقب منطقة التصادم لترى كيف تنثني القشرة أو ترتفع أو تهبط."
+          "ar": "راقب منطقة التصادم لترى كيف تنثني القشرة أو ترتفع أو تهبط.",
+          "fr": "Observez la zone de collision pour voir la croute se plier, monter ou descendre."
         },
         "normalizedPosition": [
           0,
@@ -106,19 +134,23 @@
         "id": "subduction-zone",
         "label": {
           "en": "Subduction Zone",
-          "ar": "منطقة الانغراز"
+          "ar": "منطقة الانغراز",
+          "fr": "Zone de subduction"
         },
         "title": {
           "en": "SUBDUCTION ZONE",
-          "ar": "منطقة الانغراز"
+          "ar": "منطقة الانغراز",
+          "fr": "ZONE DE SUBDUCTION"
         },
         "info": {
           "en": "Subduction happens when one plate dives beneath another into the mantle.",
-          "ar": "يحدث الانغراز عندما تنزلق صفيحة تحت أخرى نحو الوشاح."
+          "ar": "يحدث الانغراز عندما تنزلق صفيحة تحت أخرى نحو الوشاح.",
+          "fr": "La subduction se produit lorsqu'une plaque plonge sous une autre vers le manteau."
         },
         "hint": {
           "en": "This downward motion can create trenches, volcanoes, and earthquakes.",
-          "ar": "قد تسبب هذه الحركة الخنادق والبراكين والزلازل."
+          "ar": "قد تسبب هذه الحركة الخنادق والبراكين والزلازل.",
+          "fr": "Ce mouvement descendant peut creer fosses, volcans et seismes."
         },
         "normalizedPosition": [
           0.22,
@@ -130,19 +162,23 @@
         "id": "uplift",
         "label": {
           "en": "Uplift",
-          "ar": "ارتفاع القشرة"
+          "ar": "ارتفاع القشرة",
+          "fr": "Soulevement"
         },
         "title": {
           "en": "UPLIFT",
-          "ar": "ارتفاع القشرة"
+          "ar": "ارتفاع القشرة",
+          "fr": "SOULEVEMENT"
         },
         "info": {
           "en": "Uplift raises crustal material as plates compress and deform the surface.",
-          "ar": "يرفع الضغط مواد القشرة عندما تتقارب الصفائح ويتغير شكل السطح."
+          "ar": "يرفع الضغط مواد القشرة عندما تتقارب الصفائح ويتغير شكل السطح.",
+          "fr": "Le soulevement eleve la croute lorsque les plaques se compriment et deforment la surface."
         },
         "hint": {
           "en": "Mountain ranges often grow slowly from repeated uplift.",
-          "ar": "تنمو السلاسل الجبلية غالبا ببطء نتيجة الارتفاع المتكرر."
+          "ar": "تنمو السلاسل الجبلية غالبا ببطء نتيجة الارتفاع المتكرر.",
+          "fr": "Les chaines de montagnes grandissent souvent lentement par soulevements repetes."
         },
         "normalizedPosition": [
           -0.08,
@@ -154,19 +190,23 @@
         "id": "oceanic-plate",
         "label": {
           "en": "Oceanic Plate",
-          "ar": "صفيحة محيطية"
+          "ar": "صفيحة محيطية",
+          "fr": "Plaque oceanique"
         },
         "title": {
           "en": "OCEANIC PLATE",
-          "ar": "صفيحة محيطية"
+          "ar": "صفيحة محيطية",
+          "fr": "PLAQUE OCEANIQUE"
         },
         "info": {
           "en": "Oceanic plates are dense sections of lithosphere that can sink below lighter crust.",
-          "ar": "الصفائح المحيطية أجزاء كثيفة من الغلاف الصخري وقد تنغرز تحت قشرة أخف."
+          "ar": "الصفائح المحيطية أجزاء كثيفة من الغلاف الصخري وقد تنغرز تحت قشرة أخف.",
+          "fr": "Les plaques oceaniques sont plus denses et peuvent s enfoncer sous une croute plus legere."
         },
         "hint": {
           "en": "Density helps explain why one plate may slide underneath another.",
-          "ar": "تساعد الكثافة في تفسير سبب انزلاق صفيحة تحت أخرى."
+          "ar": "تساعد الكثافة في تفسير سبب انزلاق صفيحة تحت أخرى.",
+          "fr": "La densite explique pourquoi une plaque peut glisser sous une autre."
         },
         "normalizedPosition": [
           0.34,
@@ -178,19 +218,23 @@
         "id": "continental-plate",
         "label": {
           "en": "Continental Plate",
-          "ar": "صفيحة قارية"
+          "ar": "صفيحة قارية",
+          "fr": "Plaque continentale"
         },
         "title": {
           "en": "CONTINENTAL PLATE",
-          "ar": "صفيحة قارية"
+          "ar": "صفيحة قارية",
+          "fr": "PLAQUE CONTINENTALE"
         },
         "info": {
           "en": "Continental plates are thicker and less dense, so they often crumple and rise during collision.",
-          "ar": "الصفائح القارية أكثر سماكة وأقل كثافة، لذلك تنثني وترتفع غالبا أثناء التصادم."
+          "ar": "الصفائح القارية أكثر سماكة وأقل كثافة، لذلك تنثني وترتفع غالبا أثناء التصادم.",
+          "fr": "Les plaques continentales sont plus epaisses et moins denses, elles se froissent et se soulevent souvent en collision."
         },
         "hint": {
           "en": "Compression along these edges can build high terrain.",
-          "ar": "يمكن للضغط على هذه الحواف أن يبني تضاريس مرتفعة."
+          "ar": "يمكن للضغط على هذه الحواف أن يبني تضاريس مرتفعة.",
+          "fr": "La compression sur ces bords peut construire des reliefs eleves."
         },
         "normalizedPosition": [
           -0.32,
@@ -202,19 +246,23 @@
         "id": "earthquake-focus",
         "label": {
           "en": "Earthquake Focus",
-          "ar": "بؤرة الزلزال"
+          "ar": "بؤرة الزلزال",
+          "fr": "Foyer sismique"
         },
         "title": {
           "en": "EARTHQUAKE FOCUS",
-          "ar": "بؤرة الزلزال"
+          "ar": "بؤرة الزلزال",
+          "fr": "FOYER SISMIQUE"
         },
         "info": {
           "en": "Earthquakes begin where stress suddenly releases along a plate boundary.",
-          "ar": "تبدأ الزلازل عندما تتحرر الطاقة فجأة على امتداد حدود الصفائح."
+          "ar": "تبدأ الزلازل عندما تتحرر الطاقة فجأة على امتداد حدود الصفائح.",
+          "fr": "Les seismes commencent la ou la contrainte se libere soudainement le long d'une limite de plaque."
         },
         "hint": {
           "en": "The strongest shaking usually follows active faults near moving plates.",
-          "ar": "غالبا ما يتبع الاهتزاز الأقوى الصدوع النشطة قرب الصفائح المتحركة."
+          "ar": "غالبا ما يتبع الاهتزاز الأقوى الصدوع النشطة قرب الصفائح المتحركة.",
+          "fr": "Les secousses les plus fortes suivent souvent les failles actives proches des plaques mobiles."
         },
         "normalizedPosition": [
           0.08,

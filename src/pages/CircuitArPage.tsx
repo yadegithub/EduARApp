@@ -15,7 +15,8 @@ const CircuitArPage: React.FC<CircuitArPageProps> = ({
   onBack,
   theme,
 }) => {
-  const resolvedLanguage = language === "ar" ? "ar" : "en";
+  const resolvedLanguage =
+    language === "ar" || language === "fr" ? language : "en";
   const searchParams = new URLSearchParams({
     lang: resolvedLanguage,
     theme: theme === "light" ? "light" : "dark",
@@ -26,6 +27,10 @@ const CircuitArPage: React.FC<CircuitArPageProps> = ({
       ? {
           back: "\u0627\u0644\u0639\u0648\u062f\u0629",
         }
+      : resolvedLanguage === "fr"
+        ? {
+            back: "Retour",
+          }
       : {
           back: "Go back",
         };

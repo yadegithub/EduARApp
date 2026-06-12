@@ -32,6 +32,11 @@ const KidneyArPage: React.FC<KidneyArPageProps> = ({
         description:
           "\u0627\u0641\u062d\u0635 \u0637\u0628\u0642\u0627\u062a \u0627\u0644\u0643\u0644\u064a\u0629 \u0648\u0627\u0644\u0623\u0648\u0639\u064a\u0629 \u0641\u064a \u0627\u0644\u0648\u0627\u0642\u0639 \u0627\u0644\u0645\u0639\u0632\u0632 \u0644\u0641\u0647\u0645 \u0643\u064a\u0641 \u062a\u0646\u0638\u0645 \u0639\u0645\u0644\u064a\u0629 \u0627\u0644\u062a\u0631\u0634\u064a\u062d \u0648\u0645\u0631\u0648\u0631 \u0627\u0644\u0628\u0648\u0644.",
       },
+      fr: {
+        title: "Rein humain",
+        description:
+          "Examinez les couches du rein et ses vaisseaux en realite augmentee pour comprendre la filtration et le trajet de l'urine.",
+      },
     }}
   />
 );

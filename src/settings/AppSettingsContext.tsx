@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 
-export type AppLanguage = "en" | "ar";
+export type AppLanguage = "en" | "ar" | "fr";
 export type AppTheme = "light" | "dark";
 
 export interface AppSettings {

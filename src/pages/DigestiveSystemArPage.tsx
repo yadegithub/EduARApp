@@ -33,6 +33,11 @@ const DigestiveSystemArPage: React.FC<DigestiveSystemArPageProps> = ({
         description:
           "\u0646\u0645\u0648\u0630\u062c \u062a\u0641\u0627\u0639\u0644\u064a \u064a\u0639\u0631\u0636 \u0627\u0644\u0623\u0639\u0636\u0627\u0621 \u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629 \u0644\u0644\u0647\u0636\u0645 \u0645\u0639 \u0645\u0644\u0627\u062d\u0638\u0627\u062a \u0644\u0645\u0633\u0627\u0639\u062f\u062a\u0643 \u0639\u0644\u0649 \u0641\u0647\u0645 \u0648\u0638\u0627\u0626\u0641 \u0643\u0644 \u062c\u0632\u0621.",
       },
+      fr: {
+        title: "Systeme digestif",
+        description:
+          "Un modele interactif qui montre les principaux organes digestifs avec des notes guidees pour comprendre le role de chaque structure.",
+      },
     }}
   />
 );

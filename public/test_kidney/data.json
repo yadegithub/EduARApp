@@ -37,6 +37,12 @@
         "name": "كلية الإنسان",
         "info": "افحص الكلية في الواقع المعزز واضغط على الملاحظات المرقمة لفهم بنى الترشيح الرئيسية.",
         "hint": "استخدم التدوير والتحجيم والتسميات أثناء عرض نموذج الكلية."
+      },
+      "fr": {
+        "tag": "Anatomie du rein",
+        "name": "REIN HUMAIN",
+        "info": "Examinez le rein en AR et touchez les numeros pour comprendre les principales structures de filtration.",
+        "hint": "Utilisez rotation, echelle et numeros pendant l'affichage du modele."
       }
     },
     "ui": {
@@ -63,6 +69,23 @@
         "statusCameraError": "تم رفض الوصول إلى الكاميرا.",
         "statusModelError": "تعذر تحميل النموذج.",
         "focusTag": "بنية كلوية"
+      },
+      "fr": {
+        "appEyebrow": "Scan EduAR en direct",
+        "appTitle": "REIN HUMAIN",
+        "rotate": "Rotation",
+        "scale": "Echelle",
+        "sound": "Audio",
+        "labels": "Numeros On/Off",
+        "statusStarting": "Demarrage de la camera...",
+        "statusLoading": "Chargement du modele de rein humain...",
+        "statusReady": "Camera prete",
+        "statusTracking": "Rein humain place",
+        "statusHoldSteady": "Gardez le QR stable pendant le verrouillage...",
+        "statusSearching": "Recherche du QR code...",
+        "statusCameraError": "L'acces a la camera a ete refuse.",
+        "statusModelError": "Le modele n'a pas pu etre charge.",
+        "focusTag": "Structure renale"
       }
     },
     "parts": [
@@ -70,19 +93,23 @@
         "id": "capsule",
         "label": {
           "en": "Capsule",
-          "ar": "المحفظة"
+          "ar": "المحفظة",
+          "fr": "Capsule"
         },
         "title": {
           "en": "CAPSULE",
-          "ar": "المحفظة"
+          "ar": "المحفظة",
+          "fr": "CAPSULE"
         },
         "info": {
           "en": "The capsule is the thin outer covering that helps protect the kidney.",
-          "ar": "المحفظة غلاف خارجي رقيق يساعد على حماية الكلية."
+          "ar": "المحفظة غلاف خارجي رقيق يساعد على حماية الكلية.",
+          "fr": "La capsule est la fine enveloppe externe qui aide a proteger le rein."
         },
         "hint": {
           "en": "This outer layer wraps around the kidney surface.",
-          "ar": "هذه الطبقة الخارجية تلتف حول سطح الكلية."
+          "ar": "هذه الطبقة الخارجية تلتف حول سطح الكلية.",
+          "fr": "Cette couche externe entoure la surface du rein."
         },
         "normalizedPosition": [
           -0.34,
@@ -94,19 +121,23 @@
         "id": "cortex",
         "label": {
           "en": "Cortex",
-          "ar": "القشرة"
+          "ar": "القشرة",
+          "fr": "Cortex"
         },
         "title": {
           "en": "CORTEX",
-          "ar": "القشرة"
+          "ar": "القشرة",
+          "fr": "CORTEX"
         },
         "info": {
           "en": "The cortex is the outer region where blood filtration begins inside the kidney.",
-          "ar": "القشرة هي المنطقة الخارجية التي تبدأ فيها تصفية الدم داخل الكلية."
+          "ar": "القشرة هي المنطقة الخارجية التي تبدأ فيها تصفية الدم داخل الكلية.",
+          "fr": "Le cortex est la region externe ou commence la filtration du sang dans le rein."
         },
         "hint": {
           "en": "This layer sits just beneath the capsule.",
-          "ar": "تقع هذه الطبقة مباشرة تحت المحفظة."
+          "ar": "تقع هذه الطبقة مباشرة تحت المحفظة.",
+          "fr": "Cette couche se situe juste sous la capsule."
         },
         "normalizedPosition": [
           0.16,
@@ -118,19 +149,23 @@
         "id": "renal-medulla",
         "label": {
           "en": "Renal Medulla",
-          "ar": "اللب الكلوي"
+          "ar": "اللب الكلوي",
+          "fr": "Medulla renale"
         },
         "title": {
           "en": "RENAL MEDULLA",
-          "ar": "اللب الكلوي"
+          "ar": "اللب الكلوي",
+          "fr": "MEDULLA RENALE"
         },
         "info": {
           "en": "The renal medulla contains the pyramids that help concentrate urine as it moves inward.",
-          "ar": "يحتوي اللب الكلوي على الأهرامات التي تساعد على تركيز البول أثناء انتقاله نحو الداخل."
+          "ar": "يحتوي اللب الكلوي على الأهرامات التي تساعد على تركيز البول أثناء انتقاله نحو الداخل.",
+          "fr": "La medulla renale contient les pyramides qui aident a concentrer l'urine pendant son parcours vers l'interieur."
         },
         "hint": {
           "en": "This deeper region lies toward the center of the kidney.",
-          "ar": "هذه المنطقة الأعمق تقع باتجاه مركز الكلية."
+          "ar": "هذه المنطقة الأعمق تقع باتجاه مركز الكلية.",
+          "fr": "Cette region plus profonde se trouve vers le centre du rein."
         },
         "normalizedPosition": [
           0,
@@ -142,19 +177,23 @@
         "id": "renal-artery",
         "label": {
           "en": "Renal Artery",
-          "ar": "الشريان الكلوي"
+          "ar": "الشريان الكلوي",
+          "fr": "Artere renale"
         },
         "title": {
           "en": "RENAL ARTERY",
-          "ar": "الشريان الكلوي"
+          "ar": "الشريان الكلوي",
+          "fr": "ARTERE RENALE"
         },
         "info": {
           "en": "The renal artery brings oxygen-rich blood into the kidney for filtration.",
-          "ar": "يجلب الشريان الكلوي الدم الغني بالأكسجين إلى الكلية من أجل الترشيح."
+          "ar": "يجلب الشريان الكلوي الدم الغني بالأكسجين إلى الكلية من أجل الترشيح.",
+          "fr": "L'artere renale apporte au rein le sang riche en oxygene pour la filtration."
         },
         "hint": {
           "en": "This red vessel feeds blood into the kidney.",
-          "ar": "هذا الوعاء الأحمر يغذي الكلية بالدم."
+          "ar": "هذا الوعاء الأحمر يغذي الكلية بالدم.",
+          "fr": "Ce vaisseau rouge apporte le sang au rein."
         },
         "normalizedPosition": [
           -0.14,
@@ -166,19 +205,23 @@
         "id": "renal-vein",
         "label": {
           "en": "Renal Vein",
-          "ar": "الوريد الكلوي"
+          "ar": "الوريد الكلوي",
+          "fr": "Veine renale"
         },
         "title": {
           "en": "RENAL VEIN",
-          "ar": "الوريد الكلوي"
+          "ar": "الوريد الكلوي",
+          "fr": "VEINE RENALE"
         },
         "info": {
           "en": "The renal vein carries filtered blood away from the kidney and back toward circulation.",
-          "ar": "ينقل الوريد الكلوي الدم المصفى بعيدا عن الكلية عائدا إلى الدورة الدموية."
+          "ar": "ينقل الوريد الكلوي الدم المصفى بعيدا عن الكلية عائدا إلى الدورة الدموية.",
+          "fr": "La veine renale transporte le sang filtre hors du rein et le ramene vers la circulation."
         },
         "hint": {
           "en": "This blue vessel exits the kidney after filtration.",
-          "ar": "هذا الوعاء الأزرق يخرج من الكلية بعد الترشيح."
+          "ar": "هذا الوعاء الأزرق يخرج من الكلية بعد الترشيح.",
+          "fr": "Ce vaisseau bleu quitte le rein apres la filtration."
         },
         "normalizedPosition": [
           0.18,
@@ -190,19 +233,23 @@
         "id": "ureter",
         "label": {
           "en": "Ureter",
-          "ar": "الحالب"
+          "ar": "الحالب",
+          "fr": "Uretere"
         },
         "title": {
           "en": "URETER",
-          "ar": "الحالب"
+          "ar": "الحالب",
+          "fr": "URETERE"
         },
         "info": {
           "en": "The ureter transports urine from the kidney down toward the bladder.",
-          "ar": "ينقل الحالب البول من الكلية إلى المثانة."
+          "ar": "ينقل الحالب البول من الكلية إلى المثانة.",
+          "fr": "L'uretere transporte l'urine du rein vers la vessie."
         },
         "hint": {
           "en": "This narrow tube leaves the lower side of the kidney.",
-          "ar": "هذا الأنبوب الضيق يغادر الجهة السفلية من الكلية."
+          "ar": "هذا الأنبوب الضيق يغادر الجهة السفلية من الكلية.",
+          "fr": "Ce tube etroit quitte la partie inferieure du rein."
         },
         "normalizedPosition": [
           0.14,

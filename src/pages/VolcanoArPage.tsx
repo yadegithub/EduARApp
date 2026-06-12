@@ -32,6 +32,11 @@ const VolcanoArPage: React.FC<VolcanoArPageProps> = ({
         description:
           "\u0627\u0645\u0633\u062d \u0631\u0645\u0632 QR \u0648\u0636\u0639 \u0627\u0644\u0628\u0631\u0643\u0627\u0646 \u062b\u0645 \u0627\u0641\u062d\u0635 \u0627\u0644\u0641\u0648\u0647\u0629 \u0648\u0627\u0644\u0642\u0646\u0627\u0629 \u0648\u063a\u0631\u0641\u0629 \u0627\u0644\u0635\u0647\u0627\u0631\u0629 \u0648\u062a\u062f\u0641\u0642 \u0627\u0644\u062d\u0645\u0645.",
       },
+      fr: {
+        title: "Volcan",
+        description:
+          "Scannez le QR code, placez le volcan, puis observez le cratere, la cheminee, la chambre magmatique et les coulees de lave.",
+      },
     }}
   />
 );

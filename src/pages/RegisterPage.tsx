@@ -15,6 +15,90 @@ import { useAppSettings } from "../settings/AppSettingsContext";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const registerCopy = {
+  en: {
+    createAccount: "Create account",
+    subtitle: "Create your profile and start learning in AR.",
+    register: "Register",
+    fullName: "Full Name",
+    namePlaceholder: "Sara Ahmed",
+    email: "Email",
+    emailPlaceholder: "you@example.com",
+    password: "Password",
+    passwordPlaceholder: "Create a password",
+    confirmPassword: "Confirm Password",
+    confirmPasswordPlaceholder: "Repeat your password",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
+    hideConfirmPassword: "Hide confirm password",
+    showConfirmPassword: "Show confirm password",
+    keepSignedIn: "Keep me signed in on this device",
+    creatingAccount: "Creating account...",
+    createAccountButton: "Create Account",
+    alreadyHaveAccount: "Already have an account?",
+    signIn: "Sign In",
+    invalidName: "Enter your full name.",
+    invalidEmail: "Enter a valid email address.",
+    shortPassword: "Password must be at least 6 characters.",
+    mismatchPassword: "Passwords do not match.",
+    registerError: "Unable to create your account right now.",
+  },
+  ar: {
+    createAccount: "إنشاء حساب",
+    subtitle: "أنشئ ملفك الشخصي وابدأ التعلّم بالواقع المعزز.",
+    register: "تسجيل",
+    fullName: "الاسم الكامل",
+    namePlaceholder: "سارة أحمد",
+    email: "البريد الإلكتروني",
+    emailPlaceholder: "you@example.com",
+    password: "كلمة المرور",
+    passwordPlaceholder: "أنشئ كلمة مرور",
+    confirmPassword: "تأكيد كلمة المرور",
+    confirmPasswordPlaceholder: "أعد إدخال كلمة المرور",
+    hidePassword: "إخفاء كلمة المرور",
+    showPassword: "إظهار كلمة المرور",
+    hideConfirmPassword: "إخفاء تأكيد كلمة المرور",
+    showConfirmPassword: "إظهار تأكيد كلمة المرور",
+    keepSignedIn: "أبقني مسجل الدخول على هذا الجهاز",
+    creatingAccount: "جارٍ إنشاء الحساب...",
+    createAccountButton: "إنشاء حساب",
+    alreadyHaveAccount: "هل لديك حساب بالفعل؟",
+    signIn: "تسجيل الدخول",
+    invalidName: "أدخل اسمك الكامل.",
+    invalidEmail: "أدخل بريداً إلكترونياً صحيحاً.",
+    shortPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
+    mismatchPassword: "كلمتا المرور غير متطابقتين.",
+    registerError: "تعذر إنشاء الحساب الآن.",
+  },
+  fr: {
+    createAccount: "Créer un compte",
+    subtitle: "Créez votre profil et commencez à apprendre en RA.",
+    register: "Inscription",
+    fullName: "Nom complet",
+    namePlaceholder: "Sara Ahmed",
+    email: "E-mail",
+    emailPlaceholder: "you@example.com",
+    password: "Mot de passe",
+    passwordPlaceholder: "Créez un mot de passe",
+    confirmPassword: "Confirmer le mot de passe",
+    confirmPasswordPlaceholder: "Répétez votre mot de passe",
+    hidePassword: "Masquer le mot de passe",
+    showPassword: "Afficher le mot de passe",
+    hideConfirmPassword: "Masquer la confirmation",
+    showConfirmPassword: "Afficher la confirmation",
+    keepSignedIn: "Rester connecté sur cet appareil",
+    creatingAccount: "Création du compte...",
+    createAccountButton: "Créer un compte",
+    alreadyHaveAccount: "Vous avez déjà un compte ?",
+    signIn: "Se connecter",
+    invalidName: "Entrez votre nom complet.",
+    invalidEmail: "Entrez une adresse e-mail valide.",
+    shortPassword: "Le mot de passe doit contenir au moins 6 caractères.",
+    mismatchPassword: "Les mots de passe ne correspondent pas.",
+    registerError: "Impossible de créer votre compte pour le moment.",
+  },
+} as const;
+
 const RegisterPage: React.FC = () => {
   const history = useHistory();
   const { isAuthenticated, register } = useAuth();
@@ -28,66 +112,7 @@ const RegisterPage: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isArabic = settings.language === "ar";
-  const copy = isArabic
-    ? {
-        createAccount: "إنشاء حساب",
-        subtitle: "أنشئ ملفك الشخصي وابدأ التعلم بالواقع المعزز.",
-        register: "تسجيل",
-        firebaseTitle: "مصادقة Firebase بالبريد وكلمة المرور",
-        firebaseCopy: "سيعمل حسابك على المتصفح وAndroid.",
-        fullName: "الاسم الكامل",
-        namePlaceholder: "سارة أحمد",
-        email: "البريد الإلكتروني",
-        emailPlaceholder: "you@example.com",
-        password: "كلمة المرور",
-        passwordPlaceholder: "أنشئ كلمة مرور",
-        confirmPassword: "تأكيد كلمة المرور",
-        confirmPasswordPlaceholder: "أعد إدخال كلمة المرور",
-        hidePassword: "إخفاء كلمة المرور",
-        showPassword: "إظهار كلمة المرور",
-        hideConfirmPassword: "إخفاء تأكيد كلمة المرور",
-        showConfirmPassword: "إظهار تأكيد كلمة المرور",
-        keepSignedIn: "ابقني مسجل الدخول على هذا الجهاز",
-        creatingAccount: "جار إنشاء الحساب...",
-        createAccountButton: "إنشاء حساب",
-        alreadyHaveAccount: "هل لديك حساب بالفعل؟",
-        signIn: "تسجيل الدخول",
-        invalidName: "أدخل اسمك الكامل.",
-        invalidEmail: "أدخل بريدا إلكترونيا صحيحا.",
-        shortPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
-        mismatchPassword: "كلمتا المرور غير متطابقتين.",
-        registerError: "تعذر إنشاء الحساب الآن.",
-      }
-    : {
-        createAccount: "Create account",
-        subtitle: "Create your profile and start learning in AR.",
-        register: "Register",
-        firebaseTitle: "Firebase email/password auth",
-        firebaseCopy: "Your account will work across browser and Android.",
-        fullName: "Full Name",
-        namePlaceholder: "Sara Ahmed",
-        email: "Email",
-        emailPlaceholder: "you@example.com",
-        password: "Password",
-        passwordPlaceholder: "Create a password",
-        confirmPassword: "Confirm Password",
-        confirmPasswordPlaceholder: "Repeat your password",
-        hidePassword: "Hide password",
-        showPassword: "Show password",
-        hideConfirmPassword: "Hide confirm password",
-        showConfirmPassword: "Show confirm password",
-        keepSignedIn: "Keep me signed in on this device",
-        creatingAccount: "Creating account...",
-        createAccountButton: "Create Account",
-        alreadyHaveAccount: "Already have an account?",
-        signIn: "Sign In",
-        invalidName: "Enter your full name.",
-        invalidEmail: "Enter a valid email address.",
-        shortPassword: "Password must be at least 6 characters.",
-        mismatchPassword: "Passwords do not match.",
-        registerError: "Unable to create your account right now.",
-      };
+  const copy = registerCopy[settings.language] ?? registerCopy.en;
 
   if (isAuthenticated) {
     return <Redirect to="/tabs/dashboard" />;
@@ -146,9 +171,7 @@ const RegisterPage: React.FC = () => {
 
           <div className="login-shell">
             <section className="login-hero">
-              <span className="spotlight-pill">
-                {copy.createAccount}
-              </span>
+              <span className="spotlight-pill">{copy.createAccount}</span>
 
               <div className="brand-hero brand-hero--login">
                 <BrandMark className="brand-mark--hero" />

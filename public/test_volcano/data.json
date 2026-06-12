@@ -37,6 +37,12 @@
         "name": "البركان",
         "info": "استكشف البركان في الواقع المعزز واضغط على العلامات المرقمة لفهم كيف تشكل الصهارة والفوهات والثوران سطح الأرض.",
         "hint": "استخدم التدوير والتحجيم والتسميات أثناء عرض النموذج."
+      },
+      "fr": {
+        "tag": "Modele de geographie",
+        "name": "VOLCAN",
+        "info": "Examinez un volcan en AR et touchez les numeros pour comprendre comment le magma, les conduits et les eruptions faconnent le relief.",
+        "hint": "Utilisez rotation, echelle et numeros pendant l'affichage du modele."
       }
     },
     "ui": {
@@ -71,6 +77,22 @@
         "statusCameraError": "تم رفض الوصول إلى الكاميرا.",
         "statusModelError": "تعذر تحميل نموذج البركان.",
         "focusTag": "جزء من البركان"
+      },
+      "fr": {
+        "appEyebrow": "Scan EduAR en direct",
+        "appTitle": "VOLCAN",
+        "rotate": "Rotation",
+        "scale": "Echelle",
+        "labels": "Numeros On/Off",
+        "statusStarting": "Demarrage de la camera...",
+        "statusLoading": "Chargement du modele du volcan...",
+        "statusReady": "Camera prete",
+        "statusTracking": "Volcan place",
+        "statusHoldSteady": "Gardez le QR stable pendant le verrouillage...",
+        "statusSearching": "Recherche du QR code...",
+        "statusCameraError": "L'acces a la camera a ete refuse.",
+        "statusModelError": "Le modele du volcan n'a pas pu etre charge.",
+        "focusTag": "Element du volcan"
       }
     },
     "parts": [
@@ -78,19 +100,23 @@
         "id": "crater",
         "label": {
           "en": "Crater",
-          "ar": "الفوهة"
+          "ar": "الفوهة",
+          "fr": "Cratere"
         },
         "title": {
           "en": "CRATER",
-          "ar": "الفوهة"
+          "ar": "الفوهة",
+          "fr": "CRATERE"
         },
         "info": {
           "en": "The crater is the opening at the top of a volcano where gases, ash and lava can escape.",
-          "ar": "الفوهة هي الفتحة أعلى البركان التي تخرج منها الغازات والرماد والحمم."
+          "ar": "الفوهة هي الفتحة أعلى البركان التي تخرج منها الغازات والرماد والحمم.",
+          "fr": "Le cratere est l'ouverture au sommet du volcan par laquelle s'echappent gaz, cendres et lave."
         },
         "hint": {
           "en": "Look at the summit to find the main eruption opening.",
-          "ar": "انظر إلى قمة البركان لتحديد فتحة الثوران الرئيسية."
+          "ar": "انظر إلى قمة البركان لتحديد فتحة الثوران الرئيسية.",
+          "fr": "Observez le sommet pour reperer l'ouverture principale de l'eruption."
         },
         "normalizedPosition": [
           0,
@@ -102,19 +128,23 @@
         "id": "main-vent",
         "label": {
           "en": "Main Vent",
-          "ar": "القناة الرئيسية"
+          "ar": "القناة الرئيسية",
+          "fr": "Conduit principal"
         },
         "title": {
           "en": "MAIN VENT",
-          "ar": "القناة الرئيسية"
+          "ar": "القناة الرئيسية",
+          "fr": "CONDUIT PRINCIPAL"
         },
         "info": {
           "en": "The main vent is the passage that carries magma from deep underground toward the crater.",
-          "ar": "القناة الرئيسية هي الممر الذي ينقل الصهارة من الأعماق نحو الفوهة."
+          "ar": "القناة الرئيسية هي الممر الذي ينقل الصهارة من الأعماق نحو الفوهة.",
+          "fr": "Le conduit principal transporte le magma depuis les profondeurs jusqu au cratere."
         },
         "hint": {
           "en": "This pathway connects the magma source to the surface.",
-          "ar": "يربط هذا الممر مصدر الصهارة بسطح الأرض."
+          "ar": "يربط هذا الممر مصدر الصهارة بسطح الأرض.",
+          "fr": "Ce passage relie la source du magma a la surface."
         },
         "normalizedPosition": [
           0.04,
@@ -126,19 +156,23 @@
         "id": "magma-chamber",
         "label": {
           "en": "Magma Chamber",
-          "ar": "غرفة الصهارة"
+          "ar": "غرفة الصهارة",
+          "fr": "Chambre magmatique"
         },
         "title": {
           "en": "MAGMA CHAMBER",
-          "ar": "غرفة الصهارة"
+          "ar": "غرفة الصهارة",
+          "fr": "CHAMBRE MAGMATIQUE"
         },
         "info": {
           "en": "A magma chamber stores molten rock beneath the volcano before an eruption.",
-          "ar": "تخزن غرفة الصهارة الصخور المنصهرة تحت البركان قبل حدوث الثوران."
+          "ar": "تخزن غرفة الصهارة الصخور المنصهرة تحت البركان قبل حدوث الثوران.",
+          "fr": "La chambre magmatique stocke la roche fondue sous le volcan avant l'eruption."
         },
         "hint": {
           "en": "Pressure builds here before magma rises through the vent.",
-          "ar": "يتراكم الضغط هنا قبل صعود الصهارة عبر القناة."
+          "ar": "يتراكم الضغط هنا قبل صعود الصهارة عبر القناة.",
+          "fr": "La pression y augmente avant la remontee du magma."
         },
         "normalizedPosition": [
           0,
@@ -150,19 +184,23 @@
         "id": "lava-flow",
         "label": {
           "en": "Lava Flow",
-          "ar": "تدفق الحمم"
+          "ar": "تدفق الحمم",
+          "fr": "Coulee de lave"
         },
         "title": {
           "en": "LAVA FLOW",
-          "ar": "تدفق الحمم"
+          "ar": "تدفق الحمم",
+          "fr": "COULEE DE LAVE"
         },
         "info": {
           "en": "Lava flow is molten rock that reaches the surface and moves down the volcano's slopes.",
-          "ar": "تدفق الحمم هو صخور منصهرة تصل إلى السطح وتنحدر على جوانب البركان."
+          "ar": "تدفق الحمم هو صخور منصهرة تصل إلى السطح وتنحدر على جوانب البركان.",
+          "fr": "La coulee de lave est la roche en fusion qui atteint la surface et descend sur les pentes du volcan."
         },
         "hint": {
           "en": "Lava cools into new rock and can build fresh layers on the cone.",
-          "ar": "تبرد الحمم لتصبح صخورا جديدة وتبني طبقات على المخروط."
+          "ar": "تبرد الحمم لتصبح صخورا جديدة وتبني طبقات على المخروط.",
+          "fr": "La lave refroidit en nouvelle roche et ajoute des couches au cone."
         },
         "normalizedPosition": [
           0.26,
@@ -174,19 +212,23 @@
         "id": "volcanic-cone",
         "label": {
           "en": "Volcanic Cone",
-          "ar": "المخروط البركاني"
+          "ar": "المخروط البركاني",
+          "fr": "Cone volcanique"
         },
         "title": {
           "en": "VOLCANIC CONE",
-          "ar": "المخروط البركاني"
+          "ar": "المخروط البركاني",
+          "fr": "CONE VOLCANIQUE"
         },
         "info": {
           "en": "The volcanic cone forms as layers of lava, ash and rock fragments pile up over time.",
-          "ar": "يتشكل المخروط البركاني عندما تتراكم طبقات الحمم والرماد وقطع الصخور بمرور الوقت."
+          "ar": "يتشكل المخروط البركاني عندما تتراكم طبقات الحمم والرماد وقطع الصخور بمرور الوقت.",
+          "fr": "Le cone volcanique se forme lorsque couches de lave, cendres et fragments rocheux s accumulent avec le temps."
         },
         "hint": {
           "en": "The cone records repeated eruptions like layers in a stack.",
-          "ar": "يسجل المخروط الثورانات المتكررة على شكل طبقات متراكمة."
+          "ar": "يسجل المخروط الثورانات المتكررة على شكل طبقات متراكمة.",
+          "fr": "Le cone enregistre les eruptions successives comme une pile de couches."
         },
         "normalizedPosition": [
           -0.24,
@@ -198,19 +240,23 @@
         "id": "ash-cloud",
         "label": {
           "en": "Ash Cloud",
-          "ar": "سحابة الرماد"
+          "ar": "سحابة الرماد",
+          "fr": "Nuage de cendres"
         },
         "title": {
           "en": "ASH CLOUD",
-          "ar": "سحابة الرماد"
+          "ar": "سحابة الرماد",
+          "fr": "NUAGE DE CENDRES"
         },
         "info": {
           "en": "An ash cloud can rise during explosive eruptions and spread fine volcanic particles through the air.",
-          "ar": "قد ترتفع سحابة الرماد أثناء الثورانات العنيفة وتنشر جسيمات بركانية دقيقة في الهواء."
+          "ar": "قد ترتفع سحابة الرماد أثناء الثورانات العنيفة وتنشر جسيمات بركانية دقيقة في الهواء.",
+          "fr": "Un nuage de cendres peut s'elever pendant une eruption explosive et disperser de fines particules dans l'air."
         },
         "hint": {
           "en": "Ash can travel far from the volcano depending on wind and eruption strength.",
-          "ar": "يمكن أن ينتقل الرماد بعيدا حسب الرياح وقوة الثوران."
+          "ar": "يمكن أن ينتقل الرماد بعيدا حسب الرياح وقوة الثوران.",
+          "fr": "Les cendres peuvent voyager loin selon le vent et la force de l eruption."
         },
         "normalizedPosition": [
           0,

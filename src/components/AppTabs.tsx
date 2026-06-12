@@ -23,38 +23,60 @@ import ProgressPage from "../pages/ProgressPage";
 import SettingsPage from "../pages/SettingsPage";
 import { useAppSettings } from "../settings/AppSettingsContext";
 
+const tabLabels = {
+  en: {
+    dashboard: "Dashboard",
+    library: "AR Library",
+    progress: "My Profile",
+    settings: "Settings",
+  },
+  ar: {
+    dashboard: "الرئيسية",
+    library: "مكتبة AR",
+    progress: "ملفي الشخصي",
+    settings: "الإعدادات",
+  },
+  fr: {
+    dashboard: "Accueil",
+    library: "Bibliothèque AR",
+    progress: "Mon profil",
+    settings: "Paramètres",
+  },
+} as const;
+
 const AppTabs: React.FC = () => {
   const location = useLocation();
   const { settings: appSettings } = useAppSettings();
   const usesDarkChrome =
     appSettings.theme === "dark" ||
     location.pathname.startsWith("/tabs/library");
-  const isArabic = appSettings.language === "ar";
+  const copy = tabLabels[appSettings.language];
+
   const tabs = [
     {
       id: "dashboard",
-      label: isArabic ? "الرئيسية" : "Dashboard",
+      label: copy.dashboard,
       href: "/tabs/dashboard",
       icon: gridOutline,
       activeIcon: grid,
     },
     {
       id: "library",
-      label: isArabic ? "مكتبة AR" : "AR Library",
+      label: copy.library,
       href: "/tabs/library",
       icon: cubeOutline,
       activeIcon: cube,
     },
     {
       id: "progress",
-      label: isArabic ? "ملفي الشخصي" : "My Profile",
+      label: copy.progress,
       href: "/tabs/progress",
       icon: statsChartOutline,
       activeIcon: statsChart,
     },
     {
       id: "settings",
-      label: isArabic ? "الإعدادات" : "Settings",
+      label: copy.settings,
       href: "/tabs/settings",
       icon: settingsOutline,
       activeIcon: settings,

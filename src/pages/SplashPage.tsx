@@ -4,21 +4,28 @@ import { useHistory } from "react-router-dom";
 import BrandMark from "../components/BrandMark";
 import { useAppSettings } from "../settings/AppSettingsContext";
 
+const splashCopy = {
+  en: {
+    eyebrow: "Immersive classroom",
+    subtitle: "Augmented reality lessons made for mobile-first learning.",
+    loading: "Loading",
+  },
+  ar: {
+    eyebrow: "فصل دراسي غامر",
+    subtitle: "دروس واقع معزز مصممة للتعلم عبر الهاتف.",
+    loading: "جاري التحميل",
+  },
+  fr: {
+    eyebrow: "Classe immersive",
+    subtitle: "Des leçons en réalité augmentée conçues pour l'apprentissage mobile.",
+    loading: "Chargement",
+  },
+} as const;
+
 const SplashPage: React.FC = () => {
   const history = useHistory();
   const { settings } = useAppSettings();
-  const isArabic = settings.language === "ar";
-  const copy = isArabic
-    ? {
-        eyebrow: "فصل دراسي غامر",
-        subtitle: "دروس واقع معزز مصممة للتعلم عبر الهاتف.",
-        loading: "جاري التحميل",
-      }
-    : {
-        eyebrow: "Immersive classroom",
-        subtitle: "Augmented reality lessons made for mobile-first learning.",
-        loading: "Loading",
-      };
+  const copy = splashCopy[settings.language] ?? splashCopy.en;
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {

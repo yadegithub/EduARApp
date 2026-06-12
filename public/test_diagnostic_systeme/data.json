@@ -37,6 +37,12 @@
         "name": "الجهاز الهضمي",
         "info": "استكشف الجهاز الهضمي كاملا في الواقع المعزز واضغط على التسميات المرقمة لمعرفة دور كل بنية رئيسية.",
         "hint": "استخدم التدوير والتحجيم والتسميات أثناء عرض النموذج."
+      },
+      "fr": {
+        "tag": "Anatomie digestive",
+        "name": "SYSTEME DIGESTIF",
+        "info": "Examinez le systeme digestif complet en AR et touchez les numeros pour comprendre le role de chaque structure principale.",
+        "hint": "Utilisez rotation, echelle et numeros pendant l'affichage du modele."
       }
     },
     "parts": [
@@ -44,19 +50,23 @@
         "id": "liver",
         "label": {
           "en": "Liver",
-          "ar": "الكبد"
+          "ar": "الكبد",
+          "fr": "Foie"
         },
         "title": {
           "en": "LIVER",
-          "ar": "الكبد"
+          "ar": "الكبد",
+          "fr": "FOIE"
         },
         "info": {
           "en": "The liver supports digestion by producing bile and helping the body process nutrients.",
-          "ar": "يساعد الكبد في عملية الهضم بإنتاج الصفراء ومساعدة الجسم على معالجة المغذيات."
+          "ar": "يساعد الكبد في عملية الهضم بإنتاج الصفراء ومساعدة الجسم على معالجة المغذيات.",
+          "fr": "Le foie aide la digestion en produisant la bile et en aidant le corps a traiter les nutriments."
         },
         "hint": {
           "en": "This large upper organ helps chemical digestion.",
-          "ar": "هذا العضو الكبير في الأعلى يساهم في الهضم الكيميائي."
+          "ar": "هذا العضو الكبير في الأعلى يساهم في الهضم الكيميائي.",
+          "fr": "Ce grand organe superieur participe a la digestion chimique."
         },
         "normalizedPosition": [
           -0.19,
@@ -68,19 +78,23 @@
         "id": "stomach",
         "label": {
           "en": "Stomach",
-          "ar": "المعدة"
+          "ar": "المعدة",
+          "fr": "Estomac"
         },
         "title": {
           "en": "STOMACH",
-          "ar": "المعدة"
+          "ar": "المعدة",
+          "fr": "ESTOMAC"
         },
         "info": {
           "en": "The stomach stores food for a short time, mixes it, and starts chemical digestion.",
-          "ar": "تخزن المعدة الطعام لفترة قصيرة وتمزجه وتبدأ الهضم الكيميائي."
+          "ar": "تخزن المعدة الطعام لفترة قصيرة وتمزجه وتبدأ الهضم الكيميائي.",
+          "fr": "L'estomac stocke les aliments un court moment, les melange et commence la digestion chimique."
         },
         "hint": {
           "en": "It works like a mixing chamber before food moves onward.",
-          "ar": "تعمل مثل غرفة خلط قبل انتقال الطعام إلى الأمعاء."
+          "ar": "تعمل مثل غرفة خلط قبل انتقال الطعام إلى الأمعاء.",
+          "fr": "Il agit comme une chambre de melange avant le passage des aliments."
         },
         "normalizedPosition": [
           0.18,
@@ -92,19 +106,23 @@
         "id": "pancreas",
         "label": {
           "en": "Pancreas",
-          "ar": "البنكرياس"
+          "ar": "البنكرياس",
+          "fr": "Pancreas"
         },
         "title": {
           "en": "PANCREAS",
-          "ar": "البنكرياس"
+          "ar": "البنكرياس",
+          "fr": "PANCREAS"
         },
         "info": {
           "en": "The pancreas helps digestion by releasing enzymes that continue breaking food down.",
-          "ar": "يساعد البنكرياس في الهضم بإفراز إنزيمات تواصل تفكيك الطعام."
+          "ar": "يساعد البنكرياس في الهضم بإفراز إنزيمات تواصل تفكيك الطعام.",
+          "fr": "Le pancreas aide la digestion en liberant des enzymes qui poursuivent la decomposition des aliments."
         },
         "hint": {
           "en": "This structure works with the stomach and intestine during digestion.",
-          "ar": "تعمل هذه البنية مع المعدة والأمعاء أثناء الهضم."
+          "ar": "تعمل هذه البنية مع المعدة والأمعاء أثناء الهضم.",
+          "fr": "Cette structure travaille avec l'estomac et l'intestin pendant la digestion."
         },
         "normalizedPosition": [
           -0.08,
@@ -116,19 +134,23 @@
         "id": "small-intestine",
         "label": {
           "en": "Small Intestine",
-          "ar": "الأمعاء الدقيقة"
+          "ar": "الأمعاء الدقيقة",
+          "fr": "Intestin grele"
         },
         "title": {
           "en": "SMALL INTESTINE",
-          "ar": "الأمعاء الدقيقة"
+          "ar": "الأمعاء الدقيقة",
+          "fr": "INTESTIN GRELE"
         },
         "info": {
           "en": "Most digestion finishes in the small intestine, where nutrients are absorbed into the body.",
-          "ar": "ينتهي معظم الهضم في الأمعاء الدقيقة حيث يتم امتصاص المغذيات في الجسم."
+          "ar": "ينتهي معظم الهضم في الأمعاء الدقيقة حيث يتم امتصاص المغذيات في الجسم.",
+          "fr": "La plus grande partie de la digestion se termine dans l'intestin grele, ou les nutriments sont absorbes."
         },
         "hint": {
           "en": "This is the main absorption zone of the digestive system.",
-          "ar": "هذه هي منطقة الامتصاص الرئيسية في الجهاز الهضمي."
+          "ar": "هذه هي منطقة الامتصاص الرئيسية في الجهاز الهضمي.",
+          "fr": "C'est la principale zone d'absorption du systeme digestif."
         },
         "normalizedPosition": [
           -0.02,
@@ -140,19 +162,23 @@
         "id": "large-intestine",
         "label": {
           "en": "Large Intestine",
-          "ar": "الأمعاء الغليظة"
+          "ar": "الأمعاء الغليظة",
+          "fr": "Gros intestin"
         },
         "title": {
           "en": "LARGE INTESTINE",
-          "ar": "الأمعاء الغليظة"
+          "ar": "الأمعاء الغليظة",
+          "fr": "GROS INTESTIN"
         },
         "info": {
           "en": "The large intestine reabsorbs water and helps prepare waste before it leaves the body.",
-          "ar": "تعيد الأمعاء الغليظة امتصاص الماء وتساعد على تجهيز الفضلات قبل خروجها من الجسم."
+          "ar": "تعيد الأمعاء الغليظة امتصاص الماء وتساعد على تجهيز الفضلات قبل خروجها من الجسم.",
+          "fr": "Le gros intestin reabsorbe l'eau et aide a preparer les dechets avant leur elimination."
         },
         "hint": {
           "en": "It forms the outer lower frame around the intestinal area.",
-          "ar": "تشكل الإطار السفلي الخارجي حول منطقة الأمعاء."
+          "ar": "تشكل الإطار السفلي الخارجي حول منطقة الأمعاء.",
+          "fr": "Il forme le cadre exterieur inferieur autour de la zone intestinale."
         },
         "normalizedPosition": [
           0.08,
@@ -164,19 +190,23 @@
         "id": "lower-digestive-tract",
         "label": {
           "en": "Lower Digestive Tract",
-          "ar": "القناة الهضمية السفلية"
+          "ar": "القناة الهضمية السفلية",
+          "fr": "Canal digestif inferieur"
         },
         "title": {
           "en": "LOWER DIGESTIVE TRACT",
-          "ar": "القناة الهضمية السفلية"
+          "ar": "القناة الهضمية السفلية",
+          "fr": "CANAL DIGESTIF INFERIEUR"
         },
         "info": {
           "en": "This lower section completes the digestive pathway and helps the body eliminate waste.",
-          "ar": "يكمل هذا الجزء السفلي مسار الهضم ويساعد الجسم على التخلص من الفضلات."
+          "ar": "يكمل هذا الجزء السفلي مسار الهضم ويساعد الجسم على التخلص من الفضلات.",
+          "fr": "Cette partie inferieure termine le trajet digestif et aide le corps a eliminer les dechets."
         },
         "hint": {
           "en": "It marks the final stage of the digestive process.",
-          "ar": "يمثل المرحلة الأخيرة من عملية الهضم."
+          "ar": "يمثل المرحلة الأخيرة من عملية الهضم.",
+          "fr": "Il represente la derniere etape du processus digestif."
         },
         "normalizedPosition": [
           0,
@@ -202,6 +232,23 @@
         "statusCameraError": "تم رفض الوصول إلى الكاميرا.",
         "statusModelError": "تعذر تحميل النموذج.",
         "focusTag": "بنية هضمية"
+      },
+      "fr": {
+        "appEyebrow": "Scan EduAR en direct",
+        "appTitle": "SYSTEME DIGESTIF",
+        "rotate": "Rotation",
+        "scale": "Echelle",
+        "sound": "Audio",
+        "labels": "Numeros On/Off",
+        "statusStarting": "Demarrage de la camera...",
+        "statusLoading": "Chargement du modele du systeme digestif...",
+        "statusReady": "Camera prete",
+        "statusTracking": "Systeme digestif place",
+        "statusHoldSteady": "Gardez le QR stable pendant le verrouillage...",
+        "statusSearching": "Recherche du QR code...",
+        "statusCameraError": "L'acces a la camera a ete refuse.",
+        "statusModelError": "Le modele n'a pas pu etre charge.",
+        "focusTag": "Structure digestive"
       }
     }
   },

@@ -32,6 +32,11 @@ const HumanSkinArPage: React.FC<HumanSkinArPageProps> = ({
         description:
           "\u0627\u0633\u062a\u0643\u0634\u0641 \u0637\u0628\u0642\u0627\u062a \u0627\u0644\u062c\u0644\u062f \u0648\u0627\u0644\u0628\u0646\u0649 \u0627\u0644\u062a\u064a \u062a\u062d\u0645\u064a \u0627\u0644\u062c\u0633\u0645 \u0648\u062a\u0633\u0627\u0639\u062f \u0641\u064a \u0627\u0644\u0625\u062d\u0633\u0627\u0633 \u0648\u062a\u0646\u0638\u064a\u0645 \u0627\u0644\u062d\u0631\u0627\u0631\u0629.",
       },
+      fr: {
+        title: "Peau humaine",
+        description:
+          "Explorez les couches principales de la peau et les structures qui protegent le corps, detectent les sensations et aident a regler la temperature.",
+      },
     }}
   />
 );

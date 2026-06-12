@@ -30,6 +30,11 @@ const FemaleReproductiveSystemArPage: React.FC<
         description:
           "\u0627\u062f\u0631\u0633 \u0627\u0644\u0631\u062d\u0645 \u0648\u0627\u0644\u0645\u0628\u0627\u064a\u0636 \u0648\u0627\u0644\u0645\u0633\u0627\u0631\u0627\u062a \u0627\u0644\u0645\u062a\u0635\u0644\u0629 \u0645\u0646 \u062e\u0644\u0627\u0644 \u0645\u0642\u0637\u0639 \u0648\u0627\u0636\u062d \u0641\u064a \u0627\u0644\u0648\u0627\u0642\u0639 \u0627\u0644\u0645\u0639\u0632\u0632.",
       },
+      fr: {
+        title: "Systeme reproducteur feminin",
+        description:
+          "Etudiez l'uterus, les ovaires et les voies associees a l'aide d'une coupe AR claire avec des notes guidees.",
+      },
     }}
   />
 );

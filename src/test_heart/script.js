@@ -1,4 +1,4 @@
-const query = new URLSearchParams(window.location.search);
+﻿const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
 const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
 const HEART_MODEL_PATH = "assets/human_heart.glb";
@@ -8,16 +8,16 @@ const DEFAULT_HEART_ROTATION = {
     z: 0
 };
 const MARKER_LOST_GRACE_FRAMES = 20;
-const TRACKING_LERP_ALPHA = 0.18;
-const TRACKING_SCALE_LERP_ALPHA = 0.12;
-const CONFIRM_FRAMES = 2;
-const MIN_QR_AREA_RATIO = 0.008;
-const MIN_QR_EDGE = 48;
-const MAX_QR_EDGE_RATIO = 2.3;
+const TRACKING_LERP_ALPHA = 0.16;
+const TRACKING_SCALE_LERP_ALPHA = 0.08;
+const CONFIRM_FRAMES = 1;
+const MIN_QR_AREA_RATIO = 0.004;
+const MIN_QR_EDGE = 34;
+const MAX_QR_EDGE_RATIO = 2.8;
 const MAX_CENTER_JUMP_RATIO = 0.12;
 const QR_SCAN_INTERVAL_MS = 80;
 const QR_SEARCH_INTERVAL_MS = 120;
-const MAX_RENDER_PIXEL_RATIO = 1;
+const MAX_RENDER_PIXEL_RATIO = 1.25;
 const CAMERA_IDEAL_WIDTH = 960;
 const CAMERA_IDEAL_HEIGHT = 540;
 const CAMERA_IDEAL_FRAME_RATE = 24;
@@ -26,6 +26,12 @@ const SHOW_DEBUG_CAMERA_CANVAS = false;
 const LABEL_SCALE_MIN = 0.9;
 const LABEL_SCALE_MAX = 1.2;
 const LABEL_SCALE_RESPONSE = 0.35;
+const TRACKING_POSITION_DEADZONE = 0.012;
+const TRACKING_SCALE_DEADZONE = 0.01;
+const TRACKING_ROTATION_DEADZONE_RAD = 0.018;
+const TRACKED_SCALE_MIN_RATIO = 0.92;
+const TRACKED_SCALE_MAX_RATIO = 1.08;
+const QR_CORNER_SMOOTHING_ALPHA = 0.28;
 
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
@@ -41,7 +47,6 @@ const UI = {
     cardTag: document.getElementById("card-tag"),
     labelToggle: document.getElementById("label-toggle"),
     labelsLabel: document.getElementById("labels-label"),
-    listenBtn: document.getElementById("listen-btn"),
     modelTitle: document.getElementById("model-title-pill"),
     overviewTitle: document.getElementById("overview-title"),
     overviewText: document.getElementById("overview-text"),
@@ -259,16 +264,11 @@ let qrSearchIntervalMs = QR_SEARCH_INTERVAL_MS;
 let positionDeadzone = 0;
 let scaleDeadzone = 0;
 let rotationDeadzoneRad = 0;
-let fastFollowDistance = 0;
-let fastFollowAlpha = TRACKING_LERP_ALPHA;
 let focalLength = 0;
 let qrScannerReady = false;
 let qrScanInFlight = false;
 let scanContext;
-let availableSpeechVoices = [];
-let preloadedModelPath = "";
-let preloadedModelPromise;
-let isModelMounted = false;
+let smoothedQrCorners = null;
 
 const trackedMatrix = new THREE.Matrix4();
 const trackedPosition = new THREE.Vector3();
@@ -281,7 +281,7 @@ const defaultConfig = {
             heart: {
                 path: HEART_MODEL_PATH,
                 position: { x: 0.0, y: 0.0, z: 0.0 },
-                scale: { x: 0.8, y: 0.8, z: 0.8 },
+                scale: { x: 0.72, y: 0.72, z: 0.72 },
                 rotation: DEFAULT_HEART_ROTATION
             }
         },
@@ -292,35 +292,16 @@ const defaultConfig = {
         tracking: {
             markerLostGraceFrames: MARKER_LOST_GRACE_FRAMES,
             trackingLerpAlpha: TRACKING_LERP_ALPHA,
-            trackingScaleLerpAlpha: 0.22,
+            trackingScaleLerpAlpha: TRACKING_SCALE_LERP_ALPHA,
             confirmFrames: CONFIRM_FRAMES,
             qrScanIntervalMs: QR_SCAN_INTERVAL_MS,
             qrSearchIntervalMs: QR_SEARCH_INTERVAL_MS,
-            positionDeadzone: 0.01,
-            scaleDeadzone: 0.012,
-            rotationDeadzoneRad: 0.02,
-            fastFollowDistance: 0.08,
-            fastFollowAlpha: 0.68
+            positionDeadzone: TRACKING_POSITION_DEADZONE,
+            scaleDeadzone: TRACKING_SCALE_DEADZONE,
+            rotationDeadzoneRad: TRACKING_ROTATION_DEADZONE_RAD
         }
     }
 };
-
-function startModelPreload(config) {
-    const modelConfig = config?.assets?.models?.heart ?? defaultConfig.assets.models.heart;
-    const modelPath = modelConfig.path ?? HEART_MODEL_PATH;
-
-    if (preloadedModelPromise && preloadedModelPath === modelPath) {
-        return preloadedModelPromise;
-    }
-
-    preloadedModelPath = modelPath;
-    preloadedModelPromise = new Promise((resolve, reject) => {
-        const loader = new THREE.GLTFLoader();
-        loader.load(modelPath, resolve, undefined, reject);
-    });
-
-    return preloadedModelPromise;
-}
 
 function setStatus(message) {
     if (!UI.status || UI.status.textContent === message) {
@@ -375,47 +356,22 @@ function applyTrackingSettings(config) {
         0,
         Number(runtimeTracking.rotationDeadzoneRad ?? 0)
     );
-    fastFollowDistance = Math.max(
-        0,
-        Number(runtimeTracking.fastFollowDistance ?? 0)
-    );
-    fastFollowAlpha = Math.min(
-        1,
-        Math.max(
-            trackingLerpAlpha,
-            Number(runtimeTracking.fastFollowAlpha ?? trackingLerpAlpha)
-        )
-    );
 }
 
 function getSelectedPart() {
     return focusedPartIndex >= 0 ? anatomyParts[focusedPartIndex] : null;
 }
 
-function loadSpeechVoices() {
-    if (!("speechSynthesis" in window)) {
-        availableSpeechVoices = [];
-        return availableSpeechVoices;
-    }
-
-    availableSpeechVoices = window.speechSynthesis.getVoices() ?? [];
-    return availableSpeechVoices;
-}
-
 function updateInfoCard() {
-    if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint || !UI.listenBtn) {
+    if (!UI.cardTag || !UI.partName || !UI.partInfo || !UI.cardHint) {
         return;
     }
 
     const selectedPart = getSelectedPart();
 
     if (!selectedPart) {
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
-        }
         UI.card.classList.remove("info-card--visible");
         UI.card.classList.remove("info-card--selected");
-        UI.listenBtn.disabled = true;
         return;
     }
 
@@ -423,44 +379,8 @@ function updateInfoCard() {
     UI.partName.textContent = selectedPart.title;
     UI.partInfo.textContent = selectedPart.info;
     UI.cardHint.textContent = selectedPart.hint;
-    UI.listenBtn.disabled = !("speechSynthesis" in window);
     UI.card.classList.add("info-card--visible");
     UI.card.classList.add("info-card--selected");
-}
-
-function speakSelectedPartInfo() {
-    const selectedPart = getSelectedPart();
-    if (!selectedPart || !("speechSynthesis" in window)) {
-        return;
-    }
-
-    const synthesis = window.speechSynthesis;
-    const voices = loadSpeechVoices();
-    const utterance = new SpeechSynthesisUtterance(selectedPart.info);
-    const preferredLangs = currentLanguage === "ar"
-        ? ["ar-SA", "ar-EG", "ar"]
-        : ["en-US", "en-GB", "en"];
-    const matchingVoice = preferredLangs
-        .map((lang) =>
-            voices.find((voice) => voice.lang?.toLowerCase().startsWith(lang.toLowerCase()))
-        )
-        .find(Boolean)
-        ?? voices.find((voice) =>
-            currentLanguage === "ar"
-                ? voice.lang?.toLowerCase().includes("ar")
-                : voice.lang?.toLowerCase().startsWith("en")
-        )
-        ?? voices.find((voice) => voice.default)
-        ?? voices[0];
-
-    utterance.lang = currentLanguage === "ar" ? "ar-SA" : "en-US";
-    if (matchingVoice) {
-        utterance.voice = matchingVoice;
-    }
-    utterance.rate = 1;
-    synthesis.cancel();
-    synthesis.speak(utterance);
-    window.setTimeout(() => synthesis.resume(), 0);
 }
 
 function syncLabels() {
@@ -540,7 +460,6 @@ function applyCopy() {
     UI.scaleLabel.textContent = copy.scale;
     UI.soundLabel.textContent = copy.sound;
     UI.labelsLabel.textContent = copy.labels;
-    UI.listenBtn.textContent = currentLanguage === "ar" ? "استمع" : "Listen";
     if (UI.modelTitle) {
         UI.modelTitle.textContent = copy.modelTitle;
     }
@@ -574,19 +493,11 @@ async function loadConfig() {
         config = defaultConfig;
     }
 
-    applyTrackingSettings(config ?? defaultConfig);
-    startModelPreload(config ?? defaultConfig);
-
     try {
         await startCamera(config);
     } finally {
         isSessionStarting = false;
     }
-}
-
-if ("speechSynthesis" in window) {
-    loadSpeechVoices();
-    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 
 async function startCamera(config) {
@@ -630,6 +541,7 @@ async function startCamera(config) {
             element.height = height;
         });
 
+        applyTrackingSettings(config ?? defaultConfig);
         fitToScreen();
         document.body.classList.add("camera-ready");
         await initQrScanner();
@@ -708,8 +620,7 @@ function initThree(config) {
     renderer = new THREE.WebGLRenderer({
         canvas: UI.canvasThree,
         alpha: true,
-        antialias: false,
-        powerPreference: "high-performance"
+        antialias: true
     });
     renderer.setSize(UI.video.width, UI.video.height, false);
     renderer.setPixelRatio(
@@ -750,47 +661,24 @@ function initThree(config) {
     accentLight.position.set(-4, 3, 4);
     scene.add(accentLight);
 
-    arScale = config.settings?.arScale ?? defaultConfig.settings.arScale;
-    heartSound = new Audio(config.assets?.audio ?? defaultConfig.assets.audio);
-    heartSound.loop = true;
-
-    setStatus(copy.statusLoading);
-    mountHeartModel(config);
-}
-
-function mountHeartModel(config) {
-    const modelConfig = config?.assets?.models?.heart ?? defaultConfig.assets.models.heart;
+    const loader = new THREE.GLTFLoader();
+    const modelConfig = config.assets?.models?.heart ?? defaultConfig.assets.models.heart;
+    const modelPath = modelConfig.path ?? HEART_MODEL_PATH;
     const modelPosition = modelConfig.position ?? defaultConfig.assets.models.heart.position;
     const modelScale = modelConfig.scale ?? defaultConfig.assets.models.heart.scale;
     const modelRotation =
         modelConfig.rotation ?? defaultConfig.assets.models.heart.rotation;
 
-    startModelPreload(config)
-        .then((gltf) => {
-            if (!arGroup || isModelMounted) {
-                return;
-            }
+    arScale = config.settings?.arScale ?? defaultConfig.settings.arScale;
+    heartSound = new Audio(config.assets?.audio ?? defaultConfig.assets.audio);
+    heartSound.loop = true;
 
+    setStatus(copy.statusLoading);
+
+    loader.load(
+        modelPath,
+        (gltf) => {
             heartModel = gltf.scene;
-
-            if (heartModel.parent) {
-                heartModel.parent.remove(heartModel);
-            }
-
-            heartModel.traverse((node) => {
-                if (!node?.isMesh) {
-                    return;
-                }
-
-                node.castShadow = false;
-                node.receiveShadow = false;
-            });
-
-            heartModel.position.set(
-                modelPosition.x ?? 0,
-                modelPosition.y ?? 0,
-                modelPosition.z ?? 0
-            );
             heartModel.scale.set(
                 modelScale.x ?? 0.8,
                 modelScale.y ?? 0.8,
@@ -802,24 +690,32 @@ function mountHeartModel(config) {
                 modelRotation.y ?? DEFAULT_HEART_ROTATION.y,
                 modelRotation.z ?? DEFAULT_HEART_ROTATION.z
             );
+            heartModel.updateMatrixWorld(true);
+            const heartBounds = new THREE.Box3().setFromObject(heartModel);
+            const heartCenter = heartBounds.getCenter(new THREE.Vector3());
+            heartModel.position.set(
+                (modelPosition.x ?? 0) - heartCenter.x,
+                (modelPosition.y ?? 0) - heartCenter.y,
+                (modelPosition.z ?? 0) - heartCenter.z
+            );
             arGroup.add(heartModel);
 
-            anatomyLabels = [];
             anatomyParts.forEach((part, index) => {
                 addAnatomyLabel(part, index);
             });
 
-            isModelMounted = true;
             setupInteraction();
             updateInfoCard();
             syncLabels();
             updateLabelScale();
             positionInfoCard();
-            setStatus(hasLiveMarkerDetection ? copy.statusTracking : copy.statusReady);
-        })
-        .catch(() => {
+            setStatus(copy.statusReady);
+        },
+        undefined,
+        () => {
             setStatus(copy.statusModelError);
-        });
+        }
+    );
 }
 
 function addAnatomyLabel(part, index) {
@@ -894,7 +790,6 @@ function setupControls() {
     UI.rotateBtn.onclick = () => setMode("rotate");
     UI.scaleBtn.onclick = () => setMode("scale");
     UI.soundBtn.onclick = toggleSound;
-    UI.listenBtn.onclick = speakSelectedPartInfo;
     UI.labelToggle.onchange = (event) => {
         labelsVisible = event.target.checked;
         syncLabels();
@@ -967,6 +862,39 @@ function getQrScanInterval() {
     return hasTrackingPose || detectionStreak > 0
         ? qrScanIntervalMs
         : qrSearchIntervalMs;
+}
+
+function smoothQrCorners(corners) {
+    if (!Array.isArray(corners) || corners.length !== 4) {
+        return null;
+    }
+
+    if (
+        !smoothedQrCorners ||
+        !hasTrackingPose ||
+        lostMarkerFrames > 0 ||
+        !hasLiveMarkerDetection
+    ) {
+        smoothedQrCorners = corners.map((point) => ({
+            x: point.x,
+            y: point.y
+        }));
+        return smoothedQrCorners;
+    }
+
+    smoothedQrCorners = corners.map((point, index) => {
+        const previousPoint = smoothedQrCorners[index] ?? point;
+        return {
+            x:
+                previousPoint.x +
+                (point.x - previousPoint.x) * QR_CORNER_SMOOTHING_ALPHA,
+            y:
+                previousPoint.y +
+                (point.y - previousPoint.y) * QR_CORNER_SMOOTHING_ALPHA
+        };
+    });
+
+    return smoothedQrCorners;
 }
 
 function getDetectedCorners(source) {
@@ -1153,10 +1081,10 @@ function computeHomography(corners) {
     }
 
     const sourceCorners = [
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 1, y: 1 },
-        { x: 0, y: 1 }
+        { x: -0.5, y: -0.5 },
+        { x: 0.5, y: -0.5 },
+        { x: 0.5, y: 0.5 },
+        { x: -0.5, y: 0.5 }
     ];
 
     const matrix = [];
@@ -1309,9 +1237,9 @@ function updateTrackedPoseFromCorners(corners) {
     );
 
     const uniformTrackedScale = Math.max(
-        arScale * 0.84,
+        arScale * TRACKED_SCALE_MIN_RATIO,
         Math.min(
-            arScale * 1.16,
+            arScale * TRACKED_SCALE_MAX_RATIO,
             (trackedScale.x + trackedScale.y + trackedScale.z) / 3
         )
     );
@@ -1335,17 +1263,13 @@ function applyTrackedPose(immediate = false) {
     const positionDistance = arGroup.position.distanceTo(trackedPosition);
     const rotationDistance = arGroup.quaternion.angleTo(trackedQuaternion);
     const scaleDistance = Math.abs(arGroup.scale.x - trackedScale.x);
-    const followAlpha =
-        fastFollowDistance > 0 && positionDistance > fastFollowDistance
-            ? fastFollowAlpha
-            : trackingLerpAlpha;
 
     if (positionDistance > positionDeadzone) {
-        arGroup.position.lerp(trackedPosition, followAlpha);
+        arGroup.position.lerp(trackedPosition, trackingLerpAlpha);
     }
 
     if (rotationDistance > rotationDeadzoneRad) {
-        arGroup.quaternion.slerp(trackedQuaternion, followAlpha);
+        arGroup.quaternion.slerp(trackedQuaternion, trackingLerpAlpha);
     }
 
     if (scaleDistance > scaleDeadzone) {
@@ -1382,9 +1306,9 @@ async function runQrDetection() {
             formats: ["QRCode"],
             maxNumberOfSymbols: 1,
             tryDownscale: true,
-            tryHarder: true,
-            tryInvert: true,
-            tryRotate: true
+            tryHarder: !hasTrackingPose,
+            tryInvert: !hasTrackingPose,
+            tryRotate: !hasTrackingPose
         });
 
         const detectedBarcode = results.find((result) => result?.position);
@@ -1395,13 +1319,19 @@ async function runQrDetection() {
             const confirmedDetection = updateDetectionConfidence(metrics);
             shouldHoldSteady = Boolean(metrics);
 
-            if (confirmedDetection && corners && updateTrackedPoseFromCorners(corners)) {
-                applyTrackedPose(!hasTrackingPose);
-                hasTrackingPose = true;
-                arGroup.visible = true;
-                markerFound = true;
-                liveMarkerDetected = true;
-                lostMarkerFrames = 0;
+            if (confirmedDetection && corners) {
+                const stableCorners = smoothQrCorners(corners);
+                const isReacquiring =
+                    !hasTrackingPose || lostMarkerFrames > 0 || !hasLiveMarkerDetection;
+
+                if (stableCorners && updateTrackedPoseFromCorners(stableCorners)) {
+                    applyTrackedPose(isReacquiring);
+                    hasTrackingPose = true;
+                    arGroup.visible = true;
+                    markerFound = true;
+                    liveMarkerDetected = true;
+                    lostMarkerFrames = 0;
+                }
             }
         } else {
             resetDetectionConfidence();
@@ -1415,7 +1345,10 @@ async function runQrDetection() {
             } else {
                 arGroup.visible = false;
                 hasTrackingPose = false;
+                hasLiveMarkerDetection = false;
                 lostMarkerFrames = 0;
+                smoothedQrCorners = null;
+                resetDetectionConfidence();
             }
         }
 
@@ -1510,10 +1443,6 @@ function cleanup() {
         heartSound.currentTime = 0;
     }
 
-    if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-    }
-
     isSoundPlaying = false;
     isDragging = false;
     isArInitialized = false;
@@ -1527,18 +1456,11 @@ function cleanup() {
         markerFound: false,
         shouldHoldSteady: false
     };
+    smoothedQrCorners = null;
     qrScannerReady = false;
     qrScanInFlight = false;
     scanContext = undefined;
     focalLength = 0;
-    positionDeadzone = 0;
-    scaleDeadzone = 0;
-    rotationDeadzoneRad = 0;
-    fastFollowDistance = 0;
-    fastFollowAlpha = TRACKING_LERP_ALPHA;
-    preloadedModelPath = "";
-    preloadedModelPromise = undefined;
-    isModelMounted = false;
 
     if (renderer) {
         renderer.dispose();

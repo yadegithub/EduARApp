@@ -26,12 +26,17 @@ window.AR_VIEWER_BOOTSTRAP = {
         settings: {
             arScale: 1.45,
             tracking: {
-                markerLostGraceFrames: 6,
-                trackingLerpAlpha: 0.24,
-                trackingScaleLerpAlpha: 0.18,
-                confirmFrames: 2,
-                qrScanIntervalMs: 28,
-                qrSearchIntervalMs: 48
+                markerLostGraceFrames: 20,
+                trackingLerpAlpha: 0.16,
+                trackingScaleLerpAlpha: 0.08,
+                confirmFrames: 1,
+                qrScanIntervalMs: 80,
+                qrSearchIntervalMs: 120,
+                positionDeadzone: 0.012,
+                scaleDeadzone: 0.01,
+                rotationDeadzoneRad: 0.018,
+                fastFollowDistance: 0,
+                fastFollowAlpha: 0.16
             }
         }
     }
@@ -39,7 +44,8 @@ window.AR_VIEWER_BOOTSTRAP = {
 
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const languageParam = query.get("lang");
+const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
 const BOOT = window.AR_VIEWER_BOOTSTRAP ?? {};
 const DEFAULT_MODEL_PATH = BOOT.defaultModelPath ?? "assets/model.glb";
 const DEFAULT_MODEL_ROTATION = BOOT.defaultModelRotation ?? {
@@ -48,12 +54,12 @@ const DEFAULT_MODEL_ROTATION = BOOT.defaultModelRotation ?? {
     z: 0
 };
 const LOST_GRACE_FRAMES = 20;
-const TRACKING_LERP_ALPHA = 0.18;
-const TRACKING_SCALE_LERP_ALPHA = 0.12;
-const CONFIRM_FRAMES = 3;
-const MIN_QR_AREA_RATIO = 0.008;
-const MIN_QR_EDGE = 48;
-const MAX_QR_EDGE_RATIO = 2.3;
+const TRACKING_LERP_ALPHA = 0.16;
+const TRACKING_SCALE_LERP_ALPHA = 0.08;
+const CONFIRM_FRAMES = 1;
+const MIN_QR_AREA_RATIO = 0.004;
+const MIN_QR_EDGE = 34;
+const MAX_QR_EDGE_RATIO = 2.8;
 const MAX_CENTER_JUMP_RATIO = 0.12;
 const QR_SCAN_INTERVAL_MS = 80;
 const QR_SEARCH_INTERVAL_MS = 120;
@@ -66,6 +72,12 @@ const SHOW_DEBUG_CAMERA_CANVAS = false;
 const LABEL_SCALE_MIN = 0.9;
 const LABEL_SCALE_MAX = 1.2;
 const LABEL_SCALE_RESPONSE = 0.35;
+const TRACKING_POSITION_DEADZONE = 0.012;
+const TRACKING_SCALE_DEADZONE = 0.01;
+const TRACKING_ROTATION_DEADZONE_RAD = 0.018;
+const TRACKED_SCALE_MIN_RATIO = 0.92;
+const TRACKED_SCALE_MAX_RATIO = 1.08;
+const QR_CORNER_SMOOTHING_ALPHA = 0.28;
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
 document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
@@ -224,6 +236,7 @@ let lastScanResult = {
 let preloadedModelPath = "";
 let preloadedModelPromise;
 let isModelMounted = false;
+let smoothedQrCorners = null;
 
 const trackedMatrix = new THREE.Matrix4();
 const trackedPosition = new THREE.Vector3();
@@ -282,9 +295,9 @@ const baseDefaultConfig = {
             confirmFrames: CONFIRM_FRAMES,
             qrScanIntervalMs: QR_SCAN_INTERVAL_MS,
             qrSearchIntervalMs: QR_SEARCH_INTERVAL_MS,
-            positionDeadzone: 0,
-            scaleDeadzone: 0,
-            rotationDeadzoneRad: 0,
+            positionDeadzone: TRACKING_POSITION_DEADZONE,
+            scaleDeadzone: TRACKING_SCALE_DEADZONE,
+            rotationDeadzoneRad: TRACKING_ROTATION_DEADZONE_RAD,
             fastFollowDistance: 0,
             fastFollowAlpha: TRACKING_LERP_ALPHA
         }
@@ -1269,6 +1282,39 @@ function getQrScanInterval() {
         : qrSearchIntervalMs;
 }
 
+function smoothQrCorners(corners) {
+    if (!Array.isArray(corners) || corners.length !== 4) {
+        return null;
+    }
+
+    if (
+        !smoothedQrCorners ||
+        !hasTrackingPose ||
+        lostMarkerFrames > 0 ||
+        !hasLiveMarkerDetection
+    ) {
+        smoothedQrCorners = corners.map((point) => ({
+            x: point.x,
+            y: point.y
+        }));
+        return smoothedQrCorners;
+    }
+
+    smoothedQrCorners = corners.map((point, index) => {
+        const previousPoint = smoothedQrCorners[index] ?? point;
+        return {
+            x:
+                previousPoint.x +
+                (point.x - previousPoint.x) * QR_CORNER_SMOOTHING_ALPHA,
+            y:
+                previousPoint.y +
+                (point.y - previousPoint.y) * QR_CORNER_SMOOTHING_ALPHA
+        };
+    });
+
+    return smoothedQrCorners;
+}
+
 function getDetectedCorners(source) {
     if (!source) {
         return null;
@@ -1467,10 +1513,10 @@ function computeHomography(corners) {
     }
 
     const sourceCorners = [
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 1, y: 1 },
-        { x: 0, y: 1 }
+        { x: -0.5, y: -0.5 },
+        { x: 0.5, y: -0.5 },
+        { x: 0.5, y: 0.5 },
+        { x: -0.5, y: 0.5 }
     ];
 
     const matrix = [];
@@ -1622,6 +1668,15 @@ function updateTrackedPoseFromCorners(corners) {
         trackedScale
     );
 
+    const uniformTrackedScale = Math.max(
+        arScale * TRACKED_SCALE_MIN_RATIO,
+        Math.min(
+            arScale * TRACKED_SCALE_MAX_RATIO,
+            (trackedScale.x + trackedScale.y + trackedScale.z) / 3
+        )
+    );
+    trackedScale.setScalar(uniformTrackedScale);
+
     return Number.isFinite(trackedPosition.x) && Number.isFinite(trackedScale.x);
 }
 
@@ -1688,9 +1743,9 @@ async function runQrDetection() {
             formats: ["QRCode"],
             maxNumberOfSymbols: 1,
             tryDownscale: true,
-            tryHarder: true,
-            tryInvert: true,
-            tryRotate: true
+            tryHarder: !hasTrackingPose,
+            tryInvert: !hasTrackingPose,
+            tryRotate: !hasTrackingPose
         });
 
         const detectedBarcode = results.find((result) => result?.position);
@@ -1702,13 +1757,19 @@ async function runQrDetection() {
             const confirmedDetection = updateDetectionConfidence(metrics);
             shouldHoldSteady = Boolean(metrics);
 
-            if (confirmedDetection && corners && updateTrackedPoseFromCorners(corners)) {
-                applyTrackedPose(!hasTrackingPose);
-                hasTrackingPose = true;
-                arGroup.visible = true;
-                markerFound = true;
-                liveMarkerDetected = true;
-                lostMarkerFrames = 0;
+            if (confirmedDetection && corners) {
+                const stableCorners = smoothQrCorners(corners);
+                const isReacquiring =
+                    !hasTrackingPose || lostMarkerFrames > 0 || !hasLiveMarkerDetection;
+
+                if (stableCorners && updateTrackedPoseFromCorners(stableCorners)) {
+                    applyTrackedPose(isReacquiring);
+                    hasTrackingPose = true;
+                    arGroup.visible = true;
+                    markerFound = true;
+                    liveMarkerDetected = true;
+                    lostMarkerFrames = 0;
+                }
             }
         } else {
             resetDetectionConfidence();
@@ -1722,7 +1783,10 @@ async function runQrDetection() {
             } else {
                 arGroup.visible = false;
                 hasTrackingPose = false;
+                hasLiveMarkerDetection = false;
                 lostMarkerFrames = 0;
+                smoothedQrCorners = null;
+                resetDetectionConfidence();
             }
         }
 
@@ -1823,6 +1887,7 @@ function cleanup() {
     lostMarkerFrames = 0;
     hasTrackingPose = false;
     hasLiveMarkerDetection = false;
+    smoothedQrCorners = null;
     isModelMounted = false;
     resetDetectionConfidence();
     lastQrScanTime = 0;

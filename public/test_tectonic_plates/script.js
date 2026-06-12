@@ -1,6 +1,7 @@
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const languageParam = query.get("lang");
+const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
 const DEFAULT_MODEL_PATH = "assets/animated_tectonic_plates_collide_loop.glb";
 const DEFAULT_MODEL_ROTATION = {
     x: -Math.PI / 2,
@@ -519,11 +520,27 @@ function loadSpeechVoices() {
 }
 
 function getPreferredSpeechLocales() {
-    return currentLanguage === "ar" ? ["ar-SA", "ar-EG", "ar"] : ["en-US", "en-GB", "en"];
+    if (currentLanguage === "ar") {
+        return ["ar-SA", "ar-EG", "ar"];
+    }
+
+    if (currentLanguage === "fr") {
+        return ["fr-FR", "fr-CA", "fr"];
+    }
+
+    return ["en-US", "en-GB", "en"];
 }
 
 function getListenButtonLabel() {
-    return currentLanguage === "ar" ? "Listen" : "Listen";
+    if (currentLanguage === "ar") {
+        return "\u0627\u0633\u062a\u0645\u0639";
+    }
+
+    if (currentLanguage === "fr") {
+        return "Ecouter";
+    }
+
+    return "Listen";
 }
 
 function speakSelectedPartInfo() {

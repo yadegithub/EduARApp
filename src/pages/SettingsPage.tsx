@@ -16,92 +16,137 @@ import { useAuth } from "../auth/useAuth";
 import ProfileShortcut from "../components/ProfileShortcut";
 import { useAppSettings } from "../settings/AppSettingsContext";
 
+const settingsCopy = {
+  en: {
+    title: "Design the AR experience around your learners.",
+    intro:
+      "Tune audio, visuals and downloads so the app feels polished on Android from the first launch.",
+    appearance: "Appearance",
+    themeTitle: "App theme",
+    themeBody: "Switch between light and dark mode across the app.",
+    lightMode: "Light",
+    darkMode: "Dark",
+    experience: "Experience",
+    notificationsTitle: "Lesson notifications",
+    notificationsBody:
+      "Remind students about streaks, new modules and milestones.",
+    audioTitle: "Audio guide",
+    audioBody: "Play narration and spoken labels during active AR sessions.",
+    hapticsTitle: "Haptics",
+    hapticsBody:
+      "Use subtle tap feedback while rotating and scaling models.",
+    deviceAssets: "Device & Assets",
+    offlineTitle: "Offline mode",
+    offlineBody:
+      "Keep your favorite modules cached for classrooms with weak Wi-Fi.",
+    qualityTitle: "High quality textures",
+    qualityBody: "Load more detailed models for newer Android devices.",
+    childSafeTitle: "Kid-safe mode",
+    childSafeBody: "Teacher-friendly defaults with restricted external links.",
+    enabled: "Enabled",
+    language: "Language",
+    languageTitle: "App language",
+    languageBody: "Choose English, Arabic or French across the app.",
+    profile: "Profile",
+    english: "English",
+    arabic: "Arabic",
+    french: "French",
+    account: "Account",
+    signOutTitle: "Sign out",
+    signOutBody: "Return to the login screen and clear the current session.",
+    logout: "Logout",
+    signedInUser: "Signed in user",
+  },
+  ar: {
+    title: "صمّم تجربة الواقع المعزز بما يناسب المتعلمين.",
+    intro:
+      "اضبط الصوت والمظهر والتنزيلات حتى يعمل التطبيق بسلاسة على Android من أول تشغيل.",
+    appearance: "المظهر",
+    themeTitle: "وضع التطبيق",
+    themeBody: "بدّل بين الوضع الفاتح والوضع الداكن في جميع الصفحات.",
+    lightMode: "فاتح",
+    darkMode: "داكن",
+    experience: "التجربة",
+    notificationsTitle: "إشعارات الدروس",
+    notificationsBody:
+      "ذكّر الطلاب بالسلاسل التعليمية والوحدات الجديدة والإنجازات.",
+    audioTitle: "الدليل الصوتي",
+    audioBody: "تشغيل السرد والتسميات الصوتية أثناء جلسات الواقع المعزز.",
+    hapticsTitle: "الاهتزاز",
+    hapticsBody: "استخدم اهتزازًا خفيفًا أثناء تدوير النماذج وتكبيرها.",
+    deviceAssets: "الجهاز والملفات",
+    offlineTitle: "الوضع دون اتصال",
+    offlineBody: "الاحتفاظ بالوحدات المفضلة محفوظة للفصول ذات الاتصال الضعيف.",
+    qualityTitle: "خامات عالية الجودة",
+    qualityBody: "تحميل نماذج أكثر تفصيلاً للأجهزة الأحدث.",
+    childSafeTitle: "وضع آمن للأطفال",
+    childSafeBody: "إعدادات مناسبة للمعلم مع تقييد الروابط الخارجية.",
+    enabled: "مفعّل",
+    language: "اللغة",
+    languageTitle: "لغة التطبيق",
+    languageBody: "اختر الإنجليزية أو العربية أو الفرنسية في جميع صفحات التطبيق.",
+    profile: "الملف الشخصي",
+    english: "الإنجليزية",
+    arabic: "العربية",
+    french: "الفرنسية",
+    account: "الحساب",
+    signOutTitle: "تسجيل الخروج",
+    signOutBody: "العودة إلى شاشة تسجيل الدخول ومسح الجلسة الحالية.",
+    logout: "خروج",
+    signedInUser: "المستخدم الحالي",
+  },
+  fr: {
+    title: "Adaptez l'expérience AR à vos apprenants.",
+    intro:
+      "Réglez l'audio, l'affichage et les téléchargements pour une utilisation fluide sur Android dès le premier lancement.",
+    appearance: "Apparence",
+    themeTitle: "Thème de l'application",
+    themeBody: "Basculez entre le mode clair et sombre dans toute l'application.",
+    lightMode: "Clair",
+    darkMode: "Sombre",
+    experience: "Expérience",
+    notificationsTitle: "Notifications de leçon",
+    notificationsBody:
+      "Rappelez aux élèves leurs séries, les nouveaux modules et les étapes franchies.",
+    audioTitle: "Guide audio",
+    audioBody:
+      "Lire la narration et les étiquettes vocales pendant les sessions AR.",
+    hapticsTitle: "Retour haptique",
+    hapticsBody:
+      "Utilisez de légères vibrations lors de la rotation et du zoom des modèles.",
+    deviceAssets: "Appareil et ressources",
+    offlineTitle: "Mode hors ligne",
+    offlineBody:
+      "Gardez vos modules favoris en cache pour les classes avec une connexion faible.",
+    qualityTitle: "Textures haute qualité",
+    qualityBody:
+      "Chargez des modèles plus détaillés sur les appareils Android récents.",
+    childSafeTitle: "Mode enfant sécurisé",
+    childSafeBody:
+      "Réglages adaptés aux enseignants avec des liens externes limités.",
+    enabled: "Activé",
+    language: "Langue",
+    languageTitle: "Langue de l'application",
+    languageBody: "Choisissez l'anglais, l'arabe ou le français dans toute l'application.",
+    profile: "Profil",
+    english: "Anglais",
+    arabic: "Arabe",
+    french: "Français",
+    account: "Compte",
+    signOutTitle: "Se déconnecter",
+    signOutBody:
+      "Revenir à l'écran de connexion et effacer la session en cours.",
+    logout: "Déconnexion",
+    signedInUser: "Utilisateur connecté",
+  },
+} as const;
+
 const SettingsPage: React.FC = () => {
   const history = useHistory();
   const { logout, user } = useAuth();
   const { settings, setSetting } = useAppSettings();
   const isArabic = settings.language === "ar";
-
-  const copy = isArabic
-    ? {
-        title: "صمّم تجربة الواقع المعزز بما يناسب المتعلمين.",
-        intro:
-          "اضبط الصوت والمظهر والتنزيلات حتى يعمل التطبيق بسلاسة على أجهزة Android.",
-        appearance: "المظهر",
-        themeTitle: "وضع التطبيق",
-        themeBody: "بدّل بين الوضع الفاتح والوضع الداكن في جميع الصفحات.",
-        lightMode: "فاتح",
-        darkMode: "داكن",
-        experience: "التجربة",
-        notificationsTitle: "إشعارات الدروس",
-        notificationsBody:
-          "تذكير الطلاب بالسلاسل التعليمية والوحدات الجديدة والإنجازات.",
-        audioTitle: "الدليل الصوتي",
-        audioBody: "تشغيل السرد والتسميات الصوتية أثناء جلسات الواقع المعزز.",
-        hapticsTitle: "الاهتزاز",
-        hapticsBody: "استخدام اهتزاز خفيف أثناء تدوير النماذج وتكبيرها.",
-        deviceAssets: "الجهاز والملفات",
-        offlineTitle: "الوضع دون اتصال",
-        offlineBody:
-          "الاحتفاظ بالوحدات المفضلة محفوظة للفصول ذات الاتصال الضعيف.",
-        qualityTitle: "خامات عالية الجودة",
-        qualityBody: "تحميل نماذج أكثر تفصيلًا للأجهزة الأحدث.",
-        childSafeTitle: "وضع آمن للأطفال",
-        childSafeBody: "إعدادات مناسبة للمعلم مع تقييد الروابط الخارجية.",
-        enabled: "مفعّل",
-        language: "اللغة",
-        languageTitle: "لغة التطبيق",
-        languageBody: "اختر بين الإنجليزية والعربية في صفحة الإعدادات.",
-        profile: "الملف الشخصي",
-        english: "الإنجليزية",
-        arabic: "العربية",
-        account: "الحساب",
-        signOutTitle: "تسجيل الخروج",
-        signOutBody: "العودة إلى شاشة تسجيل الدخول ومسح الجلسة الحالية.",
-        logout: "خروج",
-        signedInUser: "المستخدم الحالي",
-      }
-    : {
-        title: "Design the AR experience around your learners.",
-        intro:
-          "Tune audio, visuals and downloads so the app feels polished on Android from the first launch.",
-        appearance: "Appearance",
-        themeTitle: "App theme",
-        themeBody: "Switch between light and dark mode across the app.",
-        lightMode: "Light",
-        darkMode: "Dark",
-        experience: "Experience",
-        notificationsTitle: "Lesson notifications",
-        notificationsBody:
-          "Remind students about streaks, new modules and milestones.",
-        audioTitle: "Audio guide",
-        audioBody: "Play narration and spoken labels during active AR sessions.",
-        hapticsTitle: "Haptics",
-        hapticsBody:
-          "Use subtle tap feedback while rotating and scaling models.",
-        deviceAssets: "Device & Assets",
-        offlineTitle: "Offline mode",
-        offlineBody:
-          "Keep your favorite modules cached for classrooms with weak Wi-Fi.",
-        qualityTitle: "High quality textures",
-        qualityBody: "Load more detailed models for newer Android devices.",
-        childSafeTitle: "Kid-safe mode",
-        childSafeBody:
-          "Teacher-friendly defaults with restricted external links.",
-        enabled: "Enabled",
-        language: "Language",
-        languageTitle: "App language",
-        languageBody:
-          "Choose between English and Arabic for the settings page.",
-        profile: "Profile",
-        english: "English",
-        arabic: "Arabic",
-        account: "Account",
-        signOutTitle: "Sign out",
-        signOutBody: "Return to the login screen and clear the current session.",
-        logout: "Logout",
-        signedInUser: "Signed in user",
-      };
+  const copy = settingsCopy[settings.language] ?? settingsCopy.en;
 
   const handleLogout = () => {
     logout();
@@ -111,10 +156,7 @@ const SettingsPage: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen className="app-page">
-        <div
-          className="screen screen--settings"
-          dir={isArabic ? "rtl" : "ltr"}
-        >
+        <div className="screen screen--settings" dir={isArabic ? "rtl" : "ltr"}>
           <div className="screen__ambient screen__ambient--settings-left" />
           <div className="screen__ambient screen__ambient--settings-right" />
 
@@ -333,6 +375,15 @@ const SettingsPage: React.FC = () => {
                   onClick={() => setSetting("language", "ar")}
                 >
                   {copy.arabic}
+                </button>
+                <button
+                  type="button"
+                  className={`setting-choice ${
+                    settings.language === "fr" ? "setting-choice--active" : ""
+                  }`}
+                  onClick={() => setSetting("language", "fr")}
+                >
+                  {copy.french}
                 </button>
               </div>
             </div>

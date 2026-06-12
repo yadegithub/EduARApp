@@ -187,6 +187,9 @@ let availableSpeechVoices = [];
 let AR_SCALE = 0.12;
 const BUILD_VERSION = "20260506-4";
 const DEFAULT_MODEL_PATH = "./assets/realistic_human_lungs.glb";
+const DEFAULT_MODEL_POSITION = { x: 0, y: 0, z: 0.02 };
+const DEFAULT_MODEL_ROTATION = { x: 0, y: 0, z: 0 };
+const DEFAULT_MODEL_TARGET_SIZE = 1.05;
 const MAX_RENDER_PIXEL_RATIO = 1.25;
 const CAMERA_IDEAL_WIDTH = 960;
 const CAMERA_IDEAL_HEIGHT = 540;
@@ -821,15 +824,16 @@ async function initProject() {
 
         const config = await response.json();
         AR_SCALE = config?.settings?.arScale || AR_SCALE;
-        const path = normalizeModelPath(config?.assets?.models?.lung?.path);
-        startAR(path);
+        const lungConfig = config?.assets?.models?.lung ?? {};
+        const path = normalizeModelPath(lungConfig.path);
+        startAR(path, lungConfig);
     } catch (error) {
         console.error("Config error:", error);
-        startAR(withCacheBuster(DEFAULT_MODEL_PATH));
+        startAR(withCacheBuster(DEFAULT_MODEL_PATH), {});
     }
 }
 
-function startAR(modelPath) {
+function startAR(modelPath, lungConfig = {}) {
     document.body.classList.remove("camera-ready");
     UI.video.muted = true;
     UI.video.autoplay = true;
@@ -861,7 +865,7 @@ function startAR(modelPath) {
                 UI.canvasOutput.height = UI.canvasThree.height = height;
                 fitToScreen();
 
-                setupThreeJS(modelPath);
+                setupThreeJS(modelPath, lungConfig);
                 await initQrScanner();
                 initTrackingProjection();
                 setupControls();
@@ -877,7 +881,7 @@ function startAR(modelPath) {
     });
 }
 
-function setupThreeJS(modelPath) {
+function setupThreeJS(modelPath, lungConfig = {}) {
     const { width, height } = getVideoSize();
 
     if (UI.canvasOutput) {
@@ -914,7 +918,7 @@ function setupThreeJS(modelPath) {
     const loader = new THREE.GLTFLoader();
     loader.load(modelPath, (gltf) => {
         mainModel = gltf.scene;
-        prepareModel(mainModel);
+        prepareModel(mainModel, lungConfig);
         arGroup.add(mainModel);
         createOrganLabels();
         setupInteraction();
@@ -925,7 +929,13 @@ function setupThreeJS(modelPath) {
     });
 }
 
-function prepareModel(model) {
+function prepareModel(model, runtimeModelConfig = {}) {
+    const modelPosition = runtimeModelConfig.position ?? DEFAULT_MODEL_POSITION;
+    const modelRotation = runtimeModelConfig.rotation ?? DEFAULT_MODEL_ROTATION;
+    const targetSize = Math.max(
+        0.0001,
+        Number(runtimeModelConfig.targetSize ?? DEFAULT_MODEL_TARGET_SIZE)
+    );
     const box = new THREE.Box3().setFromObject(model);
 
     if (!box.isEmpty()) {
@@ -937,12 +947,21 @@ function prepareModel(model) {
         model.position.z -= modelCenter.z;
 
         const largestAxis = Math.max(modelSize.x, modelSize.y, modelSize.z, 0.0001);
-        const normalizedScale = 1.15 / largestAxis;
+        const normalizedScale = targetSize / largestAxis;
         model.scale.setScalar(normalizedScale);
         baseModelScale.copy(model.scale);
     } else {
         baseModelScale.set(1, 1, 1);
     }
+
+    model.position.x += modelPosition.x ?? DEFAULT_MODEL_POSITION.x;
+    model.position.y += modelPosition.y ?? DEFAULT_MODEL_POSITION.y;
+    model.position.z += modelPosition.z ?? DEFAULT_MODEL_POSITION.z;
+    model.rotation.set(
+        modelRotation.x ?? DEFAULT_MODEL_ROTATION.x,
+        modelRotation.y ?? DEFAULT_MODEL_ROTATION.y,
+        modelRotation.z ?? DEFAULT_MODEL_ROTATION.z
+    );
 
     userModelScale = 1;
     breathScale = 1;
@@ -1542,11 +1561,12 @@ async function runQrDetection() {
             shouldHoldSteady = Boolean(metrics);
 
             if (confirmedDetection && corners && updateTrackedPoseFromCorners(corners)) {
+                const isReacquiringPose = !hasTrackingPose || lostMarkerFrames > 0;
                 poseTargetPosition.copy(trackedPosition);
                 poseTargetQuaternion.copy(trackedQuaternion);
                 poseTargetScale.copy(trackedScale);
 
-                applyTrackedPose(!hasTrackingPose);
+                applyTrackedPose(isReacquiringPose);
                 hasTrackingPose = true;
                 arGroup.visible = true;
                 markerFound = true;

@@ -1,6 +1,7 @@
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const languageParam = query.get("lang");
+const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
 
 document.documentElement.dataset.theme = currentTheme;
 document.documentElement.lang = currentLanguage;
@@ -134,6 +135,28 @@ const COPY = currentLanguage === "ar"
         scale: "تحجيم",
         launch: "تشغيل"
     }
+    : currentLanguage === "fr"
+      ? {
+          appEyebrow: "Scan EduAR en direct",
+          appTitle: "PENDULE SIMPLE",
+          cardHint: "Touchez une bille laterale ou utilisez Lancer pour demarrer le mouvement.",
+          cardInfo: "Ce modele illustre la conservation de la quantite de mouvement et de l'energie. Quand une bille frappe, l'impulsion traverse les billes immobiles et ressort de l'autre cote.",
+          cardName: "Pendule de Newton",
+          cardTag: "MODELE DE PHYSIQUE",
+          cameraRequest: "Demande d'acces a la camera...",
+          clickOuterBall: "Touchez une bille laterale",
+          collision: "Collision en cours...",
+          loading: "Chargement du pendule...",
+          modelError: "Erreur de chargement du modele",
+          noBall: "Aucune bille disponible",
+          ready: "Pret : scannez le QR code",
+          stable: "Modele stabilise",
+          steady: "QR detecte, gardez-le stable...",
+          searching: "Recherche du QR code...",
+          rotate: "Rotation",
+          scale: "Echelle",
+          launch: "Lancer"
+      }
     : {
         appEyebrow: "EduAR live scan",
         appTitle: "SIMPLE PENDULUM",

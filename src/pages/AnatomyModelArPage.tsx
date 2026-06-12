@@ -2,15 +2,15 @@ import { IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBack } from "ionicons/icons";
 import "./HeartArPage.css";
 
+type LocalizedHint = {
+  title: string;
+  description: string;
+};
+
 type HintCopy = {
-  en: {
-    title: string;
-    description: string;
-  };
-  ar?: {
-    title: string;
-    description: string;
-  };
+  en: LocalizedHint;
+  ar?: LocalizedHint;
+  fr?: LocalizedHint;
 };
 
 type AnatomyModelArPageProps = {
@@ -32,7 +32,8 @@ const AnatomyModelArPage: React.FC<AnatomyModelArPageProps> = ({
   hintCopy,
   hintIcon,
 }) => {
-  const resolvedLanguage = language === "ar" ? "ar" : "en";
+  const resolvedLanguage =
+    language === "ar" || language === "fr" ? language : "en";
   const searchParams = new URLSearchParams({
     lang: resolvedLanguage,
     theme: theme === "light" ? "light" : "dark",
@@ -41,12 +42,10 @@ const AnatomyModelArPage: React.FC<AnatomyModelArPageProps> = ({
   const localizedHint = hintCopy[resolvedLanguage] ?? hintCopy.en;
   const copy =
     resolvedLanguage === "ar"
-      ? {
-          back: "\u0627\u0644\u0639\u0648\u062f\u0629",
-        }
-      : {
-          back: "Go back",
-        };
+      ? { back: "العودة" }
+      : resolvedLanguage === "fr"
+        ? { back: "Retour" }
+        : { back: "Go back" };
 
   return (
     <IonPage>

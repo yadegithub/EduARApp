@@ -4,7 +4,7 @@ import type { AppLanguage } from "../settings/AppSettingsContext";
 const subjectCopy = {
   biology: {
     en: {
-      name: "Science naturelle",
+      name: "Natural Science",
       tagline: "Cells, organs and ecosystems",
       lessonCount: "18 lessons",
     },
@@ -12,6 +12,11 @@ const subjectCopy = {
       name: "العلوم الطبيعية",
       tagline: "الخلايا والأعضاء والأنظمة البيئية",
       lessonCount: "18 درسًا",
+    },
+    fr: {
+      name: "Sciences naturelles",
+      tagline: "Cellules, organes et écosystèmes",
+      lessonCount: "18 leçons",
     },
   },
   physics: {
@@ -25,6 +30,11 @@ const subjectCopy = {
       tagline: "الحركة والضوء والقوى",
       lessonCount: "14 درسًا",
     },
+    fr: {
+      name: "Physique",
+      tagline: "Mouvement, lumière et forces",
+      lessonCount: "14 leçons",
+    },
   },
   history: {
     en: {
@@ -37,6 +47,11 @@ const subjectCopy = {
       tagline: "الحضارات والخطوط الزمنية",
       lessonCount: "12 درسًا",
     },
+    fr: {
+      name: "Histoire",
+      tagline: "Civilisations et frises chronologiques",
+      lessonCount: "12 leçons",
+    },
   },
   geography: {
     en: {
@@ -48,6 +63,11 @@ const subjectCopy = {
       name: "الجغرافيا",
       tagline: "الخرائط والمناخ والتضاريس",
       lessonCount: "16 درسًا",
+    },
+    fr: {
+      name: "Géographie",
+      tagline: "Cartes, climat et relief",
+      lessonCount: "16 leçons",
     },
   },
 } satisfies Record<
@@ -90,6 +110,17 @@ const experienceCopy: Record<
         "تتبّع الدم الغني بالأكسجين وهو يغادر البطين الأيسر واكتشف لماذا يُعد الشريان الأبهر الطريق الرئيسي في الجسم.",
       duration: "درس 8 دقائق",
     },
+    fr: {
+      title: "Cœur humain",
+      shortDescription:
+        "Observez les cavités, les vaisseaux et la circulation du sang avec des repères guidés.",
+      teaser:
+        "Entrez dans le système cardiovasculaire avec un cœur 3D lumineux.",
+      focusTitle: "Aorte",
+      focusCopy:
+        "Suivez le sang riche en oxygène qui quitte le ventricule gauche et voyez pourquoi l'aorte est l'artère principale du corps.",
+      duration: "Leçon de 8 min",
+    },
   },
   "human-lung": {
     en: {
@@ -111,6 +142,17 @@ const experienceCopy: Record<
       focusCopy:
         "تتبّع كيف تنقسم القصبة الهوائية داخل الرئتين وتنقل الهواء إلى المسارات التنفسية الأصغر.",
       duration: "درس 7 دقائق",
+    },
+    fr: {
+      title: "Poumon humain",
+      shortDescription:
+        "Explorez les lobes, les bronches et les voies respiratoires avec des repères anatomiques guidés.",
+      teaser:
+        "Ouvrez un modèle détaillé du poumon et suivez le trajet de chaque respiration.",
+      focusTitle: "Bronches",
+      focusCopy:
+        "Voyez comment la trachée se divise dans les poumons et conduit l'air vers des voies respiratoires plus fines.",
+      duration: "Leçon de 7 min",
     },
   },
   "digestive-system": {
@@ -136,6 +178,17 @@ const experienceCopy: Record<
         "يحدث معظم امتصاص المغذيات في الأمعاء الدقيقة بعد أن يفكك المعدة الطعام.",
       duration: "درس 9 دقائق",
     },
+    fr: {
+      title: "Système digestif",
+      shortDescription:
+        "Scannez un QR code pour placer le système digestif complet et explorer ses principales structures avec des notes guidées.",
+      teaser:
+        "Suivez tout le trajet digestif en RA et touchez les numéros pour comprendre chaque structure importante.",
+      focusTitle: "Système digestif",
+      focusCopy:
+        "Ce modèle présente le système digestif comme un parcours complet, de l'entrée des aliments à l'absorption des nutriments et au traitement des déchets.",
+      duration: "Leçon de 9 min",
+    },
   },
   "human-skin": {
     en: {
@@ -159,6 +212,17 @@ const experienceCopy: Record<
       focusCopy:
         "تدعم الأدمة الطبقة الخارجية للجلد وتحتوي على الجريبات والغدد والأوعية والبنى الحسية.",
       duration: "درس 8 دقائق",
+    },
+    fr: {
+      title: "Peau humaine",
+      shortDescription:
+        "Explorez les couches de la peau et les structures qui protègent, ressentent et régulent le corps.",
+      teaser:
+        "Zoomez dans une coupe de peau en RA et touchez chaque numéro pour examiner son anatomie.",
+      focusTitle: "Derme",
+      focusCopy:
+        "Le derme soutient la surface externe de la peau et contient des follicules, des glandes, des vaisseaux et des structures sensorielles.",
+      duration: "Leçon de 8 min",
     },
   },
   "female-reproductive-system": {
@@ -184,6 +248,17 @@ const experienceCopy: Record<
         "الرحم هو العضو العضلي المركزي في الجهاز التناسلي ويدعم الحمل عند انغراس البويضة المخصبة.",
       duration: "درس 9 دقائق",
     },
+    fr: {
+      title: "Système reproducteur féminin",
+      shortDescription:
+        "Placez une coupe du système reproducteur féminin et explorez les principaux organes avec des notes guidées.",
+      teaser:
+        "Étudiez l'utérus, les ovaires et les voies associées dans une coupe RA claire.",
+      focusTitle: "Utérus",
+      focusCopy:
+        "L'utérus est l'organe musculaire central du système reproducteur et permet la grossesse lorsqu'un ovule fécondé s'implante.",
+      duration: "Leçon de 9 min",
+    },
   },
   "human-kidney": {
     en: {
@@ -208,6 +283,17 @@ const experienceCopy: Record<
         "القشرة الكلوية هي المنطقة الخارجية التي تبدأ فيها عملية الترشيح قبل أن يتجه السائل إلى عمق الكلية.",
       duration: "درس 8 دقائق",
     },
+    fr: {
+      title: "Rein humain",
+      shortDescription:
+        "Examinez les couches du rein et les vaisseaux qui filtrent le sang et dirigent l'urine hors de l'organe.",
+      teaser:
+        "Parcourez le cortex, la médulla et l'uretère dans un modèle rénal détaillé en RA.",
+      focusTitle: "Cortex rénal",
+      focusCopy:
+        "Le cortex rénal est la région externe où la filtration commence avant que le liquide ne poursuive son chemin plus profondément dans le rein.",
+      duration: "Leçon de 8 min",
+    },
   },
   "solar-system-model": {
     en: {
@@ -229,6 +315,17 @@ const experienceCopy: Record<
       focusCopy:
         "شاهد الكواكب وهي تدور حول الشمس وقارن كيف تغيّر المسافة سرعتها داخل النموذج.",
       duration: "درس 11 دقيقة",
+    },
+    fr: {
+      title: "Modèle du système solaire",
+      shortDescription:
+        "Tournez autour des planètes, comparez les tailles et explorez les trajectoires gravitationnelles.",
+      teaser:
+        "Réduisez le système solaire sur votre bureau et parcourez chaque orbite.",
+      focusTitle: "Trajectoires orbitales",
+      focusCopy:
+        "Observez les planètes tourner autour du Soleil et comparez comment la distance influence leur vitesse dans le modèle.",
+      duration: "Leçon de 11 min",
     },
   },
   "electric-circuit": {
@@ -252,6 +349,17 @@ const experienceCopy: Record<
         "لاحظ كيف يمر التيار فقط عندما تكون كل المكونات متصلة في حلقة كاملة.",
       duration: "درس 6 دقائق",
     },
+    fr: {
+      title: "Circuit électrique",
+      shortDescription:
+        "Explorez une pile, des fils, un interrupteur et une ampoule dans un circuit fermé simple.",
+      teaser:
+        "Placez un circuit de classe sur votre bureau et suivez le trajet du courant.",
+      focusTitle: "Circuit fermé",
+      focusCopy:
+        "Voyez comment le courant circule seulement lorsque tous les composants sont reliés dans une boucle complète.",
+      duration: "Leçon de 6 min",
+    },
   },
   "magnetic-fields": {
     en: {
@@ -274,6 +382,17 @@ const experienceCopy: Record<
         "لاحظ كيف تتقارب خطوط المجال قرب الأقطاب وتتباعد كلما ضعفت القوة المغناطيسية.",
       duration: "درس 9 دقائق",
     },
+    fr: {
+      title: "Champs magnétiques",
+      shortDescription:
+        "Révélez les lignes magnétiques, la polarité et l'intensité du champ autour d'un noyau actif.",
+      teaser:
+        "Transformez des lignes de champ invisibles en structure lumineuse et interactive.",
+      focusTitle: "Densité de flux",
+      focusCopy:
+        "Voyez comment les lignes de champ se resserrent près des pôles et s'écartent lorsque la force magnétique faiblit.",
+      duration: "Leçon de 9 min",
+    },
   },
   "simple-pendulum": {
     en: {
@@ -295,6 +414,17 @@ const experienceCopy: Record<
       focusCopy:
         "تابع مسار التأرجح وافهم كيف تعيد الجاذبية الجسم إلى موضع الاتزان.",
       duration: "درس 7 دقائق",
+    },
+    fr: {
+      title: "Pendule simple",
+      shortDescription:
+        "Expérimentez l'amplitude, la période et la gravité avec un modèle réactif.",
+      teaser:
+        "Tirez, relâchez et observez comment le rythme change avec la longueur et la force.",
+      focusTitle: "Force de rappel",
+      focusCopy:
+        "Suivez l'arc de balancement et comprenez comment la gravité ramène la masse vers l'équilibre.",
+      duration: "Leçon de 7 min",
     },
   },
   "ancient-civilizations": {
@@ -319,6 +449,17 @@ const experienceCopy: Record<
         "استكشف كيف رتبت المساحات الاحتفالية والأعمدة والقطع الأثرية لتوجيه الحركة والطقوس.",
       duration: "درس 10 دقائق",
     },
+    fr: {
+      title: "Château de Consuegra",
+      shortDescription:
+        "Explorez un château médiéval espagnol et son architecture défensive en RA.",
+      teaser:
+        "Placez le château de Consuegra sur votre bureau et observez l'organisation de sa forteresse.",
+      focusTitle: "Donjon principal",
+      focusCopy:
+        "Étudiez comment le donjon, les murs, les tours et la porte protégeaient la forteresse et contrôlaient les déplacements.",
+      duration: "Leçon de 10 min",
+    },
   },
   "tectonic-plates": {
     en: {
@@ -333,12 +474,24 @@ const experienceCopy: Record<
     },
     ar: {
       title: "الصفائح التكتونية",
-      shortDescription: "اكشف القشرة ولاحظ الحدود والارتفاع والانغراز.",
+      shortDescription:
+        "اكشف القشرة ولاحظ الحدود والارتفاع والانغراز.",
       teaser: "حوّل الخرائط المسطحة إلى نموذج طبقي لقشرة الأرض المتحركة.",
       focusTitle: "الحافة التقاربية",
       focusCopy:
         "شاهد صفيحة تنزلق أسفل أخرى واكتشف كيف تبدأ الجبال والخنادق والزلازل.",
       duration: "درس 9 دقائق",
+    },
+    fr: {
+      title: "Plaques tectoniques",
+      shortDescription:
+        "Soulevez la croûte et observez les limites, le soulèvement et la subduction.",
+      teaser:
+        "Transformez des cartes plates en modèle stratifié de l'enveloppe mobile de la Terre.",
+      focusTitle: "Limite convergente",
+      focusCopy:
+        "Observez une plaque passer sous une autre et découvrez comment naissent montagnes, fosses et séismes.",
+      duration: "Leçon de 9 min",
     },
   },
   volcano: {
@@ -358,36 +511,65 @@ const experienceCopy: Record<
       shortDescription:
         "امسح رمز QR لوضع نموذج بركان واستكشاف الفوهة والقناة وغرفة الصهارة وتدفق الحمم.",
       teaser:
-        "شغل البركان في الواقع المعزز وافحص كيف تحرك الثورانات الصهارة من باطن الأرض إلى السطح.",
+        "شغّل البركان في الواقع المعزز وافحص كيف تتحرك الثورانات الصهارة من باطن الأرض إلى السطح.",
       focusTitle: "غرفة الصهارة",
       focusCopy:
         "تخزن غرفة الصهارة الصخور المنصهرة تحت البركان قبل أن يدفعها الضغط صعودا عبر القناة الرئيسية.",
       duration: "درس 8 دقائق",
     },
+    fr: {
+      title: "Volcan",
+      shortDescription:
+        "Scannez le QR code pour placer un volcan et explorer le cratère, la cheminée, la chambre magmatique et la coulée de lave.",
+      teaser:
+        "Lancez le volcan en RA et observez comment les éruptions déplacent le magma du sous-sol vers la surface.",
+      focusTitle: "Chambre magmatique",
+      focusCopy:
+        "La chambre magmatique stocke la roche en fusion sous le volcan avant que la pression ne la pousse vers le haut par la cheminée principale.",
+      duration: "Leçon de 8 min",
+    },
   },
 };
 
 const badgeCopy: Record<string, Record<AppLanguage, string>> = {
-  explorer: { en: "Explorer", ar: "المستكشف" },
-  atom: { en: "Atom Ace", ar: "خبير الذرة" },
-  bio: { en: "Bio Lab", ar: "مختبر العلوم الطبيعية" },
-  champion: { en: "Champion", ar: "البطل" },
-  legend: { en: "Time Keeper", ar: "حارس الزمن" },
+  explorer: { en: "Explorer", ar: "المستكشف", fr: "Explorateur" },
+  atom: { en: "Atom Ace", ar: "خبير الذرة", fr: "As de l'atome" },
+  bio: { en: "Bio Lab", ar: "مختبر العلوم الطبيعية", fr: "Labo bio" },
+  champion: { en: "Champion", ar: "البطل", fr: "Champion" },
+  legend: { en: "Time Keeper", ar: "حارس الزمن", fr: "Gardien du temps" },
 };
 
 const progressStatusCopy: Record<string, Record<AppLanguage, string>> = {
-  "Level unlocked": { en: "Level unlocked", ar: "تم فتح المستوى" },
+  "Level unlocked": {
+    en: "Level unlocked",
+    ar: "تم فتح المستوى",
+    fr: "Niveau débloqué",
+  },
   "Map review pending": {
     en: "Map review pending",
     ar: "مراجعة الخريطة قيد الانتظار",
+    fr: "Révision de la carte en attente",
   },
-  "Timeline unlocked": { en: "Timeline unlocked", ar: "تم فتح الخط الزمني" },
+  "Timeline unlocked": {
+    en: "Timeline unlocked",
+    ar: "تم فتح الخط الزمني",
+    fr: "Frise débloquée",
+  },
   "Start your first lesson": {
     en: "Start your first lesson",
     ar: "ابدأ أول درس لك",
+    fr: "Commencez votre première leçon",
   },
-  "Lesson in progress": { en: "Lesson in progress", ar: "الدرس قيد التقدم" },
-  Mastered: { en: "Mastered", ar: "تم الإتقان" },
+  "Lesson in progress": {
+    en: "Lesson in progress",
+    ar: "الدرس قيد التقدم",
+    fr: "Leçon en cours",
+  },
+  Mastered: {
+    en: "Mastered",
+    ar: "تم الإتقان",
+    fr: "Maîtrisé",
+  },
 };
 
 const staticAchievementCopy: Record<
@@ -405,6 +587,12 @@ const staticAchievementCopy: Record<
       description: "لقد حددت جميع الحجرات الرئيسية في درس التشريح.",
       time: "اليوم",
     },
+    fr: {
+      title: "Cœur humain terminé",
+      description:
+        "Vous avez identifié toutes les grandes cavités dans la leçon d'anatomie.",
+      time: "Aujourd'hui",
+    },
   },
   streak: {
     en: {
@@ -416,6 +604,12 @@ const staticAchievementCopy: Record<
       title: "سلسلة تعلم لمدة سبعة أيام",
       description: "حافظت على ممارسة الواقع المعزز لمدة أسبوع كامل.",
       time: "أمس",
+    },
+    fr: {
+      title: "Série d'apprentissage de sept jours",
+      description:
+        "Vous avez maintenu votre pratique en réalité augmentée pendant toute une semaine.",
+      time: "Hier",
     },
   },
   badge: {
@@ -429,11 +623,26 @@ const staticAchievementCopy: Record<
       description: "أصبح استكشاف الجغرافيا يفتح الآن طبقات التضاريس.",
       time: "6 أبريل",
     },
+    fr: {
+      title: "Badge de scientifique de terrain obtenu",
+      description:
+        "L'exploration en géographie débloque maintenant les couches de relief.",
+      time: "6 avril",
+    },
   },
 };
 
-export const getLocale = (language: AppLanguage) =>
-  language === "ar" ? "ar" : "en-US";
+export const getLocale = (language: AppLanguage) => {
+  if (language === "ar") {
+    return "ar";
+  }
+
+  if (language === "fr") {
+    return "fr-FR";
+  }
+
+  return "en-US";
+};
 
 export const getSubjectCopy = (subjectId: SubjectId, language: AppLanguage) =>
   subjectCopy[subjectId][language];
@@ -453,11 +662,27 @@ export const getProgressStatusLabel = (
 
 const formatDateLabel = (rawValue: string, language: AppLanguage) => {
   if (rawValue === "Today") {
-    return language === "ar" ? "اليوم" : rawValue;
+    if (language === "ar") {
+      return "اليوم";
+    }
+
+    if (language === "fr") {
+      return "Aujourd'hui";
+    }
+
+    return rawValue;
   }
 
   if (rawValue === "Yesterday") {
-    return language === "ar" ? "أمس" : rawValue;
+    if (language === "ar") {
+      return "أمس";
+    }
+
+    if (language === "fr") {
+      return "Hier";
+    }
+
+    return rawValue;
   }
 
   const parsedDate = new Date(rawValue);
@@ -485,19 +710,31 @@ export const getAchievementCopy = (
   if (achievement.id === "account-created") {
     const firstName = achievement.description.split(",")[0] ?? "";
 
-    return language === "ar"
-      ? {
-          title: "تم إنشاء الحساب",
-          description: `${firstName}، ملفك في EduAR جاهز لأول درس.`,
-          time: formatDateLabel(achievement.time, language),
-        }
-      : {
-          title: "Account created",
-          description:
-            achievement.description ||
-            `${firstName}, your EduAR profile is ready for its first lesson.`,
-          time: formatDateLabel(achievement.time, language),
-        };
+    if (language === "ar") {
+      return {
+        title: "تم إنشاء الحساب",
+        description: `${firstName}، ملفك في EduAR جاهز لأول درس.`,
+        time: formatDateLabel(achievement.time, language),
+      };
+    }
+
+    if (language === "fr") {
+      return {
+        title: "Compte créé",
+        description:
+          achievement.description ||
+          `${firstName}, votre profil EduAR est prêt pour sa première leçon.`,
+        time: formatDateLabel(achievement.time, language),
+      };
+    }
+
+    return {
+      title: "Account created",
+      description:
+        achievement.description ||
+        `${firstName}, your EduAR profile is ready for its first lesson.`,
+      time: formatDateLabel(achievement.time, language),
+    };
   }
 
   if (achievement.id.startsWith("launch-")) {
@@ -505,18 +742,29 @@ export const getAchievementCopy = (
     const localizedExperience = getExperienceCopy(experienceId, language);
 
     if (localizedExperience) {
-      return language === "ar"
-        ? {
-            title: `تم استكشاف ${localizedExperience.title}`,
-            description: "لقد أحرزت تقدمًا جديدًا بفتح هذا الدرس في الواقع المعزز.",
-            time: formatDateLabel(achievement.time, language),
-          }
-        : {
-            title: `${localizedExperience.title} explored`,
-            description:
-              "You added fresh progress by opening this AR lesson.",
-            time: formatDateLabel(achievement.time, language),
-          };
+      if (language === "ar") {
+        return {
+          title: `تم استكشاف ${localizedExperience.title}`,
+          description:
+            "لقد أحرزت تقدمًا جديدًا بفتح هذا الدرس في الواقع المعزز.",
+          time: formatDateLabel(achievement.time, language),
+        };
+      }
+
+      if (language === "fr") {
+        return {
+          title: `${localizedExperience.title} exploré`,
+          description:
+            "Vous avez progressé en ouvrant cette leçon en réalité augmentée.",
+          time: formatDateLabel(achievement.time, language),
+        };
+      }
+
+      return {
+        title: `${localizedExperience.title} explored`,
+        description: "You added fresh progress by opening this AR lesson.",
+        time: formatDateLabel(achievement.time, language),
+      };
     }
   }
 

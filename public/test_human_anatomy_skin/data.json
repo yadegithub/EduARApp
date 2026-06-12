@@ -37,6 +37,12 @@
         "name": "جلد الإنسان",
         "info": "استكشف طبقات الجلد في الواقع المعزز واضغط على التسميات المرقمة لفهم كل بنية واقية وحسية.",
         "hint": "استخدم التدوير والتحجيم والتسميات أثناء عرض نموذج الجلد."
+      },
+      "fr": {
+        "tag": "Anatomie de la peau",
+        "name": "PEAU HUMAINE",
+        "info": "Examinez les couches de la peau en AR et touchez les numeros pour comprendre chaque structure protectrice et sensorielle.",
+        "hint": "Utilisez rotation, echelle et numeros pendant l'affichage du modele."
       }
     },
     "ui": {
@@ -63,6 +69,23 @@
         "statusCameraError": "تم رفض الوصول إلى الكاميرا.",
         "statusModelError": "تعذر تحميل النموذج.",
         "focusTag": "بنية جلدية"
+      },
+      "fr": {
+        "appEyebrow": "Scan EduAR en direct",
+        "appTitle": "PEAU HUMAINE",
+        "rotate": "Rotation",
+        "scale": "Echelle",
+        "sound": "Audio",
+        "labels": "Numeros On/Off",
+        "statusStarting": "Demarrage de la camera...",
+        "statusLoading": "Chargement du modele de peau humaine...",
+        "statusReady": "Camera prete",
+        "statusTracking": "Peau humaine placee",
+        "statusHoldSteady": "Gardez le QR stable pendant le verrouillage...",
+        "statusSearching": "Recherche du QR code...",
+        "statusCameraError": "L'acces a la camera a ete refuse.",
+        "statusModelError": "Le modele n'a pas pu etre charge.",
+        "focusTag": "Structure cutanee"
       }
     },
     "parts": [
@@ -70,19 +93,23 @@
         "id": "epidermis",
         "label": {
           "en": "Epidermis",
-          "ar": "البشرة"
+          "ar": "البشرة",
+          "fr": "Epiderme"
         },
         "title": {
           "en": "EPIDERMIS",
-          "ar": "البشرة"
+          "ar": "البشرة",
+          "fr": "EPIDERME"
         },
         "info": {
           "en": "The epidermis is the thin outer layer that protects the body from the environment.",
-          "ar": "البشرة هي الطبقة الخارجية الرقيقة التي تحمي الجسم من البيئة المحيطة."
+          "ar": "البشرة هي الطبقة الخارجية الرقيقة التي تحمي الجسم من البيئة المحيطة.",
+          "fr": "L'epiderme est la fine couche externe qui protege le corps de l'environnement."
         },
         "hint": {
           "en": "This surface layer forms the skin's first protective barrier.",
-          "ar": "تشكل هذه الطبقة السطحية الحاجز الواقي الأول للجلد."
+          "ar": "تشكل هذه الطبقة السطحية الحاجز الواقي الأول للجلد.",
+          "fr": "Cette couche de surface forme la premiere barriere protectrice de la peau."
         },
         "normalizedPosition": [
           0.02,
@@ -94,19 +121,23 @@
         "id": "dermis",
         "label": {
           "en": "Dermis",
-          "ar": "الأدمة"
+          "ar": "الأدمة",
+          "fr": "Derme"
         },
         "title": {
           "en": "DERMIS",
-          "ar": "الأدمة"
+          "ar": "الأدمة",
+          "fr": "DERME"
         },
         "info": {
           "en": "The dermis supports the epidermis and contains vessels, nerves, follicles and glands.",
-          "ar": "تدعم الأدمة البشرة وتحتوي على أوعية وأعصاب وجريبات وغدد."
+          "ar": "تدعم الأدمة البشرة وتحتوي على أوعية وأعصاب وجريبات وغدد.",
+          "fr": "Le derme soutient l'epiderme et contient vaisseaux, nerfs, follicules et glandes."
         },
         "hint": {
           "en": "This middle layer gives the skin strength and sensation.",
-          "ar": "تعطي هذه الطبقة الوسطى الجلد القوة والإحساس."
+          "ar": "تعطي هذه الطبقة الوسطى الجلد القوة والإحساس.",
+          "fr": "Cette couche intermediaire donne a la peau sa resistance et sa sensibilite."
         },
         "normalizedPosition": [
           -0.12,
@@ -118,19 +149,23 @@
         "id": "hair-follicle",
         "label": {
           "en": "Hair Follicle",
-          "ar": "جريب الشعرة"
+          "ar": "جريب الشعرة",
+          "fr": "Follicule pileux"
         },
         "title": {
           "en": "HAIR FOLLICLE",
-          "ar": "جريب الشعرة"
+          "ar": "جريب الشعرة",
+          "fr": "FOLLICULE PILEUX"
         },
         "info": {
           "en": "The hair follicle anchors a hair strand and supports its growth beneath the surface.",
-          "ar": "يثبت جريب الشعرة الشعرة ويدعم نموها تحت السطح."
+          "ar": "يثبت جريب الشعرة الشعرة ويدعم نموها تحت السطح.",
+          "fr": "Le follicule pileux ancre le poil et soutient sa croissance sous la surface."
         },
         "hint": {
           "en": "Look for the tube-like structure surrounding the hair root.",
-          "ar": "ابحث عن البنية الأنبوبية المحيطة بجذر الشعرة."
+          "ar": "ابحث عن البنية الأنبوبية المحيطة بجذر الشعرة.",
+          "fr": "Reperez la structure tubulaire qui entoure la racine du poil."
         },
         "normalizedPosition": [
           0.28,
@@ -142,19 +177,23 @@
         "id": "sebaceous-gland",
         "label": {
           "en": "Sebaceous Gland",
-          "ar": "الغدة الدهنية"
+          "ar": "الغدة الدهنية",
+          "fr": "Glande sebacee"
         },
         "title": {
           "en": "SEBACEOUS GLAND",
-          "ar": "الغدة الدهنية"
+          "ar": "الغدة الدهنية",
+          "fr": "GLANDE SEBACEE"
         },
         "info": {
           "en": "The sebaceous gland releases oil that helps keep the skin and hair from drying out.",
-          "ar": "تفرز الغدة الدهنية زيتا يساعد على منع جفاف الجلد والشعر."
+          "ar": "تفرز الغدة الدهنية زيتا يساعد على منع جفاف الجلد والشعر.",
+          "fr": "La glande sebacee secrete une huile qui aide a eviter le dessechement de la peau et des cheveux."
         },
         "hint": {
           "en": "This gland connects closely to the hair follicle.",
-          "ar": "ترتبط هذه الغدة بشكل وثيق بجريب الشعرة."
+          "ar": "ترتبط هذه الغدة بشكل وثيق بجريب الشعرة.",
+          "fr": "Cette glande est etroitement reliee au follicule pileux."
         },
         "normalizedPosition": [
           0.34,
@@ -166,19 +205,23 @@
         "id": "sweat-gland",
         "label": {
           "en": "Sweat Gland",
-          "ar": "الغدة العرقية"
+          "ar": "الغدة العرقية",
+          "fr": "Glande sudoripare"
         },
         "title": {
           "en": "SWEAT GLAND",
-          "ar": "الغدة العرقية"
+          "ar": "الغدة العرقية",
+          "fr": "GLANDE SUDORIPARE"
         },
         "info": {
           "en": "The sweat gland produces sweat to help regulate body temperature.",
-          "ar": "تنتج الغدة العرقية العرق للمساعدة على تنظيم حرارة الجسم."
+          "ar": "تنتج الغدة العرقية العرق للمساعدة على تنظيم حرارة الجسم.",
+          "fr": "La glande sudoripare produit la sueur pour aider a reguler la temperature du corps."
         },
         "hint": {
           "en": "Its coiled shape sits deeper in the skin layers.",
-          "ar": "يقع شكلها الملفوف في طبقات أعمق من الجلد."
+          "ar": "يقع شكلها الملفوف في طبقات أعمق من الجلد.",
+          "fr": "Sa forme enroulee se trouve plus en profondeur dans les couches de la peau."
         },
         "normalizedPosition": [
           -0.05,
@@ -190,19 +233,23 @@
         "id": "hypodermis",
         "label": {
           "en": "Hypodermis",
-          "ar": "تحت الجلد"
+          "ar": "تحت الجلد",
+          "fr": "Hypoderme"
         },
         "title": {
           "en": "HYPODERMIS",
-          "ar": "تحت الجلد"
+          "ar": "تحت الجلد",
+          "fr": "HYPODERME"
         },
         "info": {
           "en": "The hypodermis is the deeper fatty layer that cushions the body and helps store energy.",
-          "ar": "تحت الجلد طبقة دهنية أعمق تعمل كوسادة للجسم وتساعد على تخزين الطاقة."
+          "ar": "تحت الجلد طبقة دهنية أعمق تعمل كوسادة للجسم وتساعد على تخزين الطاقة.",
+          "fr": "L'hypoderme est la couche graisseuse profonde qui amortit le corps et aide a stocker l'energie."
         },
         "hint": {
           "en": "This bottom layer helps anchor the skin to the tissues below.",
-          "ar": "تساعد هذه الطبقة السفلية على تثبيت الجلد بالأنسجة الموجودة تحته."
+          "ar": "تساعد هذه الطبقة السفلية على تثبيت الجلد بالأنسجة الموجودة تحته.",
+          "fr": "Cette couche inferieure aide a fixer la peau aux tissus situes dessous."
         },
         "normalizedPosition": [
           -0.18,

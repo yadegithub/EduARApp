@@ -13,31 +13,43 @@ import { useAppSettings } from "../settings/AppSettingsContext";
 
 type SubjectFilter = SubjectId | "all";
 
+const libraryCopy = {
+  en: {
+    title: "AR Library",
+    back: "Back",
+    searchPlaceholder: "Search lessons or topics",
+    browseSubjects: "Browse subjects",
+    all: "All",
+    modulesReady: "modules ready",
+    launch: "Launch AR",
+  },
+  ar: {
+    title: "مكتبة الواقع المعزز",
+    back: "العودة",
+    searchPlaceholder: "ابحث عن درس أو موضوع",
+    browseSubjects: "تصفح المواد",
+    all: "الكل",
+    modulesReady: "وحدات جاهزة",
+    launch: "افتح AR",
+  },
+  fr: {
+    title: "Bibliothèque AR",
+    back: "Retour",
+    searchPlaceholder: "Rechercher une leçon ou un thème",
+    browseSubjects: "Parcourir les matières",
+    all: "Tout",
+    modulesReady: "modules prêts",
+    launch: "Lancer la RA",
+  },
+} as const;
+
 const LibraryPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
   const { settings } = useAppSettings();
   const [query, setQuery] = useState("");
   const isArabic = settings.language === "ar";
-  const copy = isArabic
-    ? {
-        title: "مكتبة الواقع المعزز",
-        back: "العودة",
-        searchPlaceholder: "ابحث عن درس أو موضوع",
-        browseSubjects: "تصفح المواد",
-        all: "الكل",
-        modulesReady: "وحدات جاهزة",
-        launch: "افتح AR",
-      }
-    : {
-        title: "AR Library",
-        back: "Back",
-        searchPlaceholder: "Search lessons or topics",
-        browseSubjects: "Browse subjects",
-        all: "All",
-        modulesReady: "modules ready",
-        launch: "Launch AR",
-      };
+  const copy = libraryCopy[settings.language] ?? libraryCopy.en;
   const filterOptions: Array<{ label: string; value: SubjectFilter }> = [
     { label: copy.all, value: "all" },
     ...subjects.map((subject) => ({
@@ -84,10 +96,7 @@ const LibraryPage: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen className="app-page">
-        <div
-          className="screen screen--library"
-          dir={isArabic ? "rtl" : "ltr"}
-        >
+        <div className="screen screen--library" dir={isArabic ? "rtl" : "ltr"}>
           <div className="screen__ambient screen__ambient--dark-left" />
           <div className="screen__ambient screen__ambient--dark-right" />
 
@@ -154,7 +163,8 @@ const LibraryPage: React.FC = () => {
           <div className="library-list">
             {visibleExperiences.map((experience) => {
               const localizedExperience =
-                getExperienceCopy(experience.id, settings.language) ?? experience;
+                getExperienceCopy(experience.id, settings.language) ??
+                experience;
 
               return (
                 <article key={experience.id} className="library-card">

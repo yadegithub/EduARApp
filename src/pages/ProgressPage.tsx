@@ -11,9 +11,12 @@ import { useAuth } from "../auth/useAuth";
 import ProfileShortcut from "../components/ProfileShortcut";
 import { getAchievementCopy } from "../i18n/appCopy";
 import { getUserProgressProfile } from "../profile/userProgressStore";
-import { useAppSettings } from "../settings/AppSettingsContext";
+import {
+  useAppSettings,
+  type AppLanguage,
+} from "../settings/AppSettingsContext";
 
-const normalizeRoleLabel = (role: string, isArabic: boolean) => {
+const normalizeRoleLabel = (role: string, language: AppLanguage) => {
   const normalizedRole = role.trim().toLowerCase();
 
   if (
@@ -21,11 +24,68 @@ const normalizeRoleLabel = (role: string, isArabic: boolean) => {
     normalizedRole === "student" ||
     normalizedRole === "studant"
   ) {
-    return isArabic ? "طالب" : "Student";
+    if (language === "ar") {
+      return "طالب";
+    }
+
+    if (language === "fr") {
+      return "Étudiant";
+    }
+
+    return "Student";
+  }
+
+  if (normalizedRole === "new learner") {
+    if (language === "ar") {
+      return "متعلم جديد";
+    }
+
+    if (language === "fr") {
+      return "Nouvel apprenant";
+    }
   }
 
   return role.trim();
 };
+
+const progressCopy = {
+  en: {
+    back: "Back to dashboard",
+    profile: "Profile",
+    profileInfo: "Profile Information",
+    email: "Email",
+    role: "Role",
+    language: "Language",
+    english: "English",
+    arabic: "Arabic",
+    french: "French",
+    recentAchievements: "Recent Achievements",
+  },
+  ar: {
+    back: "العودة إلى الرئيسية",
+    profile: "الملف الشخصي",
+    profileInfo: "المعلومات الشخصية",
+    email: "البريد الإلكتروني",
+    role: "الدور",
+    language: "اللغة",
+    english: "الإنجليزية",
+    arabic: "العربية",
+    french: "الفرنسية",
+    recentAchievements: "الإنجازات الأخيرة",
+  },
+  fr: {
+    back: "Retour au tableau de bord",
+    profile: "Profil",
+    profileInfo: "Informations du profil",
+    email: "E-mail",
+    role: "Rôle",
+    language: "Langue",
+    english: "Anglais",
+    arabic: "Arabe",
+    french: "Français",
+    recentAchievements: "Succès récents",
+  },
+} as const;
 
 const ProgressPage: React.FC = () => {
   const history = useHistory();
@@ -38,38 +98,19 @@ const ProgressPage: React.FC = () => {
 
   const profile = getUserProgressProfile(user);
   const isArabic = settings.language === "ar";
-  const localizedRole = normalizeRoleLabel(user.role, isArabic);
-  const copy = isArabic
-    ? {
-        back: "العودة إلى الرئيسية",
-        avatar: "صورة الملف الشخصي",
-        profileInfo: "المعلومات الشخصية",
-        email: "البريد الإلكتروني",
-        role: "الدور",
-        language: "اللغة",
-        english: "الإنجليزية",
-        arabic: "العربية",
-        recentAchievements: "الإنجازات الأخيرة",
-      }
-    : {
-        back: "Back to dashboard",
-        avatar: "Profile avatar",
-        profileInfo: "Profile Information",
-        email: "Email",
-        role: "Role",
-        language: "Language",
-        english: "English",
-        arabic: "Arabic",
-        recentAchievements: "Recent Achievements",
-      };
+  const localizedRole = normalizeRoleLabel(user.role, settings.language);
+  const copy = progressCopy[settings.language] ?? progressCopy.en;
+  const languageLabel =
+    settings.language === "ar"
+      ? copy.arabic
+      : settings.language === "fr"
+        ? copy.french
+        : copy.english;
 
   return (
     <IonPage>
       <IonContent fullscreen className="app-page">
-        <div
-          className="screen screen--progress"
-          dir={isArabic ? "rtl" : "ltr"}
-        >
+        <div className="screen screen--progress" dir={isArabic ? "rtl" : "ltr"}>
           <div className="screen__ambient screen__ambient--profile-left" />
           <div className="screen__ambient screen__ambient--profile-right" />
 
@@ -85,7 +126,7 @@ const ProgressPage: React.FC = () => {
 
             <div className="topbar__spacer" aria-hidden="true" />
 
-            <ProfileShortcut label={isArabic ? "الملف الشخصي" : "Profile"} />
+            <ProfileShortcut label={copy.profile} />
           </div>
 
           <section className="profile-card">
@@ -134,7 +175,7 @@ const ProgressPage: React.FC = () => {
                   </span>
                   <div className="profile-info__copy">
                     <strong>{copy.language}</strong>
-                    <span>{isArabic ? copy.arabic : copy.english}</span>
+                    <span>{languageLabel}</span>
                   </div>
                 </div>
               </div>

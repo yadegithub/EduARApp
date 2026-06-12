@@ -1,11 +1,17 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "EduAR",
+  "name": "EduAR",
   "icons": [
     {
+      "src": "assets/icon/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
       "src": "assets/icon/favicon.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "sizes": "64x64",
+      "type": "image/png"
     },
     {
       "src": "assets/icon/icon.png",

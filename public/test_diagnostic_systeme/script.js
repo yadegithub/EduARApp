@@ -44,7 +44,8 @@ window.AR_VIEWER_BOOTSTRAP = {
 
 const query = new URLSearchParams(window.location.search);
 const currentTheme = query.get("theme") === "light" ? "light" : "dark";
-const currentLanguage = query.get("lang") === "ar" ? "ar" : "en";
+const languageParam = query.get("lang");
+const currentLanguage = languageParam === "ar" ? "ar" : languageParam === "fr" ? "fr" : "en";
 const BOOT = window.AR_VIEWER_BOOTSTRAP ?? {};
 const DEFAULT_MODEL_PATH = BOOT.defaultModelPath ?? "assets/model.glb";
 const DEFAULT_MODEL_ROTATION = BOOT.defaultModelRotation ?? {

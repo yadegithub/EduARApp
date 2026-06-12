@@ -20,37 +20,55 @@ const subjectImageMap: Record<SubjectId, string> = {
   geography: geographyImage,
 };
 
+const dashboardCopy = {
+  en: {
+    eyebrow: "Immersive classroom",
+    profile: "Profile",
+    title: "Learn with 3D scenes built for mobile AR.",
+    subtitle: "Start with science, then open history and geography in AR.",
+    openDemo: "Open demo",
+    explore: "Explore",
+    subjects: "Subjects",
+    viewAll: "View all",
+    featured: "Featured",
+    featuredTitle: "Featured AR Experiences",
+  },
+  ar: {
+    eyebrow: "فصل دراسي غامر",
+    profile: "الملف الشخصي",
+    title: "تعلّم مع مشاهد ثلاثية الأبعاد مصممة للواقع المعزز.",
+    subtitle: "ابدأ بالعلوم ثم افتح التاريخ والجغرافيا.",
+    openDemo: "افتح العرض",
+    explore: "استكشف",
+    subjects: "المواد",
+    viewAll: "عرض الكل",
+    featured: "مميز",
+    featuredTitle: "تجارب AR المميزة",
+  },
+  fr: {
+    eyebrow: "Classe immersive",
+    profile: "Profil",
+    title: "Apprenez avec des scènes 3D conçues pour la RA mobile.",
+    subtitle: "Commencez par les sciences, puis explorez l'histoire et la géographie.",
+    openDemo: "Ouvrir la démo",
+    explore: "Explorer",
+    subjects: "Matières",
+    viewAll: "Voir tout",
+    featured: "À la une",
+    featuredTitle: "Expériences AR en vedette",
+  },
+} as const;
+
 const DashboardPhonePreview: React.FC = () => {
   const { settings } = useAppSettings();
   const isArabic = settings.language === "ar";
-  const copy = isArabic
-    ? {
-        eyebrow: "فصل دراسي غامر",
-        profile: "الملف الشخصي",
-        title: "تعلّم مع مشاهد ثلاثية الأبعاد مصممة للواقع الممعزز.",
-        subtitle: "ابدأ بالعلوم ثم افتح التاريخ والجغرافيا.",
-        openDemo: "افتح العرض",
-        explore: "استكشف",
-        subjects: "المواد",
-        viewAll: "عرض الكل",
-        featured: "مميز",
-        featuredTitle: "تجارب AR المميزة",
-      }
-    : {
-        eyebrow: "Immersive classroom",
-        profile: "Profile",
-        title: "Learn with 3D scenes built for mobile AR.",
-        subtitle: "Start with science, then open history and geography in AR.",
-        openDemo: "Open demo",
-        explore: "Explore",
-        subjects: "Subjects",
-        viewAll: "View all",
-        featured: "Featured",
-        featuredTitle: "Featured AR Experiences",
-      };
+  const copy = dashboardCopy[settings.language] ?? dashboardCopy.en;
 
   return (
-    <div className="screen screen--dashboard landing-dashboard-preview" dir={isArabic ? "rtl" : "ltr"}>
+    <div
+      className="screen screen--dashboard landing-dashboard-preview"
+      dir={isArabic ? "rtl" : "ltr"}
+    >
       <div className="screen__ambient screen__ambient--left" />
       <div className="screen__ambient screen__ambient--right" />
 
