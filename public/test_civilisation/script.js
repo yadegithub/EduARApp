@@ -111,7 +111,7 @@ const defaultAnatomyParts = [
 
 const defaultCopy = {
     appEyebrow: "EduAR live scan",
-    appTitle: "CASTLE OF CONSUEGRA",
+    appTitle: "CASTLE OF LOARRE",
     rotate: "Rotate",
     scale: "Scale",
     launchCollision: "Launch",
@@ -129,7 +129,7 @@ const defaultCopy = {
     focusTag: "Castle feature",
     overview: {
         tag: "History model",
-        title: "CASTLE OF CONSUEGRA",
+        title: "CASTLE OF LOARRE",
         info: "Tap a numbered marker to understand the keep, walls, towers, gate and courtyard.",
         hint: "Use Rotate, Scale and Labels to inspect the castle more clearly."
     }
@@ -215,7 +215,7 @@ const defaultConfig = {
         defaultPart: {
             en: {
                 tag: "History model",
-                name: "CASTLE OF CONSUEGRA",
+                name: "CASTLE OF LOARRE",
                 info: "Explore a historic Spanish castle in AR and tap the numbered labels to learn how medieval fortifications worked.",
                 hint: "Use rotate, scale and labels while the model is active."
             }
@@ -223,7 +223,7 @@ const defaultConfig = {
         ui: {
             en: {
                 appEyebrow: "EduAR live scan",
-                appTitle: "CASTLE OF CONSUEGRA",
+                appTitle: "CASTLE OF LOARRE",
                 rotate: "Rotate",
                 scale: "Scale",
                 launchCollision: "Launch",
@@ -298,17 +298,41 @@ function getPrimaryModelConfig(config) {
     return defaultConfig.assets.models.primary;
 }
 
-function resolvePartPosition(part, modelSize) {
+function resolvePartPosition(part, modelSize, modelObject, parentGroup) {
+    if (Array.isArray(part.position)) {
+        return part.position;
+    }
+
     if (Array.isArray(part.normalizedPosition) && modelSize) {
-        return [
+        const fallbackPosition = [
             part.normalizedPosition[0] * modelSize.x,
             part.normalizedPosition[1] * modelSize.y,
             part.normalizedPosition[2] * modelSize.z
         ];
-    }
 
-    if (Array.isArray(part.position)) {
-        return part.position;
+        if (modelObject && parentGroup) {
+            const x = fallbackPosition[0];
+            const z = fallbackPosition[2];
+            const rayOrigin = new THREE.Vector3(x, modelSize.y + 12, z);
+            const rayDirection = new THREE.Vector3(0, -1, 0);
+
+            parentGroup.updateWorldMatrix(true, true);
+            parentGroup.localToWorld(rayOrigin);
+            rayDirection.transformDirection(parentGroup.matrixWorld);
+
+            const raycaster = new THREE.Raycaster(rayOrigin, rayDirection);
+            const hit = raycaster.intersectObject(modelObject, true)[0];
+            if (hit) {
+                const localPoint = parentGroup.worldToLocal(hit.point.clone());
+                return [
+                    localPoint.x,
+                    localPoint.y + Math.max(modelSize.y * 0.018, 0.18),
+                    localPoint.z
+                ];
+            }
+        }
+
+        return fallbackPosition;
     }
 
     return [0, 0, 0];
@@ -890,7 +914,6 @@ function initThree(config) {
     accentLight.position.set(-4, 3, 4);
     scene.add(accentLight);
 
-    const loader = new THREE.GLTFLoader();
     const modelConfig = getPrimaryModelConfig(config);
     const defaultModelConfig = defaultConfig.assets.models.primary;
     const modelPath = modelConfig.path ?? DEFAULT_MODEL_PATH;
@@ -961,7 +984,7 @@ function initThree(config) {
             modelRig.add(heartModel);
 
             anatomyParts.forEach((part, index) => {
-                addAnatomyLabel(part, index, modelSize, modelRig);
+                addAnatomyLabel(part, index, modelSize, modelRig, heartModel);
             });
 
             setupInteraction();
@@ -976,6 +999,7 @@ function initThree(config) {
         return;
     }
 
+    const loader = new THREE.GLTFLoader();
     loader.load(
         modelPath,
         (gltf) => {
@@ -1042,12 +1066,12 @@ function createFastCastleModel() {
     return castle;
 }
 
-function addAnatomyLabel(part, index, modelSize, parentGroup) {
+function addAnatomyLabel(part, index, modelSize, parentGroup, modelObject) {
     if (!parentGroup) {
         return;
     }
 
-    const labelPosition = resolvePartPosition(part, modelSize);
+    const labelPosition = resolvePartPosition(part, modelSize, modelObject, parentGroup);
     const labelAnchor = new THREE.Group();
     labelAnchor.position.set(
         labelPosition[0],

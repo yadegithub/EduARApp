@@ -5,18 +5,18 @@
         "name": "Castle of Consuegra",
         "path": "assets/castle_of_consuegra_toledo_spain.glb",
         "scale": {
-          "x": 0.9,
-          "y": 0.9,
-          "z": 0.9
+          "x": 1.1,
+          "y": 1.1,
+          "z": 1.1
         },
         "position": {
-          "x": 0.5,
-          "y": 0.5,
-          "z": 0.03
+          "x": 0.25,
+          "y": 0.72,
+          "z": 0.02
         },
         "rotation": {
-          "x": 0,
-          "y": 3,
+          "x": -0.35,
+          "y": 3.141592653589793,
           "z": 0
         },
         "autoCenter": true,
@@ -202,13 +202,19 @@
     ]
   },
   "settings": {
-    "arScale": 1.75,
+    "arScale": 0.01,
     "tracking": {
-      "markerLostGraceFrames": 20,
-      "trackingLerpAlpha": 0.28,
-      "confirmFrames": 2,
-      "qrScanIntervalMs": 80,
-      "qrSearchIntervalMs": 120
+      "markerLostGraceFrames": 35,
+      "trackingLerpAlpha": 0.12,
+      "trackingScaleLerpAlpha": 0.08,
+      "confirmFrames": 4,
+      "qrScanIntervalMs": 100,
+      "qrSearchIntervalMs": 140,
+      "positionDeadzone": 0.035,
+      "scaleDeadzone": 0.04,
+      "rotationDeadzoneRad": 0.08,
+      "fastFollowDistance": 0.22,
+      "fastFollowAlpha": 0.22
     },
     "debugMode": false
   }

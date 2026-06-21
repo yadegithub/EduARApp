@@ -110,7 +110,7 @@ const defaultAnatomyParts = [
 
 const defaultCopy = {
     appEyebrow: "EduAR live scan",
-    appTitle: "CASTLE OF CONSUEGRA",
+    appTitle: "CASTLE OF LOARRE",
     rotate: "Rotate",
     scale: "Scale",
     launchCollision: "Launch",
@@ -128,7 +128,7 @@ const defaultCopy = {
     focusTag: "Castle feature",
     overview: {
         tag: "History model",
-        title: "CASTLE OF CONSUEGRA",
+        title: "CASTLE OF LOARRE",
         info: "Tap a numbered marker to understand the keep, walls, towers, gate and courtyard.",
         hint: "Use Rotate, Scale and Labels to inspect the castle more clearly."
     }
@@ -214,7 +214,7 @@ const defaultConfig = {
         defaultPart: {
             en: {
                 tag: "History model",
-                name: "CASTLE OF CONSUEGRA",
+                name: "CASTLE OF LOARRE",
                 info: "Explore a historic Spanish castle in AR and tap the numbered labels to learn how medieval fortifications worked.",
                 hint: "Use rotate, scale and labels while the model is active."
             }
@@ -222,7 +222,7 @@ const defaultConfig = {
         ui: {
             en: {
                 appEyebrow: "EduAR live scan",
-                appTitle: "CASTLE OF CONSUEGRA",
+                appTitle: "CASTLE OF LOARRE",
                 rotate: "Rotate",
                 scale: "Scale",
                 launchCollision: "Launch",
@@ -850,7 +850,6 @@ function initThree(config) {
     accentLight.position.set(-4, 3, 4);
     scene.add(accentLight);
 
-    const loader = new THREE.GLTFLoader();
     const modelConfig = getPrimaryModelConfig(config);
     const defaultModelConfig = defaultConfig.assets.models.primary;
     const modelPath = modelConfig.path ?? DEFAULT_MODEL_PATH;
@@ -936,6 +935,7 @@ function initThree(config) {
         return;
     }
 
+    const loader = new THREE.GLTFLoader();
     loader.load(
         modelPath,
         (gltf) => {

@@ -5,18 +5,18 @@
         "name": "Castle of Consuegra",
         "path": "assets/castle_of_consuegra_toledo_spain.glb",
         "scale": {
-          "x": 1.45,
-          "y": 1.45,
-          "z": 1.45
+          "x": 1.1,
+          "y": 1.1,
+          "z": 1.1
         },
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 0.03
+          "x": 0.25,
+          "y": 0.72,
+          "z": 0.02
         },
         "rotation": {
-          "x": 0,
-          "y": 0.1,
+          "x": -0.35,
+          "y": 3.141592653589793,
           "z": 0
         },
         "autoCenter": true,
@@ -127,9 +127,9 @@
           "fr": "Reperez la masse fortifiee la plus haute du chateau."
         },
         "normalizedPosition": [
-          0,
-          0.28,
-          0.18
+          0.063,
+          0.85,
+          0.062
         ]
       },
       {
@@ -155,9 +155,9 @@
           "fr": "Faites tourner le modele pour suivre la ligne des murailles autour de la forteresse."
         },
         "normalizedPosition": [
-          -0.34,
-          0.02,
-          0.18
+          -0.251,
+          0.34,
+          0.124
         ]
       },
       {
@@ -183,9 +183,9 @@
           "fr": "Ces points hauts permettaient de reperer le danger avant son arrivee."
         },
         "normalizedPosition": [
-          0.32,
-          0.2,
-          0.2
+          0.251,
+          0.35,
+          -0.124
         ]
       },
       {
@@ -211,9 +211,9 @@
           "fr": "Les portes combinaient souvent passage etroit, portes solides et angles defensifs."
         },
         "normalizedPosition": [
-          0.08,
-          -0.2,
-          0.16
+          0,
+          0.2,
+          0.185
         ]
       },
       {
@@ -240,20 +240,28 @@
         },
         "normalizedPosition": [
           0,
-          -0.04,
-          0.28
+          0.38,
+          0.124
         ]
       }
     ]
   },
   "settings": {
-    "arScale": 0.012,
+
+    "arScale": 0.01,
+
     "tracking": {
-      "markerLostGraceFrames": 20,
-      "trackingLerpAlpha": 0.28,
-      "confirmFrames": 2,
-      "qrScanIntervalMs": 80,
-      "qrSearchIntervalMs": 120
+      "markerLostGraceFrames": 35,
+      "trackingLerpAlpha": 0.12,
+      "trackingScaleLerpAlpha": 0.08,
+      "confirmFrames": 4,
+      "qrScanIntervalMs": 100,
+      "qrSearchIntervalMs": 140,
+      "positionDeadzone": 0.035,
+      "scaleDeadzone": 0.04,
+      "rotationDeadzoneRad": 0.08,
+      "fastFollowDistance": 0.22,
+      "fastFollowAlpha": 0.22
     },
     "debugMode": false
   }
